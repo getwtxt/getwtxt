@@ -2,7 +2,8 @@ package main
 
 import "regexp"
 
-const textutf8 = "text/plain; charset=utf8"
+const txtutf8 = "text/plain; charset=utf8"
+const htmlutf8 = "text/html; charset=utf8"
 
 type configuration struct {
 	port         string
