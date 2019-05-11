@@ -5,14 +5,20 @@ import (
 	"net/http"
 
 	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
 func main() {
 	log.Printf("getwtxt v0.1\n")
 
-	serv := http.NewServeMux()
+	serv := mux.NewRouter()
 
-	serv.HandleFunc("/api/", apiHandler)
+	serv.HandleFunc("/", indexHandler)
+	serv.HandleFunc("/api/", apiBaseHandler)
+	serv.HandleFunc("/api/{format:plain}", apiFormatHandler)
+	serv.HandleFunc("/api/{format:plain}/{endpoint:mentions|users|tweets}", apiEndpointHandler)
+	serv.HandleFunc("/api/{format:plain}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
+	serv.HandleFunc("/api/{format:plain}/tags", apiTagsBaseHandler)
 
 	log.Fatalln(http.ListenAndServe(":8080", handlers.CompressHandler(serv)))
 }

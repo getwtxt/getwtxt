@@ -8,19 +8,7 @@ import (
 	"time"
 )
 
-func validRequest(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		m := confObj.validPath.FindStringSubmatch(r.URL.Path)
-		if m == nil {
-			log.Printf("Invalid API request: %v", r.URL.Path)
-			http.Error(w, fmt.Errorf(r.URL.Path).Error(), http.StatusNotFound)
-			return
-		}
-		fn(w, r, m[2])
-	}
-}
-
-func apiHandler(w http.ResponseWriter, r *http.Request) {
+func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
 	timerfc3339, err := time.Now().MarshalText()
 	if err != nil {
 		log.Printf("Couldn't format time as RFC3339: %v\n", err)
@@ -34,4 +22,20 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil || n == 0 {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 	}
+}
+
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
+
+}
+func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
+
 }
