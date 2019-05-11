@@ -3,12 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+
+	"github.com/gorilla/handlers"
 )
 
 func main() {
 	log.Printf("getwtxt v0.1\n")
 
-	http.HandleFunc("/api/", apiHandler)
+	serv := http.NewServeMux()
 
-	log.Fatalln(http.ListenAndServe(":8080", nil))
+	serv.HandleFunc("/api/", apiHandler)
+
+	log.Fatalln(http.ListenAndServe(":8080", handlers.CompressHandler(serv)))
 }
