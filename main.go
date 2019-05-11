@@ -22,7 +22,9 @@ func main() {
 	index.HandleFunc("/", indexHandler)
 	api.HandleFunc("/", apiBaseHandler)
 	api.HandleFunc("/{format:(?:plain)}", apiFormatHandler)
-	api.HandleFunc("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}", apiEndpointHandler)
+	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
+		Queries("url", "{url}", "q", "{query}", "nickname", "{nickname}").
+		HandlerFunc(apiEndpointHandler)
 	api.HandleFunc("/{format:(?:plain)}/tags", apiTagsBaseHandler)
 	api.HandleFunc("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
 
