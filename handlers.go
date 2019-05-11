@@ -10,6 +10,17 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// handles "/"
+func indexHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", htmlutf8)
+	n, err := w.Write([]byte(getwtxt))
+	if err != nil || n == 0 {
+		log.Printf("Error writing to HTTP stream: %v\n", err)
+	}
+
+}
+
+// handles "/api"
 func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
 	timerfc3339, err := time.Now().MarshalText()
 	if err != nil {
@@ -26,14 +37,8 @@ func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", htmlutf8)
-	n, err := w.Write([]byte(getwtxt))
-	if err != nil || n == 0 {
-		log.Printf("Error writing to HTTP stream: %v\n", err)
-	}
-
-}
+// handles "/api/plain"
+// maybe add json/xml support later
 func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	format := vars["format"]
@@ -44,6 +49,8 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 	}
 }
+
+// handles "/api/plain/(users|mentions|tweets)"
 func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	format := vars["format"]
@@ -56,6 +63,8 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// handles "/api/plain/tags"
 func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	format := vars["format"]
@@ -67,6 +76,8 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 }
+
+// handles "/api/plain/tags/[a-zA-Z0-9]+"
 func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	format := vars["format"]
