@@ -8,8 +8,6 @@ import (
 	"time"
 )
 
-const textutf8 = "text/plain; charset=utf8"
-
 func validRequest(fn func(http.ResponseWriter, *http.Request, string)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := confObj.validPath.FindStringSubmatch(r.URL.Path)
@@ -30,7 +28,8 @@ func apiHandler(w http.ResponseWriter, r *http.Request) {
 	etag := fmt.Sprintf("%x", sha256.Sum256(timerfc3339))
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", textutf8)
-	timerfc3339 = append(timerfc3339, byte('\n'))
+	pathdata := []byte("\n\n" + r.URL.Path)
+	timerfc3339 = append(timerfc3339, pathdata...)
 	n, err := w.Write(timerfc3339)
 	if err != nil || n == 0 {
 		log.Printf("Error writing to HTTP stream: %v\n", err)

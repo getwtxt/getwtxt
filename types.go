@@ -2,6 +2,8 @@ package main
 
 import "regexp"
 
+const textutf8 = "text/plain; charset=utf8"
+
 type configuration struct {
 	port         string
 	validPath    *regexp.Regexp
