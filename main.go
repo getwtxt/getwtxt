@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -10,17 +11,31 @@ import (
 
 const getwtxt = "0.1"
 
+var closelog = make(chan bool)
+
 func main() {
 	log.Printf("getwtxt " + getwtxt + "\n")
 
-	serv := mux.NewRouter()
+	index := mux.NewRouter()
+	api := index.PathPrefix("/api").Subrouter()
 
-	serv.HandleFunc("/", indexHandler)
-	serv.HandleFunc("/{api:(?:api|api/)}", apiBaseHandler)
-	serv.HandleFunc("/api/{format:(?:plain|plain/)}", apiFormatHandler)
-	serv.HandleFunc("/api/{format:(?:plain)}/{endpoint:(?:mentions|mentions/|users|users/|tweets|tweets/)}", apiEndpointHandler)
-	serv.HandleFunc("/api/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
-	serv.HandleFunc("/api/{format:(?:plain)}/{tagpathfixer:(?:tags|tags/)}", apiTagsBaseHandler)
+	index.HandleFunc("/", indexHandler)
+	api.HandleFunc("/", apiBaseHandler)
+	api.HandleFunc("/{format:(?:plain)}", apiFormatHandler)
+	api.HandleFunc("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}", apiEndpointHandler)
+	api.HandleFunc("/{format:(?:plain)}/tags", apiTagsBaseHandler)
+	api.HandleFunc("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
 
-	log.Fatalln(http.ListenAndServe(":8080", handlers.CompressHandler(serv)))
+	server := &http.Server{
+		Handler:      handlers.CompressHandler(index),
+		Addr:         ":9001",
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+	closelog <- true
 }
