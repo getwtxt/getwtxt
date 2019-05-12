@@ -1,5 +1,6 @@
 {
   "port": 9001,
+  "stdoutLogging": true,
   "logfile": "getwtxt.log",
   "twtxtfile": "/var/twtxt/twtxt.txt"
 }
