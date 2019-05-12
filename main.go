@@ -13,7 +13,6 @@ import (
 const getwtxt = "0.1"
 
 func main() {
-	log.Printf("getwtxt " + getwtxt + "\n")
 
 	// more precise path-based routing
 	index := mux.NewRouter()

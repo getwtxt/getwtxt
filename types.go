@@ -6,7 +6,8 @@ const htmlutf8 = "text/html; charset=utf8"
 
 // config object definition
 type configuration struct {
-	port      int
-	logfile   string
-	twtxtfile string
+	port          int
+	logfile       string
+	twtxtfile     string
+	stdoutLogging bool
 }
