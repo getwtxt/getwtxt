@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -10,8 +11,6 @@ import (
 )
 
 const getwtxt = "0.1"
-
-var closelog = make(chan bool)
 
 func main() {
 	log.Printf("getwtxt " + getwtxt + "\n")
@@ -28,9 +27,11 @@ func main() {
 	api.HandleFunc("/{format:(?:plain)}/tags", apiTagsBaseHandler)
 	api.HandleFunc("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
 
+	portnum := fmt.Sprintf(":%v", confObj.port)
+
 	server := &http.Server{
 		Handler:      handlers.CompressHandler(index),
-		Addr:         ":9001",
+		Addr:         portnum,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

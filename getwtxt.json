@@ -1,0 +1,5 @@
+{
+  "port": 9001,
+  "logfile": "getwtxt.log",
+  "twtxtfile": "/var/twtxt/twtxt.txt"
+}
