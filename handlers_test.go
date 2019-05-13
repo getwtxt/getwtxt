@@ -24,6 +24,8 @@ func logToNull() {
 	log.SetOutput(hush)
 }
 
+// these will be expanded later. currently, they only
+// test for a 200 status code.
 func Test_indexHandler(t *testing.T) {
 	initTestConf()
 	t.Run("indexHandler", func(t *testing.T) {
