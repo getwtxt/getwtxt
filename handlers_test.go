@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/http/httptest"
@@ -95,6 +97,30 @@ func Test_apiTagsHandler(t *testing.T) {
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
+		}
+	})
+}
+func Test_cssHandler(t *testing.T) {
+	initTestConf()
+
+	name := "CSS Handler Test"
+	css, err := ioutil.ReadFile("assets/style.css")
+	if err != nil {
+		t.Errorf("Couldn't read assets/style.css: %v\n", err)
+	}
+
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "localhost"+testport+"/css", nil)
+
+	t.Run(name, func(t *testing.T) {
+		cssHandler(w, req)
+		resp := w.Result()
+		body, _ := ioutil.ReadAll(resp.Body)
+		if resp.StatusCode != 200 {
+			t.Errorf("cssHandler(): %v\n", resp.StatusCode)
+		}
+		if !bytes.Equal(body, css) {
+			t.Errorf("cssHandler(): Byte mismatch\n")
 		}
 	})
 }

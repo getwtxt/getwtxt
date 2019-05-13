@@ -24,6 +24,9 @@ func main() {
 	index.Path("/").
 		Methods("GET").
 		HandlerFunc(indexHandler)
+	index.Path("/css").
+		Methods("GET").
+		HandlerFunc(cssHandler)
 	index.Path("/api").
 		Methods("GET").
 		HandlerFunc(apiBaseHandler)
