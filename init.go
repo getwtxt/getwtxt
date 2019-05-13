@@ -14,10 +14,8 @@ import (
 
 // command line flags
 var (
-	port          *int    = pflag.IntP("port", "p", 9001, "getwtxt will serve from this port")
-	logfile       *string = pflag.StringP("logfile", "l", "getwtxt.log", "File for logging output")
-	twtxtfile     *string = pflag.StringP("twtxtfile", "f", "/var/twtxt/twtxt.txt", "Registry file for getwtxt")
-	stdoutLogging *bool   = pflag.BoolP("stdout", "o", true, "Log to stdout rather than to a file")
+	flagVersion *bool = pflag.BoolP("version", "v", false, "Display version information, then exit")
+	flagHelp    *bool = pflag.BoolP("help", "h", false, "")
 )
 
 // config object
@@ -27,18 +25,26 @@ var confObj = &configuration{}
 var closelog = make(chan bool, 1)
 
 func init() {
+	checkFlags()
 	titleScreen()
 	initConfig()
 	initLogging()
 	watchForInterrupt()
 }
 
-func initConfig() {
-
+func checkFlags() {
 	pflag.Parse()
-	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
-		log.Printf("%v\n", err)
+	if *flagVersion {
+		titleScreen()
+		os.Exit(0)
 	}
+	if *flagHelp {
+		fmt.Printf("\n\nplaceholder\n\n")
+		os.Exit(0)
+	}
+}
+
+func initConfig() {
 
 	viper.SetConfigName("getwtxt")
 	viper.AddConfigPath(".")
