@@ -6,6 +6,6 @@
     "name": "getwtxt",
     "url": "https://twtxt.example.com",
     "owner": "gbmor",
-    "ownermail": "ben@gbmor.dev"
+    "mail": "ben@gbmor.dev"
   }
 }

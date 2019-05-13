@@ -73,8 +73,11 @@ func initConfig() {
 
 	confObj.port = viper.GetInt("port")
 	confObj.logfile = viper.GetString("logfile")
-	confObj.twtxtfile = viper.GetString("twtxtfile")
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
+	confObj.instance.name = viper.GetString("instance.name")
+	confObj.instance.url = viper.GetString("instance.url")
+	confObj.instance.owner = viper.GetString("instance.owner")
+	confObj.instance.mail = viper.GetString("instance.mail")
 }
 
 func initLogging() {
@@ -117,8 +120,11 @@ func rebindConfig() {
 	// reassign values to the config object
 	confObj.port = viper.GetInt("port")
 	confObj.logfile = viper.GetString("logfile")
-	confObj.twtxtfile = viper.GetString("twtxtfile")
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
+	confObj.instance.name = viper.GetString("instance.name")
+	confObj.instance.url = viper.GetString("instance.url")
+	confObj.instance.owner = viper.GetString("instance.owner")
+	confObj.instance.mail = viper.GetString("instance.mail")
 
 	// reinitialize logging
 	initLogging()

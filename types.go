@@ -9,4 +9,13 @@ type configuration struct {
 	port          int
 	logfile       string
 	stdoutLogging bool
+	instance
 }
+type instance struct {
+	name  string
+	url   string
+	owner string
+	mail  string
+}
+
+// index of users
