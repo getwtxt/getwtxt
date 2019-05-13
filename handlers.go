@@ -11,9 +11,9 @@ import (
 )
 
 // handles "/"
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func indexHandler(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", htmlutf8)
-	n, err := w.Write([]byte(getwtxt))
+	n, err := w.Write([]byte("getwtxt v" + getwtxt))
 	if err != nil || n == 0 {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 	}
