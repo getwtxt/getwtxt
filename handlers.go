@@ -64,6 +64,20 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+// handles POST for "/api/plain/users"
+func apiEndpointPOSTHandler(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	format := vars["format"]
+	endpoint := vars["endpoint"]
+
+	w.Header().Set("Content-Type", htmlutf8)
+	n, err := w.Write([]byte(format + "/" + endpoint))
+	if err != nil || n == 0 {
+		log.Printf("Error writing to HTTP stream: %v\n", err)
+	}
+
+}
+
 // handles "/api/plain/tags"
 func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)

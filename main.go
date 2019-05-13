@@ -14,20 +14,36 @@ const getwtxt = "0.1"
 
 func main() {
 
-	// more precise path-based routing
-	index := mux.NewRouter()
+	index := mux.NewRouter().StrictSlash(true)
 	api := index.PathPrefix("/api").Subrouter()
 
 	// gorilla/mux makes path validation painless
-	index.HandleFunc("/", indexHandler)
-	index.HandleFunc("/api", apiBaseHandler)
-	api.HandleFunc("/", apiBaseHandler)
-	api.HandleFunc("/{format:(?:plain)}", apiFormatHandler)
+	index.Path("/").
+		Methods("GET").
+		HandlerFunc(indexHandler)
+	index.Path("/api").
+		Methods("GET").
+		HandlerFunc(apiBaseHandler)
+	api.Path("/").
+		Methods("GET").
+		HandlerFunc(apiBaseHandler)
+	api.Path("/{format:(?:plain)}").
+		Methods("GET").
+		HandlerFunc(apiFormatHandler)
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
-		Queries("url", "{url}", "q", "{query}", "nickname", "{nickname}").
+		Methods("GET").
+		Queries("url", "{url}", "q", "{query}").
 		HandlerFunc(apiEndpointHandler)
-	api.HandleFunc("/{format:(?:plain)}/tags", apiTagsBaseHandler)
-	api.HandleFunc("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}", apiTagsHandler)
+	api.Path("/{format:(?:plain)}/{endpoint:users}").
+		Methods("POST").
+		Queries("url", "{url}", "nickname", "{nickname}").
+		HandlerFunc(apiEndpointPOSTHandler)
+	api.Path("/{format:(?:plain)}/tags").
+		Methods("GET").
+		HandlerFunc(apiTagsBaseHandler)
+	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}").
+		Methods("GET").
+		HandlerFunc(apiTagsHandler)
 
 	// format the port for the http.Server object
 	portnum := fmt.Sprintf(":%v", confObj.port)
