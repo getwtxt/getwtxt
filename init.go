@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/pflag"
@@ -69,7 +68,10 @@ func initConfig() {
 func initLogging() {
 
 	// only open a log file if it's necessary
-	if !confObj.stdoutLogging {
+	if confObj.stdoutLogging {
+		log.SetOutput(os.Stdout)
+
+	} else {
 
 		logfile, err := os.OpenFile(confObj.logfile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
@@ -77,20 +79,19 @@ func initLogging() {
 		}
 
 		// Listen for the signal to close the log file
-		// in a separate thread
-		go func() {
+		// in a separate thread. Passing it as an argument
+		// to prevent race conditions when the config is
+		// reloaded.
+		go func(logfile *os.File) {
 			<-closelog
 			log.Printf("Closing log file ...\n")
 			err = logfile.Close()
 			if err != nil {
 				log.Printf("Couldn't close log file: %v\n", err)
 			}
-		}()
+		}(logfile)
 
 		log.SetOutput(logfile)
-
-	} else {
-		log.SetOutput(os.Stdout)
 	}
 }
 
@@ -99,7 +100,6 @@ func rebindConfig() {
 	// signal to close the log file then wait
 	if !confObj.stdoutLogging {
 		closelog <- true
-		time.Sleep(50 * time.Millisecond)
 	}
 
 	// reassign values to the config object
