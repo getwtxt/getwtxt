@@ -98,7 +98,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	tags := vars["tags"]
 
 	w.Header().Set("Content-Type", htmlutf8)
-	n, err := w.Write([]byte("api/" + format + "/" + tags))
+	n, err := w.Write([]byte("api/" + format + "/tags/" + tags))
 	if err != nil || n == 0 {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 	}
