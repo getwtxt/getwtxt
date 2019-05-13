@@ -36,7 +36,9 @@ func init() {
 func initConfig() {
 
 	pflag.Parse()
-	viper.BindPFlags(pflag.CommandLine)
+	if err := viper.BindPFlags(pflag.CommandLine); err != nil {
+		log.Printf("%v\n", err)
+	}
 
 	viper.SetConfigName("getwtxt")
 	viper.AddConfigPath(".")
