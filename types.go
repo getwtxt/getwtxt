@@ -8,6 +8,5 @@ const htmlutf8 = "text/html; charset=utf8"
 type configuration struct {
 	port          int
 	logfile       string
-	twtxtfile     string
 	stdoutLogging bool
 }

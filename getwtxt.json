@@ -2,5 +2,10 @@
   "port": 9001,
   "stdoutLogging": true,
   "logfile": "getwtxt.log",
-  "twtxtfile": "/var/twtxt/twtxt.txt"
+  "instance": {
+    "name": "getwtxt",
+    "url": "https://twtxt.example.com",
+    "owner": "gbmor",
+    "ownermail": "ben@gbmor.dev"
+  }
 }
