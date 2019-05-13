@@ -14,6 +14,9 @@ const getwtxt = "0.1"
 
 func main() {
 
+	// StrictSlash(true) allows /api and /api/
+	// to serve the same content without duplicating
+	// handlers/paths
 	index := mux.NewRouter().StrictSlash(true)
 	api := index.PathPrefix("/api").Subrouter()
 
@@ -22,9 +25,6 @@ func main() {
 		Methods("GET").
 		HandlerFunc(indexHandler)
 	index.Path("/api").
-		Methods("GET").
-		HandlerFunc(apiBaseHandler)
-	api.Path("/").
 		Methods("GET").
 		HandlerFunc(apiBaseHandler)
 	// twtxt will add support for other formats later.
@@ -48,9 +48,11 @@ func main() {
 		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9]+}").
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
+	// Show all observed tags
 	api.Path("/{format:(?:plain)}/tags").
 		Methods("GET").
 		HandlerFunc(apiTagsBaseHandler)
+	// Requests tweets with a specific tag
 	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}").
 		Methods("GET").
 		HandlerFunc(apiTagsHandler)
