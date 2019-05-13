@@ -39,7 +39,8 @@ func checkFlags() {
 		os.Exit(0)
 	}
 	if *flagHelp {
-		fmt.Printf("\n\nplaceholder\n\n")
+		fmt.Printf("\nplaceholder\n")
+		fmt.Printf("will add info later\n")
 		os.Exit(0)
 	}
 }
