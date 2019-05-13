@@ -11,11 +11,11 @@ type configuration struct {
 	stdoutLogging bool
 	instance
 }
+
+// refers to this specific instance of getwtxt
 type instance struct {
 	name  string
 	url   string
 	owner string
 	mail  string
 }
-
-// index of users
