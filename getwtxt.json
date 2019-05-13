@@ -5,7 +5,8 @@
   "instance": {
     "name": "getwtxt",
     "url": "https://twtxt.example.com",
-    "owner": "gbmor",
-    "mail": "ben@gbmor.dev"
+    "owner": "foo barrington",
+    "mail": "foo@barrington.ext",
+    "description": "This is the twtxt registry for the tildeverse network of public unix servers."
   }
 }

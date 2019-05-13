@@ -10,13 +10,15 @@ type configuration struct {
 	port          int
 	logfile       string
 	stdoutLogging bool
-	instance
+	version       string
+	Instance
 }
 
-// refers to this specific instance of getwtxt
-type instance struct {
-	name  string
-	url   string
-	owner string
-	mail  string
+// Instance refers to this specific instance of getwtxt
+type Instance struct {
+	Name  string
+	URL   string
+	Owner string
+	Mail  string
+	Desc  string
 }

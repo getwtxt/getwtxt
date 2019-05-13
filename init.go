@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 	"os/signal"
@@ -24,11 +25,15 @@ var confObj = &configuration{}
 // signals to close the log file
 var closelog = make(chan bool, 1)
 
+// templates
+var tmpls *template.Template
+
 func init() {
 	checkFlags()
 	titleScreen()
 	initConfig()
 	initLogging()
+	tmpls = initTemplates()
 	watchForInterrupt()
 }
 
@@ -69,15 +74,17 @@ func initConfig() {
 
 	viper.SetDefault("port", 9001)
 	viper.SetDefault("logfile", "getwtxt.log")
-	viper.SetDefault("twtxtfile", "/var/twtxt/twtxt.txt")
+	viper.SetDefault("stdoutLogging", false)
 
 	confObj.port = viper.GetInt("port")
 	confObj.logfile = viper.GetString("logfile")
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
-	confObj.instance.name = viper.GetString("instance.name")
-	confObj.instance.url = viper.GetString("instance.url")
-	confObj.instance.owner = viper.GetString("instance.owner")
-	confObj.instance.mail = viper.GetString("instance.mail")
+	confObj.version = getwtxt
+	confObj.Instance.Name = viper.GetString("instance.name")
+	confObj.Instance.URL = viper.GetString("instance.url")
+	confObj.Instance.Owner = viper.GetString("instance.owner")
+	confObj.Instance.Mail = viper.GetString("instance.mail")
+	confObj.Instance.Desc = viper.GetString("instance.description")
 }
 
 func initLogging() {
@@ -121,13 +128,19 @@ func rebindConfig() {
 	confObj.port = viper.GetInt("port")
 	confObj.logfile = viper.GetString("logfile")
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
-	confObj.instance.name = viper.GetString("instance.name")
-	confObj.instance.url = viper.GetString("instance.url")
-	confObj.instance.owner = viper.GetString("instance.owner")
-	confObj.instance.mail = viper.GetString("instance.mail")
+	confObj.Instance.Name = viper.GetString("instance.name")
+	confObj.Instance.URL = viper.GetString("instance.url")
+	confObj.Instance.Owner = viper.GetString("instance.owner")
+	confObj.Instance.Mail = viper.GetString("instance.mail")
+	confObj.Instance.Desc = viper.GetString("instance.description")
 
 	// reinitialize logging
 	initLogging()
+}
+
+// Parse the HTML templates
+func initTemplates() *template.Template {
+	return template.Must(template.ParseFiles("assets/tmpl/index.html"))
 }
 
 // Watch for SIGINT aka ^C

@@ -1,1 +1,33 @@
 @import url("https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css");
+
+#container {
+  max-width: 800px;
+  margin: auto;
+}
+
+#head {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+  font-size: 2em;
+}
+
+#subhead {
+  text-align: right;
+  font-size: 1.2em;
+}
+
+#body {
+  font-size: 1.0em;
+}
+
+#info {
+  font-size: 0.9em;
+  padding-top: 10px;
+}
+
+#foot {
+  padding-top: 20px;
+  text-align: center;
+  font-size: 0.8em;
+}
