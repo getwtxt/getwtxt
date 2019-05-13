@@ -13,6 +13,7 @@ var testport = fmt.Sprintf(":%v", confObj.port)
 
 func initTestConf() {
 	initConfig()
+	logToNull()
 }
 
 func logToNull() {
@@ -25,7 +26,6 @@ func logToNull() {
 
 func Test_indexHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("indexHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/", nil)
@@ -38,7 +38,6 @@ func Test_indexHandler(t *testing.T) {
 }
 func Test_apiBaseHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("apiBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api", nil)
@@ -51,7 +50,6 @@ func Test_apiBaseHandler(t *testing.T) {
 }
 func Test_apiFormatHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("apiFormatHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain", nil)
@@ -64,7 +62,6 @@ func Test_apiFormatHandler(t *testing.T) {
 }
 func Test_apiEndpointHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("apiEndpointHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/users", nil)
@@ -77,7 +74,6 @@ func Test_apiEndpointHandler(t *testing.T) {
 }
 func Test_apiTagsBaseHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("apiTagsBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags", nil)
@@ -90,7 +86,6 @@ func Test_apiTagsBaseHandler(t *testing.T) {
 }
 func Test_apiTagsHandler(t *testing.T) {
 	initTestConf()
-	logToNull()
 	t.Run("indexHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags/tag", nil)
