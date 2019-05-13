@@ -17,7 +17,7 @@ func main() {
 	index := mux.NewRouter().StrictSlash(true)
 	api := index.PathPrefix("/api").Subrouter()
 
-	// gorilla/mux makes path validation painless
+	// <3 gorilla/mux
 	index.Path("/").
 		Methods("GET").
 		HandlerFunc(indexHandler)
@@ -27,16 +27,26 @@ func main() {
 	api.Path("/").
 		Methods("GET").
 		HandlerFunc(apiBaseHandler)
+	// twtxt will add support for other formats later.
+	// Maybe json? Making this future-proof.
 	api.Path("/{format:(?:plain)}").
 		Methods("GET").
 		HandlerFunc(apiFormatHandler)
+	// Specifying the endpoint with and without query information.
+	// Will return 404 on empty queries otherwise.
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
 		Methods("GET").
-		Queries("url", "{url}", "q", "{query}").
 		HandlerFunc(apiEndpointHandler)
+	// Using stdlib net/url to validate the input URLs rather than regex.
+	// Validating a URL with regex is unwieldly
+	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
+		Queries("url", "{url}", "q", "{query}").
+		Methods("GET").
+		HandlerFunc(apiEndpointHandler)
+	// This is for submitting new users
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
+		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9]+}").
 		Methods("POST").
-		Queries("url", "{url}", "nickname", "{nickname}").
 		HandlerFunc(apiEndpointPOSTHandler)
 	api.Path("/{format:(?:plain)}/tags").
 		Methods("GET").
