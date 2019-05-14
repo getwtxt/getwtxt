@@ -22,5 +22,26 @@ type Data struct {
 	status  []string
 }
 
-// Mutex to control access to the User Index
+// Mutex to control access to the User Index.
 var imutex = sync.RWMutex{}
+
+// TimeSlice is used for sorting by timestamp.
+type TimeSlice []time.Time
+
+// Len returns the length of the slice to be sorted.
+// This helps satisfy sort.Interface with respect to TimeSlice.
+func (t TimeSlice) Len() int {
+	return len(t)
+}
+
+// Less returns true if the timestamp at index i is before the timestamp at index j in TimeSlice.
+// This helps satisfy sort.Interface with respect to TimeSlice.
+func (t TimeSlice) Less(i, j int) bool {
+	return t[i].Before(t[j])
+}
+
+// Swap transposes the timestampss at the two given indices.
+// This helps satisfy sort.Interface with respect to TimeSlice.
+func (t TimeSlice) Swap(i, j int) {
+	t[i], t[j] = t[j], t[i]
+}
