@@ -1,4 +1,4 @@
-package registry
+package registry // import "github.com/gbmor/getwtxt/registry"
 
 import (
 	"log"
