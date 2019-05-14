@@ -7,9 +7,10 @@ go:
 matrix:
   include:
     - os: linux
-      dist: xenial
     - os: osx
     - os: windows
+
+dist: xenial
 
 env:
   - GO111MODULE=on
