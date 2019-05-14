@@ -2,6 +2,7 @@ package cache
 
 import (
 	"log"
+	"strings"
 	"time"
 )
 
@@ -26,4 +27,26 @@ func (index UserIndex) DelUser(url string) {
 	imutex.Lock()
 	delete(index, url)
 	imutex.Unlock()
+}
+
+func (index UserIndex) QueryUser(name string) []string {
+	var users []string
+	var entry string
+	for k, v := range index {
+		if strings.Contains(v.nick, name) {
+			entry = v.nick + "\t" + k + "\t" + string(v.apidate)
+			users = append(users, entry)
+		}
+	}
+
+	return users
+}
+
+// FindTag takes a user's tweets and looks for a given tag.
+// Returns the tweets with the tag as a []string.
+func (userdata *Data) FindTag(tag string) {
+	//for _, e := range userdata.status {
+	//parts := strings.Split(e, "\t")
+
+	//}
 }
