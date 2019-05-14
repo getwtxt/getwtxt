@@ -38,12 +38,14 @@ func (index UserIndex) QueryUser(name string) []string {
 	var timekey = map[time.Time]string{}
 	var sortedkeys TimeSlice
 	var users []string
+	imutex.RLock()
 	for k, v := range index {
 		if strings.Contains(v.nick, name) {
 			timekey[v.date] = v.nick + "\t" + k + "\t" + string(v.apidate)
 			sortedkeys = append(sortedkeys, v.date)
 		}
 	}
+	imutex.RUnlock()
 	sort.Sort(sortedkeys)
 	for _, e := range sortedkeys {
 		users = append(users, timekey[e])
@@ -57,10 +59,12 @@ func (index UserIndex) QueryUser(name string) []string {
 func (index UserIndex) QueryTag(tag string) []string {
 	var statusmap StatusMapSlice
 	i := 0
+	imutex.RLock()
 	for _, v := range index {
 		statusmap[i] = v.FindTag(tag)
 		i++
 	}
+	imutex.RUnlock()
 
 	return statusmap.SortByTime()
 }
@@ -73,8 +77,8 @@ func (userdata *Data) FindTag(tag string) StatusMap {
 		parts := strings.Split(e, "\t")
 		statusslice := strings.Split(parts[3], " ")
 		for _, v := range statusslice {
-			if v == tag {
-				statuses[k] = v
+			if v[1:] == tag {
+				statuses[k] = e
 				break
 			}
 		}
@@ -106,5 +110,8 @@ func (sm StatusMapSlice) SortByTime() []string {
 
 // GetStatuses returns the string slice containing a user's statuses
 func (index UserIndex) GetStatuses(url string) StatusMap {
-	return index[url].status
+	imutex.RLock()
+	status := index[url].status
+	imutex.RUnlock()
+	return status
 }
