@@ -19,8 +19,16 @@ type Data struct {
 	nick    string
 	date    time.Time
 	apidate []byte
-	status  []string
+	status  StatusMap
 }
+
+// StatusMap holds the statuses posted by a given user. A standard
+// time.Time value is used as the key, with the status as a string.
+type StatusMap map[time.Time]string
+
+// StatusMapSlice is a slice of StatusMaps. Useful for sorting the
+// output of queries.
+type StatusMapSlice []StatusMap
 
 // Mutex to control access to the User Index.
 var imutex = sync.RWMutex{}
@@ -34,7 +42,8 @@ func (t TimeSlice) Len() int {
 	return len(t)
 }
 
-// Less returns true if the timestamp at index i is before the timestamp at index j in TimeSlice.
+// Less returns true if the timestamp at index i is before the
+// timestamp at index j in TimeSlice.
 // This helps satisfy sort.Interface with respect to TimeSlice.
 func (t TimeSlice) Less(i, j int) bool {
 	return t[i].Before(t[j])
