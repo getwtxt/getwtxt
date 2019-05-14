@@ -3,15 +3,14 @@ package registry
 import (
 	"sort"
 	"strings"
-	"time"
 )
 
 // QueryUser checks the user index for nicknames that contain the
 // nickname provided as an argument. Entries are returned sorted
 // by the date they were added to the index.
 func (index UserIndex) QueryUser(name string) []string {
-	var timekey = map[time.Time]string{}
-	var keys TimeSlice
+	timekey := NewTimeMap()
+	keys := make(TimeSlice, 0)
 	var users []string
 	imutex.RLock()
 	for k, v := range index {
@@ -32,7 +31,7 @@ func (index UserIndex) QueryUser(name string) []string {
 // QueryTag returns all the known statuses that
 // contain the provided tag.
 func (index UserIndex) QueryTag(tag string) []string {
-	var statusmap TimeMapSlice
+	statusmap := NewTimeMapSlice()
 	i := 0
 	imutex.RLock()
 	for _, v := range index {
@@ -47,7 +46,7 @@ func (index UserIndex) QueryTag(tag string) []string {
 // FindTag takes a user's tweets and looks for a given tag.
 // Returns the tweets with the tag as a []string.
 func (userdata *Data) FindTag(tag string) TimeMap {
-	var statuses TimeMap
+	statuses := NewTimeMap()
 	for k, e := range userdata.Status {
 		parts := strings.Split(e, "\t")
 		statusslice := strings.Split(parts[3], " ")
@@ -65,8 +64,8 @@ func (userdata *Data) FindTag(tag string) TimeMap {
 // SortByTime returns a string slice of the query results
 // sorted by time.Time
 func (tm TimeMapSlice) SortByTime() []string {
-	var unionmap TimeMap
-	var times TimeSlice
+	var unionmap = NewTimeMap()
+	var times = make(TimeSlice, 0)
 	var data []string
 	for _, e := range tm {
 		for k, v := range e {
@@ -82,12 +81,4 @@ func (tm TimeMapSlice) SortByTime() []string {
 	}
 
 	return data
-}
-
-// GetStatuses returns the string slice containing a user's statuses
-func (index UserIndex) GetStatuses(url string) TimeMap {
-	imutex.RLock()
-	status := index[url].Status
-	imutex.RUnlock()
-	return status
 }

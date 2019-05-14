@@ -9,6 +9,10 @@ import (
 type Indexer interface {
 	AddUser(string, string)
 	DelUser(string)
+	GetUserStatuses() TimeMap
+	GetStatuses() TimeMap
+	QueryUser(string) []string
+	QueryTag(string) []string
 }
 
 // UserIndex provides an index of users by URL
@@ -38,6 +42,21 @@ var imutex = sync.RWMutex{}
 
 // TimeSlice is used for sorting by timestamp.
 type TimeSlice []time.Time
+
+// NewUserIndex returns a new instance of a user index
+func NewUserIndex() *UserIndex {
+	return &UserIndex{}
+}
+
+// NewTimeMap returns an initialized TimeMap.
+func NewTimeMap() TimeMap {
+	return make(TimeMap)
+}
+
+// NewTimeMapSlice returns an initialized slice of TimeMaps with zero length.
+func NewTimeMapSlice() TimeMapSlice {
+	return make(TimeMapSlice, 0)
+}
 
 // Len returns the length of the slice to be sorted.
 // This helps satisfy sort.Interface with respect to TimeSlice.
