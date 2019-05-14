@@ -14,8 +14,15 @@ import (
 
 // handles "/"
 func indexHandler(w http.ResponseWriter, _ *http.Request) {
+	indextmpl, err := os.Stat("assets/tmpl/index.html")
+	if err != nil {
+		log.Printf("Couldn't stat index template, sending empty ETag ... %v\n", err)
+	}
+
+	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(indextmpl.ModTime().String())))
+	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
-	err := tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
+	err = tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
 	if err != nil {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
