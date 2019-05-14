@@ -1,14 +1,13 @@
 language: go
 
 go:
-- 1.11.x
-- 1.12.x
+ - 1.11.x
+ - 1.12.x
 
-matrix:
-  include:
-    - os: linux
-    - os: osx
-    - os: windows
+os: 
+  - linux
+  - osx
+  - windows
 
 dist: xenial
 
