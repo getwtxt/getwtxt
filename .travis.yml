@@ -4,12 +4,12 @@ go:
 - 1.11.x
 - 1.12.x
 
-os:
-  - linux
-  - osx
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+    - os: osx
+    - os: windows
 
-dist: xenial
-
-script:
-  - env GO111MODULE=on go build
-  - env GO111MODULE=on go test
+env:
+  - GO111MODULE=on
