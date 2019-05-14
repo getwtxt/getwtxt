@@ -14,15 +14,24 @@ import (
 
 // handles "/"
 func indexHandler(w http.ResponseWriter, _ *http.Request) {
-	indextmpl, err := os.Stat("assets/tmpl/index.html")
-	if err != nil {
-		log.Printf("Couldn't stat index template, sending empty ETag ... %v\n", err)
+
+	// Stat the index template to get the mod time
+	var etag string
+	if indextmpl, err := os.Stat("assets/tmpl/index.html"); err != nil {
+		log.Printf("Couldn't stat index template for ETag ... %v\n", err)
+	} else {
+		etag = fmt.Sprintf("%x", sha256.Sum256([]byte(indextmpl.ModTime().String())))
 	}
 
-	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(indextmpl.ModTime().String())))
+	// Take the hex-encoded sha256 sum of the index template's mod time
+	// to send as an ETag. If an error occured when grabbing the file info,
+	// the ETag will be empty.
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
-	err = tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
+
+	// Pass the confObj.Instance data to the template,
+	// then send it to the client.
+	err := tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
 	if err != nil {
 		log.Printf("Error writing to HTTP stream: %v\n", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
