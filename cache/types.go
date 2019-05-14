@@ -2,6 +2,7 @@ package cache
 
 import (
 	"sync"
+	"time"
 )
 
 // Indexer allows for other uses of the Index functions
@@ -15,9 +16,10 @@ type UserIndex map[string]*Data
 
 // Data from user's twtxt.txt
 type Data struct {
-	nick   string
-	url    string
-	status []string
+	nick    string
+	date    time.Time
+	apidate []byte
+	status  []string
 }
 
 // Mutex to control access to the User Index

@@ -1,5 +1,10 @@
 package cache
 
+import (
+	"log"
+	"time"
+)
+
 // NewUserIndex returns a new instance of a user index
 func NewUserIndex() *UserIndex {
 	return &UserIndex{}
@@ -7,8 +12,12 @@ func NewUserIndex() *UserIndex {
 
 // AddUser inserts a new user into the index. The *Data struct only contains the nickname.)
 func (index UserIndex) AddUser(nick string, url string) {
+	rfc3339date, err := time.Now().MarshalText()
+	if err != nil {
+		log.Printf("Error formatting user add time as RFC3339: %v\n", err)
+	}
 	imutex.Lock()
-	index[url] = &Data{nick: nick}
+	index[url] = &Data{nick: nick, date: time.Now(), apidate: rfc3339date}
 	imutex.Unlock()
 }
 
