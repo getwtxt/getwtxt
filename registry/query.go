@@ -15,9 +15,9 @@ func (index UserIndex) QueryUser(name string) []string {
 	var users []string
 	imutex.RLock()
 	for k, v := range index {
-		if strings.Contains(v.nick, name) {
-			timekey[v.date] = v.nick + "\t" + k + "\t" + string(v.apidate)
-			keys = append(keys, v.date)
+		if strings.Contains(v.Nick, name) {
+			timekey[v.Date] = v.Nick + "\t" + k + "\t" + string(v.APIdate)
+			keys = append(keys, v.Date)
 		}
 	}
 	imutex.RUnlock()
@@ -48,7 +48,7 @@ func (index UserIndex) QueryTag(tag string) []string {
 // Returns the tweets with the tag as a []string.
 func (userdata *Data) FindTag(tag string) TimeMap {
 	var statuses TimeMap
-	for k, e := range userdata.status {
+	for k, e := range userdata.Status {
 		parts := strings.Split(e, "\t")
 		statusslice := strings.Split(parts[3], " ")
 		for _, v := range statusslice {
@@ -87,7 +87,7 @@ func (tm TimeMapSlice) SortByTime() []string {
 // GetStatuses returns the string slice containing a user's statuses
 func (index UserIndex) GetStatuses(url string) TimeMap {
 	imutex.RLock()
-	status := index[url].status
+	status := index[url].Status
 	imutex.RUnlock()
 	return status
 }

@@ -18,7 +18,7 @@ func (index UserIndex) AddUser(nick string, url string) {
 		log.Printf("Error formatting user add time as RFC3339: %v\n", err)
 	}
 	imutex.Lock()
-	index[url] = &Data{nick: nick, date: time.Now(), apidate: rfc3339date}
+	index[url] = &Data{Nick: nick, Date: time.Now(), APIdate: rfc3339date}
 	imutex.Unlock()
 }
 

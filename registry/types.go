@@ -14,19 +14,22 @@ type Indexer interface {
 // UserIndex provides an index of users by URL
 type UserIndex map[string]*Data
 
-// Data from user's twtxt.txt
+// Data on each user. `Nick` is the specified nickname. `Date` is the
+// time.Time of the user's submission to the registry. `APIdate` is the
+// RFC3339-formatted date/time of the user's submission. `Status` is a
+// TimeMap containing the user's statuses.
 type Data struct {
-	nick    string
-	date    time.Time
-	apidate []byte
-	status  TimeMap
+	Nick    string
+	Date    time.Time
+	APIdate []byte
+	Status  TimeMap
 }
 
 // TimeMap holds extracted and processed user data as a
 // string. A standard time.Time value is used as the key.
 type TimeMap map[time.Time]string
 
-// StatusMapSlice is a slice of StatusMaps. Useful for sorting the
+// TimeMapSlice is a slice of TimeMap. Useful for sorting the
 // output of queries.
 type TimeMapSlice []TimeMap
 
