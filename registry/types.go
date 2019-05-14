@@ -19,16 +19,16 @@ type Data struct {
 	nick    string
 	date    time.Time
 	apidate []byte
-	status  StatusMap
+	status  TimeMap
 }
 
-// StatusMap holds the statuses posted by a given user. A standard
-// time.Time value is used as the key, with the status as a string.
-type StatusMap map[time.Time]string
+// TimeMap holds extracted and processed user data as a
+// string. A standard time.Time value is used as the key.
+type TimeMap map[time.Time]string
 
 // StatusMapSlice is a slice of StatusMaps. Useful for sorting the
 // output of queries.
-type StatusMapSlice []StatusMap
+type TimeMapSlice []TimeMap
 
 // Mutex to control access to the User Index.
 var imutex = sync.RWMutex{}
