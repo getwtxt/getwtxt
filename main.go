@@ -48,7 +48,7 @@ func main() {
 		HandlerFunc(apiEndpointHandler)
 	// This is for submitting new users
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
-		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9]+}").
+		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9_-]+}").
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
 	// Show all observed tags
@@ -56,7 +56,7 @@ func main() {
 		Methods("GET").
 		HandlerFunc(apiTagsBaseHandler)
 	// Requests tweets with a specific tag
-	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9]+}").
+	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
 		Methods("GET").
 		HandlerFunc(apiTagsHandler)
 
