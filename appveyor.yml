@@ -2,10 +2,21 @@ version: 1.0.0.{build}
 
 platform: x64
 
-clone_folder: c:\godev\src\github.com\getwtxt\registry
+clone_folder: c:\go\src\github.com\getwtxt\registry
 
 environment:
-  GOPATH: c:\godev
+  GOPATH: c:\go
+  GO111MODULE: on
+
+test:
+  - cd c:\go\src\github.com\getwtxt\registry
+  - go vet .
+  - golint .
+  - go test -v
+
+build:
+  - cd c:\go\src\github.com\getwtxt\registry
+  - go build -v
 
 install:
   - echo %PATH%
