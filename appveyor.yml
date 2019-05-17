@@ -8,12 +8,6 @@ environment:
   GOPATH: c:\go
   GO111MODULE: on
 
-test:
-  - cd c:\go\src\github.com\getwtxt\registry
-  - go vet .
-  - golint .
-  - go test -v
-
 build:
   - cd c:\go\src\github.com\getwtxt\registry
   - go build -v
