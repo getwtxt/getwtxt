@@ -2,9 +2,7 @@ version: 1.0.0.{build}
 
 platform: x64
 
-branches: master
-
-  clone_folder: c:\godev\src\github.com\getwtxt\registry
+clone_folder: c:\godev\src\github.com\getwtxt\registry
 
 environment:
   GOPATH: c:\godev
