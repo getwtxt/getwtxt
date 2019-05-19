@@ -27,29 +27,29 @@
 /api/plain/tweets
 /api/plain/tags</code></pre>
   <p>Query by user:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/users?q=foo'
+        <pre><code>$ curl '{{.URL}}/api/plain/users?q=foo'
 foo               https://example.com/twtxt.txt     2019-05-09T08:42:23.000Z
 foobar            https://example2.com/twtxt.txt    2019-03-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z</code></pre>
           <p>Query by tweet content:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/tweets?q=getwtxt'
+        <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
 foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!</code></pre>
           <p>Query by mention:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
+        <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
 foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @<foo_barrington https://example3.com/twtxt.txt> Hey!! Are you still working on that project?</code></pre>
           <p>Query by tag:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/tags/programming'
+        <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
           <p>Get latest 20 tweets:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/tweets'
+        <pre><code>$ curl '{{.URL}}/api/plain/tweets'
 foobar    https://example2.com/twtxt.txt    2019-05-13T12:46:20.000Z    It's been a busy day at work!
 ...</code></pre>
           <p>Get all users:</p>
-        <pre><code>$ curl 'https://getwtxt.example.com/api/plain/users'
+        <pre><code>$ curl '{{.URL}}/api/plain/users'
 foo_barrington    https://example3.com/twtxt.txt    2018-11-21T18:31:00.000Z
 ...</code></pre>
           <p>Add new user:</p>
-        <pre><code>$ curl -X POST 'https://getwtxt.example.com/api/plain/users?url=https://example3.com/twtxt.txt&nickname=foo_barrington'
+        <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://example3.com/twtxt.txt&nickname=foo_barrington'
 OK</code></pre>
     </div>
     <div id="info">
