@@ -1,10 +1,24 @@
 # getwtxt [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt)
 
-twtxt registry written in Go. Still in very early development. I'm a bit
-obsessive over personal projects, though, so it should advance quickly.
+twtxt registry written in Go. Still in development. 
 
-**Update 2019-05-19**
-  * I decided to branch off the registry utility functions into a library, 
-so that's what I've been working on the last few days. They are available
-at [github.com/getwtxt/registry](https://github.com/getwtxt/registry). Now
-that I've completed the library, I can return to this side of the project.
+*  Began: 10 May 2019
+*  No deadline. Should be finished by the end of May 2019.
+
+## Roadmap
+
+Checks indicate steps I've finished. The first blank box is what I'm working on.
+
+* [x] Types and basic init/config
+* [x] HTTP routing
+* [x] Handlers stubbed out
+* [x] Registry manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
+* [ ] Request handling
+* [ ] Persistent data storage
+* [ ] Catch up on tests / Concurrency safety checks
+* [ ] Refactor and optimize
+
+## Notes
+
+* twtxt
+  * [twtxt.readthedocs.io](https://twtxt.readthedocs.io)
