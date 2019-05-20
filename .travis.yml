@@ -7,7 +7,6 @@ go:
 os: 
   - linux
   - osx
-  - windows
 
 dist: xenial
 
