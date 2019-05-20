@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"strings"
@@ -11,23 +12,33 @@ import (
 func apiErrCheck(err error, r *http.Request) {
 	if err != nil {
 		uip := getIPFromCtx(r.Context())
-		log.Printf("%v :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+		log.Printf("*** %v :: %v %v :: %v\n", uip, r.Method, r.URL, err)
 	}
 }
 
-func apiErrCheck500(err error, w http.ResponseWriter, r *http.Request) {
-	if err != nil {
-		uip := getIPFromCtx(r.Context())
-		log.Printf("%v :: %v %v :: %v\n", uip, r.Method, r.URL, err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+// Takes the output of queries and formats it for
+// an HTTP response. Iterates over the string slice,
+// appending each entry to a byte slice, and adding
+// newlines where appropriate.
+func parseQueryOut(out []string) []byte {
+	var data []byte
+
+	for _, e := range out {
+		data = append(data, []byte(e)...)
+
+		if !strings.HasSuffix(e, "\n") {
+			data = append(data, byte('\n'))
+		}
 	}
+
+	return data
 }
 
 // apiUserQuery is called via apiEndpointHandler when
 // the endpoint is "users" and r.FormValue("q") is not empty.
 // It queries the registry cache for users or user URLs
 // matching the term supplied via r.FormValue("q")
-func apiEndpointQuery(w http.ResponseWriter, r *http.Request) {
+func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	query := r.FormValue("q")
 	urls := r.FormValue("url")
 	var out []string
@@ -64,20 +75,16 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) {
 		apiErrCheck(err, r)
 
 	default:
-		http.Error(w, "500", http.StatusInternalServerError)
+		return fmt.Errorf("endpoint query, no cases match")
 	}
 
-	// iterate over the output. if there aren't
-	// explicit newlines, add them.
-	var data []byte
-	for _, e := range out {
-		data = append(data, []byte(e)...)
-		if !strings.HasSuffix(e, "\n") {
-			data = append(data, byte('\n'))
-		}
-	}
+	data := parseQueryOut(out)
 
 	w.Header().Set("Content-Type", txtutf8)
 	_, err = w.Write(data)
-	apiErrCheck500(err, w, r)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
