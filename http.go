@@ -108,15 +108,16 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles "/api/plain/(users|mentions|tweets)"
 func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	format := vars["format"]
-	endpoint := vars["endpoint"]
-
 	uip := getIPFromCtx(r.Context())
 	log.Printf("Request from %v :: %v %v\n", uip, r.Method, r.URL)
 
+	if r.FormValue("q") != "" || r.FormValue("url") != "" {
+		apiEndpointQuery(w, r)
+		return
+	}
+
 	w.Header().Set("Content-Type", htmlutf8)
-	n, err := w.Write([]byte(format + "/" + endpoint))
+	n, err := w.Write([]byte(r.URL.String()))
 	if err != nil || n == 0 {
 		log.Printf("500: Error writing to HTTP stream: %v, %v %v via %v\n", err, r.Method, r.URL, uip)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

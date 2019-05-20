@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsnotify"
+	"github.com/getwtxt/registry"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
@@ -27,6 +28,9 @@ var closelog = make(chan bool, 1)
 
 // templates
 var tmpls *template.Template
+
+// registry index
+var twtxtCache = registry.NewIndex()
 
 func init() {
 	checkFlags()
@@ -156,10 +160,12 @@ func watchForInterrupt() {
 			if !confObj.stdoutLogging {
 				// signal to close the log file
 				closelog <- true
-				time.Sleep(20 * time.Millisecond)
 			}
 
 			close(closelog)
+
+			// Let everything catch up
+			time.Sleep(30 * time.Millisecond)
 			os.Exit(0)
 		}
 	}()
