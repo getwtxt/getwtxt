@@ -111,18 +111,23 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	uip := getIPFromCtx(r.Context())
 	log.Printf("Request from %v :: %v %v\n", uip, r.Method, r.URL)
 
-	if r.FormValue("q") != "" || r.FormValue("url") != "" {
+	err := r.ParseForm()
+	if err == nil && (r.FormValue("q") != "" || r.FormValue("url") != "") {
 		apiEndpointQuery(w, r)
+		return
+	} else if err != nil {
+		log.Printf("Error parsing query from %v :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", htmlutf8)
+
 	n, err := w.Write([]byte(r.URL.String()))
 	if err != nil || n == 0 {
 		log.Printf("500: Error writing to HTTP stream: %v, %v %v via %v\n", err, r.Method, r.URL, uip)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-
 }
 
 // handles POST for "/api/plain/users"
