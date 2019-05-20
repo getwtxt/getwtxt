@@ -66,7 +66,7 @@ func main() {
 	// handlers.CompressHandler gzips all responses.
 	// Write/Read timeouts are self explanatory.
 	server := &http.Server{
-		Handler:      handlers.CompressHandler(index),
+		Handler:      handlers.CompressHandler(ipMiddleware(index)),
 		Addr:         portnum,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
@@ -77,6 +77,12 @@ func main() {
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
+	defer func() {
+		err := server.Close()
+		if err != nil {
+			log.Printf("%v\n", err)
+		}
+	}()
 
 	closelog <- true
 }

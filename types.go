@@ -22,3 +22,8 @@ type Instance struct {
 	Mail  string
 	Desc  string
 }
+
+// ipCtxKey is the Context value key for user IP addresses
+type ipCtxKey int
+
+const ctxKey ipCtxKey = iota
