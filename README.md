@@ -5,7 +5,7 @@ twtxt registry written in Go. Still in development.
 *  Began: 10 May 2019
 *  No deadline. Should be finished by the end of May 2019.
 
-## Roadmap
+## Progress
 
 Checks indicate steps I've finished. The first blank box is what I'm working on.
 
@@ -13,7 +13,8 @@ Checks indicate steps I've finished. The first blank box is what I'm working on.
 * [x] HTTP routing
 * [x] Handlers stubbed out
 * [x] Registry manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
-* [ ] Request handling
+* [x] Request handling
+* [ ] Cache management details
 * [ ] Persistent data storage
 * [ ] Catch up on tests / Concurrency safety checks
 * [ ] Refactor and optimize
