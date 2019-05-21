@@ -1,13 +1,14 @@
-module github.com/gbmor/getwtxt
+module github.com/getwtxt/getwtxt
 
 go 1.11
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
 	github.com/fsnotify/fsnotify v1.4.7
-	github.com/getwtxt/registry v0.0.0-20190520044831-747da48b0a7c
+	github.com/getwtxt/registry v0.0.0-20190521074114-49b064b5d65f
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.1
 	github.com/spf13/pflag v1.0.3
 	github.com/spf13/viper v1.3.2
+	github.com/syndtr/goleveldb v1.0.0
 )
