@@ -33,11 +33,6 @@ var closelog = make(chan bool, 1)
 // initialization
 var dbChan = make(chan *leveldb.DB, 1)
 
-// provides access to the database so it
-// can be closed outside of the init function's
-// scope.
-var dbCloseChan = make(chan *leveldb.DB, 1)
-
 // templates
 var tmpls *template.Template
 
@@ -54,7 +49,6 @@ func init() {
 	initLogging()
 	tmpls = initTemplates()
 	initDatabase()
-	go cacheAndPush()
 	watchForInterrupt()
 }
 
@@ -218,17 +212,19 @@ func initTemplates() *template.Template {
 	return template.Must(template.ParseFiles("assets/tmpl/index.html"))
 }
 
-// Pull DB data into cache, if available
+// Pull DB data into cache, if available.
 func initDatabase() {
 	db, err := leveldb.OpenFile(confObj.dbPath, nil)
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
 
+	// Send the database reference into
+	// the aether.
 	dbChan <- db
-	dbCloseChan <- db
 
 	pullDatabase()
+	go cacheAndPush()
 }
 
 // Watch for SIGINT aka ^C
@@ -245,7 +241,7 @@ func watchForInterrupt() {
 
 			// Close the database cleanly
 			log.Printf("Closing database connection to %v...\n", confObj.dbPath)
-			db := <-dbCloseChan
+			db := <-dbChan
 			if err := db.Close(); err != nil {
 				log.Printf("%v\n", err)
 			}
@@ -256,7 +252,7 @@ func watchForInterrupt() {
 			}
 
 			confObj.mu.RUnlock()
-			close(dbCloseChan)
+			close(dbChan)
 			close(closelog)
 
 			// Let everything catch up
