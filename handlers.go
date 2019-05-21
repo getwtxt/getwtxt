@@ -56,8 +56,8 @@ func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
 	pathdata := []byte("\n\n" + r.URL.Path)
 	timerfc3339 = append(timerfc3339, pathdata...)
 
-	n, err := w.Write(timerfc3339)
-	if err != nil || n == 0 {
+	_, err = w.Write(timerfc3339)
+	if err != nil {
 		log500(w, r, err)
 		return
 	}
@@ -74,8 +74,8 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", txtutf8)
 
-	n, err := w.Write([]byte(format + "\n"))
-	if err != nil || n == 0 {
+	_, err := w.Write([]byte(format + "\n"))
+	if err != nil {
 		log500(w, r, err)
 		return
 	}
@@ -104,8 +104,8 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", htmlutf8)
 
-	n, err := w.Write([]byte(r.URL.String()))
-	if err != nil || n == 0 {
+	_, err = w.Write([]byte(r.URL.String()))
+	if err != nil {
 		log500(w, r, err)
 		return
 	}
@@ -139,8 +139,8 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", htmlutf8)
 
-	n, err := w.Write([]byte("api/" + format + "/tags"))
-	if err != nil || n == 0 {
+	_, err := w.Write([]byte("api/" + format + "/tags"))
+	if err != nil {
 		log500(w, r, err)
 		return
 	}
