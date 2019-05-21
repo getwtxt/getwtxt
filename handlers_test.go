@@ -14,7 +14,6 @@ import (
 var testport = fmt.Sprintf(":%v", confObj.port)
 
 func initTestConf() {
-	initConfig()
 	logToNull()
 }
 
