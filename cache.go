@@ -78,11 +78,11 @@ func pushDatabase() error {
 	// be done at one time rather than
 	// per entry.
 	twtxtCache.Mu.RLock()
-	var dbBasket *leveldb.Batch
+	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Reg {
 		dbBasket.Put([]byte(k+"*Nick"), []byte(v.Nick))
 		dbBasket.Put([]byte(k+"*URL"), []byte(v.URL))
-		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP))
+		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP.String()))
 		dbBasket.Put([]byte(k+"*Date"), []byte(v.Date))
 		for i, e := range v.Status {
 			rfc := i.Format(time.RFC3339)
@@ -151,7 +151,7 @@ func pullDatabase() {
 			for i := 0; i < ref.NumField(); i++ {
 
 				f := ref.Field(i)
-				if f.String() == field {
+				if strings.Contains(f.String(), field) {
 					f.Set(reflect.ValueOf(val))
 					break
 				}
@@ -161,7 +161,7 @@ func pullDatabase() {
 			// If we're looking at a Status entry in the DB,
 			// parse the time then add it to the TimeMap under
 			// data.Status
-			thetime, err := time.Parse("RFC3339", split[2])
+			thetime, err := time.Parse(time.RFC3339, split[2])
 			if err != nil {
 				log.Printf("%v\n", err)
 			}

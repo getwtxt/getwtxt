@@ -20,6 +20,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	nick := r.FormValue("nickname")
 	urls := r.FormValue("url")
 	if nick == "" || urls == "" {
+		_, _ = w.Write([]byte("400 Bad Request: Nickname or URL Missing\n"))
 		log400(w, r, fmt.Errorf("nickname or URL missing"))
 		return
 	}
@@ -28,6 +29,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	out, remoteRegistry, err := registry.GetTwtxt(urls)
 	if err != nil {
+		_, _ = w.Write([]byte(fmt.Sprintf("400 Bad Request: %v\n", err)))
 		log400(w, r, err)
 		return
 	}
@@ -39,6 +41,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 		err := twtxtCache.ScrapeRemoteRegistry(urls)
 		if err != nil {
+			_, _ = w.Write([]byte(fmt.Sprintf("400 Bad Request: %v\n", err)))
 			log400(w, r, err)
 			return
 		}
@@ -46,8 +49,9 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	statuses, err := registry.ParseUserTwtxt(out)
+	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
 	if err != nil {
+		_, _ = w.Write([]byte(fmt.Sprintf("400 Bad Request: %v\n", err)))
 		log400(w, r, err)
 		return
 	}

@@ -42,7 +42,7 @@ var twtxtCache = registry.NewIndex()
 // remote registry listing
 var remoteRegistries = &RemoteRegistries{}
 
-func init() {
+func initGetwtxt() {
 	checkFlags()
 	titleScreen()
 	initConfig()

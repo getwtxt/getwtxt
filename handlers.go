@@ -78,7 +78,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path == "/api/plain/users" {
 		out, err = twtxtCache.QueryUser("")
 	} else if r.URL.Path == "/api/plain/mentions" {
-		out, err = twtxtCache.QueryInStatus(".txt>")
+		out, err = twtxtCache.QueryInStatus("@<")
 	} else {
 		out, err = twtxtCache.QueryAllStatuses()
 	}
