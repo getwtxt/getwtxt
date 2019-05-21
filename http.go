@@ -43,6 +43,12 @@ func log200(r *http.Request) {
 	log.Printf("*** %v :: 200 :: %v %v\n", uip, r.Method, r.URL)
 }
 
+// log output for 400s
+func log400(w http.ResponseWriter, r *http.Request, err error) {
+	uip := getIPFromCtx(r.Context())
+	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+}
+
 // log output for 404s
 func log404(w http.ResponseWriter, r *http.Request, err error) {
 

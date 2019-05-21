@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gorilla/mux"
 )
@@ -42,45 +41,13 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles "/api"
 func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
-
-	timerfc3339, err := time.Now().MarshalText()
-	if err != nil {
-		log.Printf("Couldn't format time as RFC3339: %v\n", err)
-	}
-
-	etag := fmt.Sprintf("%x", sha256.Sum256(timerfc3339))
-
-	w.Header().Set("ETag", etag)
-	w.Header().Set("Content-Type", txtutf8)
-
-	pathdata := []byte("\n\n" + r.URL.Path)
-	timerfc3339 = append(timerfc3339, pathdata...)
-
-	_, err = w.Write(timerfc3339)
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-
-	log200(r)
+	indexHandler(w, r)
 }
 
 // handles "/api/plain"
 // maybe add json/xml support later
 func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	format := vars["format"]
-
-	w.Header().Set("Content-Type", txtutf8)
-
-	_, err := w.Write([]byte(format + "\n"))
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-
-	log200(r)
+	indexHandler(w, r)
 }
 
 // handles "/api/plain/(users|mentions|tweets)"
@@ -92,6 +59,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// if there's a query, execute it
 	if r.FormValue("q") != "" || r.FormValue("url") != "" {
 		err := apiEndpointQuery(w, r)
 		if err != nil {
@@ -102,9 +70,26 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// if there's no query, return everything in
+	// registry for a given endpoint
+	var out []string
+	if r.URL.Path == "/api/plain/users" {
+		out, err = twtxtCache.QueryUser("")
+	} else if r.URL.Path == "/api/plain/mentions" {
+		out, err = twtxtCache.QueryInStatus(".txt>")
+	} else {
+		out, err = twtxtCache.QueryAllStatuses()
+	}
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+
+	data := parseQueryOut(out)
+
 	w.Header().Set("Content-Type", txtutf8)
 
-	_, err = w.Write([]byte(r.URL.String()))
+	_, err = w.Write(data)
 	if err != nil {
 		log500(w, r, err)
 		return
