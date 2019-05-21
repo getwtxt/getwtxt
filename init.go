@@ -32,6 +32,9 @@ var tmpls *template.Template
 // registry index
 var twtxtCache = registry.NewIndex()
 
+// remote registry listing
+var remote = &RemoteRegistries{}
+
 func init() {
 	checkFlags()
 	titleScreen()

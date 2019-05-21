@@ -1,5 +1,7 @@
 package main
 
+import "sync"
+
 // content-type consts
 const txtutf8 = "text/plain; charset=utf-8"
 const htmlutf8 = "text/html; charset=utf-8"
@@ -21,6 +23,14 @@ type Instance struct {
 	Owner string
 	Mail  string
 	Desc  string
+}
+
+// RemoteRegistries holds a list of remote registries to
+// periodically scrape for new users. The remote registries
+// must have been added via POST like a user.
+type RemoteRegistries struct {
+	Mu   sync.RWMutex
+	List []string
 }
 
 // ipCtxKey is the Context value key for user IP addresses

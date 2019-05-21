@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log"
+	"net"
 	"net/http"
 	"strings"
 )
@@ -17,14 +18,14 @@ func newCtxUserIP(ctx context.Context, r *http.Request) context.Context {
 }
 
 // Retrieves a request's IP address from the request's context
-func getIPFromCtx(ctx context.Context) string {
+func getIPFromCtx(ctx context.Context) net.IP {
 
 	uip, ok := ctx.Value(ctxKey).(string)
 	if !ok {
 		log.Printf("Couldn't retrieve IP from request\n")
 	}
 
-	return uip
+	return net.ParseIP(uip)
 }
 
 // Shim function to modify/pass context value to a handler
@@ -47,6 +48,7 @@ func log200(r *http.Request) {
 func log400(w http.ResponseWriter, r *http.Request, err error) {
 	uip := getIPFromCtx(r.Context())
 	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+	http.Error(w, err.Error(), http.StatusBadRequest)
 }
 
 // log output for 404s

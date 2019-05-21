@@ -100,20 +100,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles POST for "/api/plain/users"
 func apiEndpointPOSTHandler(w http.ResponseWriter, r *http.Request) {
-
-	vars := mux.Vars(r)
-	format := vars["format"]
-	endpoint := vars["endpoint"]
-
-	w.Header().Set("Content-Type", htmlutf8)
-
-	_, err := w.Write([]byte(format + "/" + endpoint))
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-
-	log200(r)
+	apiPostUser(w, r)
 }
 
 // handles "/api/plain/tags"
