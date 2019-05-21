@@ -214,7 +214,9 @@ func initTemplates() *template.Template {
 
 // Pull DB data into cache, if available.
 func initDatabase() {
+	confObj.mu.RLock()
 	db, err := leveldb.OpenFile(confObj.dbPath, nil)
+	confObj.mu.RUnlock()
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
