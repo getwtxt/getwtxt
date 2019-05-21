@@ -27,7 +27,7 @@ var (
 var confObj = &configuration{}
 
 // signals to close the log file
-var closelog = make(chan bool, 1)
+var closeLog = make(chan bool, 1)
 
 // used to transmit database pointer after
 // initialization
@@ -149,7 +149,7 @@ func initLogging() {
 		// reloaded.
 		go func(logfile *os.File) {
 
-			<-closelog
+			<-closeLog
 			log.Printf("Closing log file ...\n")
 
 			err = logfile.Close()
@@ -168,7 +168,7 @@ func rebindConfig() {
 	// signal to close the log file then wait
 	confObj.mu.RLock()
 	if !confObj.stdoutLogging {
-		closelog <- true
+		closeLog <- true
 	}
 	confObj.mu.RUnlock()
 
@@ -250,12 +250,12 @@ func watchForInterrupt() {
 
 			if !confObj.stdoutLogging {
 				// signal to close the log file
-				closelog <- true
+				closeLog <- true
 			}
 
 			confObj.mu.RUnlock()
 			close(dbChan)
-			close(closelog)
+			close(closeLog)
 
 			// Let everything catch up
 			time.Sleep(100 * time.Millisecond)

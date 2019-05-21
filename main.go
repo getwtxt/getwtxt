@@ -86,5 +86,5 @@ func main() {
 		log.Printf("%v\n", err)
 	}
 
-	closelog <- true
+	closeLog <- true
 }
