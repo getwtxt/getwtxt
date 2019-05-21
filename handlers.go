@@ -102,7 +102,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	w.Header().Set("Content-Type", htmlutf8)
+	w.Header().Set("Content-Type", txtutf8)
 
 	_, err = w.Write([]byte(r.URL.String()))
 	if err != nil {
@@ -134,12 +134,17 @@ func apiEndpointPOSTHandler(w http.ResponseWriter, r *http.Request) {
 // handles "/api/plain/tags"
 func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
-	vars := mux.Vars(r)
-	format := vars["format"]
+	out, err := twtxtCache.QueryInStatus("#")
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
 
-	w.Header().Set("Content-Type", htmlutf8)
+	data := parseQueryOut(out)
 
-	_, err := w.Write([]byte("api/" + format + "/tags"))
+	w.Header().Set("Content-Type", txtutf8)
+
+	_, err = w.Write(data)
 	if err != nil {
 		log500(w, r, err)
 		return
