@@ -10,8 +10,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-const getwtxt = "0.1"
-
 func main() {
 
 	// StrictSlash(true) allows /api and /api/
@@ -69,7 +67,9 @@ func main() {
 		HandlerFunc(apiTagsHandler)
 
 	// format the port for the http.Server object
+	confObj.mu.RLock()
 	portnum := fmt.Sprintf(":%v", confObj.port)
+	confObj.mu.RUnlock()
 	// defines options for the http server.
 	// handlers.CompressHandler gzips all responses.
 	// Write/Read timeouts are self explanatory.
@@ -80,7 +80,7 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Printf("Listening on port %v\n", confObj.port)
+	log.Printf("Listening on %v\n", portnum)
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Printf("%v\n", err)

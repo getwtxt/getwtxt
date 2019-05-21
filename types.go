@@ -1,6 +1,9 @@
 package main
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 // content-type consts
 const txtutf8 = "text/plain; charset=utf-8"
@@ -9,10 +12,16 @@ const cssutf8 = "text/css; charset=utf-8"
 
 // config object definition
 type configuration struct {
+	mu            sync.RWMutex
 	port          int
-	logfile       string
+	logFile       string
+	dbPath        string
 	stdoutLogging bool
 	version       string
+	cacheInterval time.Duration
+	dbInterval    time.Duration
+	lastCache     time.Time
+	lastPush      time.Time
 	Instance
 }
 

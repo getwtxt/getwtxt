@@ -1,7 +1,10 @@
 {
   "port": 9001,
   "stdoutLogging": true,
-  "logfile": "getwtxt.log",
+  "logFile": "getwtxt.log",
+  "databasePath": "getwtxt.db",
+  "databasePushInterval": "5m",
+  "reCacheInterval": "1h",
   "instance": {
     "name": "getwtxt",
     "url": "https://twtxt.example.com",
