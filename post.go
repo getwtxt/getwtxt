@@ -33,9 +33,9 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if remoteRegistry {
-		remote.Mu.Lock()
-		remote.List = append(remote.List, urls)
-		remote.Mu.Unlock()
+		remoteRegistries.Mu.Lock()
+		remoteRegistries.List = append(remoteRegistries.List, urls)
+		remoteRegistries.Mu.Unlock()
 
 		err := twtxtCache.ScrapeRemoteRegistry(urls)
 		if err != nil {

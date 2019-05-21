@@ -33,6 +33,11 @@ var closelog = make(chan bool, 1)
 // initialization
 var dbChan = make(chan *leveldb.DB, 1)
 
+// provides access to the database so it
+// can be closed outside of the init function's
+// scope.
+var dbCloseChan = make(chan *leveldb.DB, 1)
+
 // templates
 var tmpls *template.Template
 
@@ -40,7 +45,7 @@ var tmpls *template.Template
 var twtxtCache = registry.NewIndex()
 
 // remote registry listing
-var remote = &RemoteRegistries{}
+var remoteRegistries = &RemoteRegistries{}
 
 func init() {
 	checkFlags()
@@ -48,6 +53,8 @@ func init() {
 	initConfig()
 	initLogging()
 	tmpls = initTemplates()
+	initDatabase()
+	go cacheAndPush()
 	watchForInterrupt()
 }
 
@@ -107,6 +114,8 @@ func initConfig() {
 		dbDur, _ = time.ParseDuration("5m")
 	}
 
+	thetime := time.Now()
+
 	confObj.mu.Lock()
 	confObj.port = viper.GetInt("port")
 	confObj.logFile = viper.GetString("logFile")
@@ -114,7 +123,8 @@ func initConfig() {
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
 	confObj.cacheInterval = dur
 	confObj.dbInterval = dbDur
-	confObj.lastCache = time.Now()
+	confObj.lastCache = thetime
+	confObj.lastPush = thetime
 	confObj.version = getwtxt
 	confObj.Instance.Name = viper.GetString("instance.name")
 	confObj.Instance.URL = viper.GetString("instance.url")
@@ -216,6 +226,9 @@ func initDatabase() {
 	}
 
 	dbChan <- db
+	dbCloseChan <- db
+
+	pullDatabase()
 }
 
 // Watch for SIGINT aka ^C
@@ -226,19 +239,28 @@ func watchForInterrupt() {
 
 	go func() {
 		for sigint := range c {
-			log.Printf("\n\nCaught %v. Cleaning up ...\n", sigint)
 
+			log.Printf("\n\nCaught %v. Cleaning up ...\n", sigint)
 			confObj.mu.RLock()
+
+			// Close the database cleanly
+			log.Printf("Closing database connection to %v...\n", confObj.dbPath)
+			db := <-dbCloseChan
+			if err := db.Close(); err != nil {
+				log.Printf("%v\n", err)
+			}
+
 			if !confObj.stdoutLogging {
 				// signal to close the log file
 				closelog <- true
 			}
-			confObj.mu.RUnlock()
 
+			confObj.mu.RUnlock()
+			close(dbCloseChan)
 			close(closelog)
 
 			// Let everything catch up
-			time.Sleep(30 * time.Millisecond)
+			time.Sleep(100 * time.Millisecond)
 			os.Exit(0)
 		}
 	}()
