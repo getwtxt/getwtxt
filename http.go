@@ -45,10 +45,9 @@ func log200(r *http.Request) {
 }
 
 // log output for 400s
-func log400(w http.ResponseWriter, r *http.Request, err error) {
+func log400(r *http.Request, err error) {
 	uip := getIPFromCtx(r.Context())
 	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
-	http.Error(w, err.Error(), http.StatusBadRequest)
 }
 
 // log output for 404s

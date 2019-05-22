@@ -2,7 +2,7 @@ package main
 
 import (
 	"log"
-	"reflect"
+	"net"
 	"strings"
 	"time"
 
@@ -123,66 +123,60 @@ func pullDatabase() {
 
 	iter := db.NewIterator(nil, nil)
 
-	// Read the database key-by-key
+	// Read the database entry-by-entry
 	for iter.Next() {
-		key := iter.Key()
-		val := iter.Value()
+		key := string(iter.Key())
+		val := string(iter.Value())
 
-		split := strings.Split(string(key), "*")
+		split := strings.Split(key, "*")
 		urls := string(split[0])
 		field := string(split[1])
 
-		// Start with an empty Data struct. If
-		// there's already one in the cache, pull
-		// it and use it instead.
-		data := registry.NewUserData()
-		twtxtCache.Mu.RLock()
-		if _, ok := twtxtCache.Reg[urls]; ok {
-			data = twtxtCache.Reg[urls]
-		}
-		twtxtCache.Mu.RUnlock()
-		ref := reflect.ValueOf(data).Elem()
+		if urls != "remote" {
+			// Start with an empty Data struct. If
+			// there's already one in the cache, pull
+			// it and use it instead.
+			data := registry.NewUserData()
+			twtxtCache.Mu.RLock()
+			if _, ok := twtxtCache.Reg[urls]; ok {
+				data = twtxtCache.Reg[urls]
+			}
+			twtxtCache.Mu.RUnlock()
 
-		// Use reflection to find the right field
-		// in the Data struct. Once found, assign
-		// the value and break so the DB iteration
-		// can continue.
-		if field != "Status" && urls != "remote" {
-			for i := 0; i < ref.NumField(); i++ {
-
-				f := ref.Field(i)
-				if strings.Contains(f.String(), field) {
-					f.Set(reflect.ValueOf(val))
-					break
+			switch field {
+			case "IP":
+				data.IP = net.ParseIP(val)
+			case "Nick":
+				data.Nick = val
+			case "URL":
+				data.URL = val
+			case "Date":
+				data.Date = val
+			case "Status":
+				// If we're looking at a Status entry in the DB,
+				// parse the time then add it to the TimeMap under
+				// data.Status
+				thetime, err := time.Parse(time.RFC3339, split[2])
+				if err != nil {
+					log.Printf("%v\n", err)
 				}
+				data.Status[thetime] = val
 			}
-		} else if field == "Status" && urls != "remote" {
 
-			// If we're looking at a Status entry in the DB,
-			// parse the time then add it to the TimeMap under
-			// data.Status
-			thetime, err := time.Parse(time.RFC3339, split[2])
-			if err != nil {
-				log.Printf("%v\n", err)
-			}
-			data.Status[thetime] = string(val)
+			// Push the data struct (back) into
+			// the cache.
+			twtxtCache.Mu.Lock()
+			twtxtCache.Reg[urls] = data
+			twtxtCache.Mu.Unlock()
 
 		} else {
-			// The third and final possibility is
-			// if we've come across an entry for
-			// a remote twtxt registry to scrape.
-			// If so, add it to our list.
+			// If we've come across an entry for
+			// a remote twtxt registry to scrape,
+			// add it to our list.
 			remoteRegistries.Mu.Lock()
-			remoteRegistries.List = append(remoteRegistries.List, string(val))
+			remoteRegistries.List = append(remoteRegistries.List, val)
 			remoteRegistries.Mu.Unlock()
-			continue
 		}
-
-		// Push the data struct (back) into
-		// the cache.
-		twtxtCache.Mu.Lock()
-		twtxtCache.Reg[urls] = data
-		twtxtCache.Mu.Unlock()
 	}
 
 	iter.Release()

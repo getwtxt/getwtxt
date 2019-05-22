@@ -114,9 +114,17 @@ func initConfig() {
 	confObj.port = viper.GetInt("port")
 	confObj.logFile = viper.GetString("logFile")
 	confObj.dbPath = viper.GetString("databasePath")
+	log.Printf("Using database: %v\n", confObj.dbPath)
 	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
+	if confObj.stdoutLogging {
+		log.Printf("Logging to stdout\n")
+	} else {
+		log.Printf("Logging to %v\n", confObj.logFile)
+	}
 	confObj.cacheInterval = dur
+	log.Printf("Cache refresh interval: %v\n", dur)
 	confObj.dbInterval = dbDur
+	log.Printf("Database push interval: %v\n", dbDur)
 	confObj.lastCache = thetime
 	confObj.lastPush = thetime
 	confObj.version = getwtxt
