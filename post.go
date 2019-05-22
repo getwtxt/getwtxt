@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/getwtxt/registry"
@@ -58,5 +59,8 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log200(r)
-	_, _ = w.Write([]byte(fmt.Sprintf("200 OK\n")))
+	_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
 }

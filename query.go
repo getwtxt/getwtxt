@@ -109,9 +109,6 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 
 	w.Header().Set("Content-Type", txtutf8)
 	_, err = w.Write(data)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
