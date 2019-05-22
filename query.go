@@ -55,19 +55,23 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	// something went very wrong.
 	switch endpoint {
 	case "users":
-		if urls != "" {
-			out2, err = twtxtCache.QueryUser(urls)
-			out = append(out, out2...)
-			apiErrCheck(err, r)
-		}
 		if query != "" {
 			out2, err = twtxtCache.QueryUser(query)
 			out = append(out, out2...)
 			apiErrCheck(err, r)
 		}
+		if urls != "" {
+			out2, err = twtxtCache.QueryUser(urls)
+			out = append(out, out2...)
+			apiErrCheck(err, r)
+		}
 
 	case "mentions":
-		out, err = twtxtCache.QueryInStatus(query)
+		if urls == "" {
+			return fmt.Errorf("missing URL in mention query")
+		}
+		urls += ">"
+		out, err = twtxtCache.QueryInStatus(urls)
 		apiErrCheck(err, r)
 
 	case "tweets":

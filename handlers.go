@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -75,19 +76,21 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	// if there's no query, return everything in
 	// registry for a given endpoint
 	var out []string
-	if r.URL.Path == "/api/plain/users" {
+	switch r.URL.Path {
+	case "/api/plain/users":
 		out, err = twtxtCache.QueryUser("")
-	} else if r.URL.Path == "/api/plain/mentions" {
+
+	case "/api/plain/mentions":
 		out, err = twtxtCache.QueryInStatus("@<")
-	} else {
+
+	default:
 		out, err = twtxtCache.QueryAllStatuses()
-	}
-	if err != nil {
-		log500(w, r, err)
-		return
 	}
 
 	data := parseQueryOut(out)
+	if err != nil {
+		data = []byte("")
+	}
 
 	w.Header().Set("Content-Type", txtutf8)
 
@@ -133,11 +136,33 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	tags := vars["tags"]
 
-	out, err := twtxtCache.QueryInStatus(tags)
+	out, err := twtxtCache.QueryInStatus("#" + tags)
 	if err != nil {
 		log500(w, r, err)
 		return
 	}
+	tags = strings.ToLower(tags)
+	out2, err := twtxtCache.QueryInStatus("#" + tags)
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+	tags = strings.Title(tags)
+	out3, err := twtxtCache.QueryInStatus("#" + tags)
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+	tags = strings.ToUpper(tags)
+	out4, err := twtxtCache.QueryInStatus("#" + tags)
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+
+	out = append(out, out2...)
+	out = append(out, out3...)
+	out = append(out, out4...)
 
 	data := parseQueryOut(out)
 
