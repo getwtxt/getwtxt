@@ -14,8 +14,8 @@ Checks indicate steps I've finished. The first blank box is what I'm working on.
 * [x] Handlers stubbed out
 * [x] Registry manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
 * [x] Request handling
-* [ ] Cache management details
-* [ ] Persistent data storage
+* [x] Cache management details
+* [x] Persistent data storage
 * [ ] Catch up on tests / Concurrency safety checks
 * [ ] Refactor and optimize
 
