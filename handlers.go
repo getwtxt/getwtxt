@@ -136,25 +136,20 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	tags := vars["tags"]
 
+	tags = strings.ToLower(tags)
 	out, err := twtxtCache.QueryInStatus("#" + tags)
 	if err != nil {
 		log500(w, r, err)
 		return
 	}
-	tags = strings.ToLower(tags)
+	tags = strings.Title(tags)
 	out2, err := twtxtCache.QueryInStatus("#" + tags)
 	if err != nil {
 		log500(w, r, err)
 		return
 	}
-	tags = strings.Title(tags)
-	out3, err := twtxtCache.QueryInStatus("#" + tags)
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
 	tags = strings.ToUpper(tags)
-	out4, err := twtxtCache.QueryInStatus("#" + tags)
+	out3, err := twtxtCache.QueryInStatus("#" + tags)
 	if err != nil {
 		log500(w, r, err)
 		return
@@ -162,7 +157,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	out = append(out, out2...)
 	out = append(out, out3...)
-	out = append(out, out4...)
+	out = uniq(out)
 
 	data := parseQueryOut(out)
 

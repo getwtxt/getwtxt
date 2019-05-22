@@ -34,6 +34,19 @@ func parseQueryOut(out []string) []byte {
 	return data
 }
 
+// Removes duplicate statuses from query output
+func uniq(str []string) []string {
+	keys := make(map[string]bool)
+	out := []string{}
+	for _, e := range str {
+		if _, ok := keys[e]; !ok {
+			keys[e] = true
+			out = append(out, e)
+		}
+	}
+	return out
+}
+
 // apiUserQuery is called via apiEndpointHandler when
 // the endpoint is "users" and r.FormValue("q") is not empty.
 // It queries the registry cache for users or user URLs
@@ -42,7 +55,6 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	query := r.FormValue("q")
 	urls := r.FormValue("url")
 	var out []string
-	var out2 []string
 	var err error
 
 	vars := mux.Vars(r)
@@ -56,13 +68,11 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	switch endpoint {
 	case "users":
 		if query != "" {
-			out2, err = twtxtCache.QueryUser(query)
-			out = append(out, out2...)
+			out, err = twtxtCache.QueryUser(query)
 			apiErrCheck(err, r)
 		}
 		if urls != "" {
-			out2, err = twtxtCache.QueryUser(urls)
-			out = append(out, out2...)
+			out, err = twtxtCache.QueryUser(urls)
 			apiErrCheck(err, r)
 		}
 
@@ -75,8 +85,21 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 		apiErrCheck(err, r)
 
 	case "tweets":
+		query = strings.ToLower(query)
 		out, err = twtxtCache.QueryInStatus(query)
 		apiErrCheck(err, r)
+
+		query = strings.Title(query)
+		out2, err := twtxtCache.QueryInStatus(query)
+		apiErrCheck(err, r)
+
+		query = strings.ToUpper(query)
+		out3, err := twtxtCache.QueryInStatus(query)
+		apiErrCheck(err, r)
+
+		out = append(out, out2...)
+		out = append(out, out3...)
+		out = uniq(out)
 
 	default:
 		return fmt.Errorf("endpoint query, no cases match")

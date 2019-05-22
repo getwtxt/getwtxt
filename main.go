@@ -51,9 +51,24 @@ func main() {
 		Methods("GET").
 		HandlerFunc(apiEndpointHandler)
 
-	// This is for submitting new users
+	// This is for submitting new users. Both query variables must exist
+	// in the request for this to match.
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
 		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9_-]+}").
+		Methods("POST").
+		HandlerFunc(apiEndpointPOSTHandler)
+
+	// This is for submitting new users incorrectly
+	// and letting the requester know about their error.
+	api.Path("/{format:(?:plain)}/{endpoint:users}").
+		Queries("url", "{url}").
+		Methods("POST").
+		HandlerFunc(apiEndpointPOSTHandler)
+
+	// This is for submitting new users incorrectly
+	// and letting the requester know about their error.
+	api.Path("/{format:(?:plain)}/{endpoint:users}").
+		Queries("nickname", "{nickname:[a-zA-Z0-9_-]+}").
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
 
