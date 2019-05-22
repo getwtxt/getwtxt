@@ -22,6 +22,8 @@ github.com/getwtxt/registry v0.0.0-20190521224220-3b3c30d8d5fc h1:M6hMpp1w2xHhs4
 github.com/getwtxt/registry v0.0.0-20190521224220-3b3c30d8d5fc/go.mod h1:BGSIALOFqIRj+ACLB8etWGUOgFAKN8oFDpCsw6YOdYQ=
 github.com/getwtxt/registry v0.0.0-20190521225739-b578f6a875b3 h1:fc/zPwk0Z5m4r4WkAU/1gB47ZEgMheREbtVQajjJXVc=
 github.com/getwtxt/registry v0.0.0-20190521225739-b578f6a875b3/go.mod h1:BGSIALOFqIRj+ACLB8etWGUOgFAKN8oFDpCsw6YOdYQ=
+github.com/getwtxt/registry v0.0.0-20190522061646-f6f39419c495 h1:QrgF2UddI9IsimmTSAGiQOqorPHvKqPbI9Md1D0Kxpc=
+github.com/getwtxt/registry v0.0.0-20190522061646-f6f39419c495/go.mod h1:BGSIALOFqIRj+ACLB8etWGUOgFAKN8oFDpCsw6YOdYQ=
 github.com/golang/protobuf v1.2.0 h1:P3YflyNX/ehuJFLhxviNdFxQPkGK5cDcApsge1SqnvM=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db h1:woRePGFeVFfLKN/pOkfl+p/TAqKOfFu+7KPlMVpok/w=
