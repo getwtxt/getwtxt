@@ -7,17 +7,16 @@ twtxt registry written in Go. Still in development.
 
 ## Progress
 
-Checks indicate steps I've finished. The first blank box is what I'm working on.
+The first blank box is what I'm working on.
 
 * [x] Types and basic init/config
 * [x] HTTP routing
-* [x] Handlers stubbed out
 * [x] Registry manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
 * [x] Request handling
 * [x] Cache management details
 * [x] Persistent data storage
-* [ ] Catch up on tests / Concurrency safety checks
-* [ ] Refactor and optimize
+* [ ] Refactor / Test
+* [ ] Help flag / Documentation
 
 ## Notes
 
