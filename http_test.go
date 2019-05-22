@@ -12,7 +12,7 @@ func Test_log400(t *testing.T) {
 	t.Run("log400", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("POST", "/400", nil)
-		log400(req, errors.New("400 Test"))
+		log400(w, req, errors.New("400 Test"))
 		resp := w.Result()
 		if resp.StatusCode != http.StatusBadRequest {
 			t.Errorf("Didn't receive 400, received: %v\n", resp.StatusCode)
