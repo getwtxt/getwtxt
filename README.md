@@ -1,22 +1,25 @@
 # getwtxt [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt)
 
-twtxt registry written in Go. Still in development. 
+twtxt registry written in Go! 
 
-*  Began: 10 May 2019
-*  No deadline. Should be finished by the end of May 2019.
+* Easy to set up and maintain. 
+* Uses an in-memory cache to serve requests.
+* Pushes to `LevelDB` at a configurable interval for data storage. 
+* Run directly facing the internet or behind `Caddy` / `nginx`.
 
-## Progress
+## Development Progress
 
-The first blank box is what I'm working on.
+`ETA` 31 May 2019
 
-* [x] Types and basic init/config
-* [x] HTTP routing
-* [x] Registry manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
-* [x] Request handling
-* [x] Cache management details
-* [x] Persistent data storage
-* [ ] Refactor / Test
-* [ ] Help flag / Documentation
+
+* [x] Types and Config
+* [x] HTTP Routing
+* [x] Registry Manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
+* [x] Request Handling
+* [x] Cache Management
+* [x] Persistent Data Storage
+* [ ] Refactor / Test / Debug
+* [ ] Documentation
 
 ## Notes
 
