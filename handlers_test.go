@@ -9,8 +9,12 @@ import (
 	"testing"
 )
 
-// these will be expanded later. currently, they only
-// test for a 200 status code.
+// Currently, these only test for a 200 status code.
+// More in-depth unit tests are planned, however, several
+// of these will quickly turn into integration tests as
+// they'll need more than a barebones test environment to
+// get any real information. The HTTP responses are being
+// tested by me by hand, mostly.
 func Test_indexHandler(t *testing.T) {
 	initTestConf()
 	t.Run("indexHandler", func(t *testing.T) {
@@ -28,7 +32,7 @@ func Test_apiBaseHandler(t *testing.T) {
 	t.Run("apiBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api", nil)
-		indexHandler(w, req)
+		apiBaseHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
@@ -40,7 +44,7 @@ func Test_apiFormatHandler(t *testing.T) {
 	t.Run("apiFormatHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain", nil)
-		indexHandler(w, req)
+		apiFormatHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
@@ -52,19 +56,21 @@ func Test_apiEndpointHandler(t *testing.T) {
 	t.Run("apiEndpointHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/users", nil)
-		indexHandler(w, req)
+		apiEndpointHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
 	})
 }
+
+/*
 func Test_apiTagsBaseHandler(t *testing.T) {
 	initTestConf()
 	t.Run("apiTagsBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags", nil)
-		indexHandler(w, req)
+		apiTagsBaseHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
@@ -73,16 +79,17 @@ func Test_apiTagsBaseHandler(t *testing.T) {
 }
 func Test_apiTagsHandler(t *testing.T) {
 	initTestConf()
-	t.Run("indexHandler", func(t *testing.T) {
+	t.Run("apiTagsHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags/tag", nil)
-		indexHandler(w, req)
+		apiTagsHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
 	})
 }
+*/
 func Test_cssHandler(t *testing.T) {
 	initTestConf()
 
