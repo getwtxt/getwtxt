@@ -56,12 +56,14 @@ func refreshCache() {
 	// Re-scrape all the remote registries
 	// to see if they have any new users
 	// to add locally.
+	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
 		err := twtxtCache.ScrapeRemoteRegistry(v)
 		if err != nil {
 			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err)
 		}
 	}
+	remoteRegistries.Mu.RUnlock()
 	confObj.Mu.Lock()
 	confObj.LastCache = time.Now()
 	confObj.Mu.Unlock()
@@ -95,9 +97,11 @@ func pushDatabase() error {
 	twtxtCache.Mu.RUnlock()
 
 	// Save our list of remote registries to scrape.
+	remoteRegistries.Mu.RLock()
 	for k, v := range remoteRegistries.List {
 		dbBasket.Put([]byte("remote*"+string(k)), []byte(v))
 	}
+	remoteRegistries.Mu.RUnlock()
 
 	// Execute the batch job.
 	if err := db.Write(dbBasket, nil); err != nil {
