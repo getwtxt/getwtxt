@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"net"
@@ -209,11 +208,8 @@ func pingAssets() {
 	cssMod := staticCache.cssMod
 
 	if !indexMod.Equal(indexStat.ModTime()) {
-		var err error
-		tmpls, err = template.ParseFiles("assets/tmpl/index.html")
-		if err != nil {
-			log.Printf("%v\n", err)
-		}
+		tmpls = initTemplates()
+
 		var b []byte
 		buf := bytes.NewBuffer(b)
 
