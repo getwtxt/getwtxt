@@ -83,9 +83,9 @@ func main() {
 		HandlerFunc(apiTagsHandler)
 
 	// format the port for the http.Server object
-	confObj.mu.RLock()
-	portnum := fmt.Sprintf(":%v", confObj.port)
-	confObj.mu.RUnlock()
+	confObj.Mu.RLock()
+	portnum := fmt.Sprintf(":%v", confObj.Port)
+	confObj.Mu.RUnlock()
 	// defines options for the http server.
 	// handlers.CompressHandler gzips all responses.
 	// Write/Read timeouts are self explanatory.

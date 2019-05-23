@@ -24,7 +24,7 @@ var (
 )
 
 // config object
-var confObj = &configuration{}
+var confObj = &Configuration{}
 
 // signals to close the log file
 var closeLog = make(chan bool, 1)
@@ -68,6 +68,7 @@ func checkFlags() {
 func initConfig() {
 
 	viper.SetConfigName("getwtxt")
+	viper.SetConfigType("json")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/usr/local/getwtxt")
 	viper.AddConfigPath("/etc")
@@ -87,66 +88,51 @@ func initConfig() {
 		rebindConfig()
 	})
 
-	viper.SetDefault("port", 9001)
-	viper.SetDefault("logFile", "getwtxt.log")
-	viper.SetDefault("databasePath", "getwtxt.db")
-	viper.SetDefault("stdoutLogging", false)
-	viper.SetDefault("reCacheInterval", "1h")
-	viper.SetDefault("databasePushInterval", "5m")
+	viper.SetDefault("ListenPort", 9001)
+	viper.SetDefault("LogFile", "getwtxt.log")
+	viper.SetDefault("DatabasePath", "getwtxt.db")
+	viper.SetDefault("StdoutLogging", false)
+	viper.SetDefault("ReCacheInterval", "1h")
+	viper.SetDefault("DatabasePushInterval", "5m")
 
-	updateInterval := viper.GetString("reCacheInterval")
-	dur, err := time.ParseDuration(updateInterval)
-	if err != nil {
-		log.Printf("Unable to parse registry cache update interval. Defaulting to hourly. Msg: %v\n", err)
-		dur, _ = time.ParseDuration("1h")
-	}
-
-	dbPushInterval := viper.GetString("databasePushInterval")
-	dbDur, err := time.ParseDuration(dbPushInterval)
-	if err != nil {
-		log.Printf("Unable to parse database push interval. Defaulting to every five minutes. Msg: %v\n", err)
-		dbDur, _ = time.ParseDuration("5m")
-	}
-
-	thetime := time.Now()
-
-	confObj.mu.Lock()
-	confObj.port = viper.GetInt("port")
-	confObj.logFile = viper.GetString("logFile")
-	confObj.dbPath = viper.GetString("databasePath")
-	log.Printf("Using database: %v\n", confObj.dbPath)
-	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
-	if confObj.stdoutLogging {
+	confObj.Mu.Lock()
+	confObj.Port = viper.GetInt("ListenPort")
+	confObj.LogFile = viper.GetString("LogFile")
+	confObj.DBPath = viper.GetString("DatabasePath")
+	log.Printf("Using database: %v\n", confObj.DBPath)
+	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
+	if confObj.StdoutLogging {
 		log.Printf("Logging to stdout\n")
 	} else {
-		log.Printf("Logging to %v\n", confObj.logFile)
+		log.Printf("Logging to %v\n", confObj.LogFile)
 	}
-	confObj.cacheInterval = dur
-	log.Printf("Cache refresh interval: %v\n", dur)
-	confObj.dbInterval = dbDur
-	log.Printf("Database push interval: %v\n", dbDur)
-	confObj.lastCache = thetime
-	confObj.lastPush = thetime
-	confObj.version = getwtxt
-	confObj.Instance.Name = viper.GetString("instance.name")
-	confObj.Instance.URL = viper.GetString("instance.url")
-	confObj.Instance.Owner = viper.GetString("instance.owner")
-	confObj.Instance.Mail = viper.GetString("instance.mail")
-	confObj.Instance.Desc = viper.GetString("instance.description")
-	confObj.mu.Unlock()
+	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
+	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
+	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
+	log.Printf("Database push interval: %v\n", confObj.DBInterval)
+	confObj.LastCache = time.Now()
+	confObj.LastPush = time.Now()
+	confObj.Version = getwtxt
+	confObj.Instance.Name = viper.GetString("Instance.SiteName")
+	confObj.Instance.URL = viper.GetString("Instance.URL")
+	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
+	confObj.Instance.Mail = viper.GetString("Instance.Email")
+	confObj.Instance.Desc = viper.GetString("Instance.Description")
+	confObj.Mu.Unlock()
+
 }
 
 func initLogging() {
 
 	// only open a log file if it's necessary
-	confObj.mu.RLock()
+	confObj.Mu.RLock()
 
-	if confObj.stdoutLogging {
+	if confObj.StdoutLogging {
 		log.SetOutput(os.Stdout)
 
 	} else {
 
-		logfile, err := os.OpenFile(confObj.logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		logfile, err := os.OpenFile(confObj.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
 			log.Printf("Could not open log file: %v\n", err)
 		}
@@ -168,48 +154,31 @@ func initLogging() {
 
 		log.SetOutput(logfile)
 	}
-	confObj.mu.RUnlock()
+	confObj.Mu.RUnlock()
 }
 
 func rebindConfig() {
 
 	// signal to close the log file then wait
-	confObj.mu.RLock()
-	if !confObj.stdoutLogging {
+	confObj.Mu.RLock()
+	if !confObj.StdoutLogging {
 		closeLog <- true
 	}
-	confObj.mu.RUnlock()
-
-	// re-parse update interval
-	nter := viper.GetString("reCacheInterval")
-	dur, err := time.ParseDuration(nter)
-	if err != nil {
-		log.Printf("Unable to parse update interval. Defaulting to once daily. Msg: %v\n", err)
-		dur, _ = time.ParseDuration("1h")
-	}
-
-	// re-parse database backup interval
-	dbPushInterval := viper.GetString("databasePushInterval")
-	dbDur, err := time.ParseDuration(dbPushInterval)
-	if err != nil {
-		log.Printf("Unable to parse database push interval. Defaulting to every five minutes. Msg: %v\n", err)
-		dbDur, _ = time.ParseDuration("5m")
-	}
+	confObj.Mu.RUnlock()
 
 	// reassign values to the config object
-	confObj.mu.Lock()
-	confObj.port = viper.GetInt("port")
-	confObj.logFile = viper.GetString("logFile")
-	confObj.stdoutLogging = viper.GetBool("stdoutLogging")
-	confObj.dbPath = viper.GetString("databasePath")
-	confObj.cacheInterval = dur
-	confObj.dbInterval = dbDur
-	confObj.Instance.Name = viper.GetString("instance.name")
-	confObj.Instance.URL = viper.GetString("instance.url")
-	confObj.Instance.Owner = viper.GetString("instance.owner")
-	confObj.Instance.Mail = viper.GetString("instance.mail")
-	confObj.Instance.Desc = viper.GetString("instance.description")
-	confObj.mu.Unlock()
+	confObj.Mu.Lock()
+	confObj.LogFile = viper.GetString("LogFile")
+	confObj.DBPath = viper.GetString("DatabasePath")
+	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
+	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
+	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
+	confObj.Instance.Name = viper.GetString("Instance.SiteName")
+	confObj.Instance.URL = viper.GetString("Instance.URL")
+	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
+	confObj.Instance.Mail = viper.GetString("Instance.Email")
+	confObj.Instance.Desc = viper.GetString("Instance.Description")
+	confObj.Mu.Unlock()
 
 	// reinitialize logging
 	initLogging()
@@ -222,9 +191,9 @@ func initTemplates() *template.Template {
 
 // Pull DB data into cache, if available.
 func initDatabase() {
-	confObj.mu.RLock()
-	db, err := leveldb.OpenFile(confObj.dbPath, nil)
-	confObj.mu.RUnlock()
+	confObj.Mu.RLock()
+	db, err := leveldb.OpenFile(confObj.DBPath, nil)
+	confObj.Mu.RUnlock()
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
@@ -247,21 +216,21 @@ func watchForInterrupt() {
 		for sigint := range c {
 
 			log.Printf("\n\nCaught %v. Cleaning up ...\n", sigint)
-			confObj.mu.RLock()
+			confObj.Mu.RLock()
 
 			// Close the database cleanly
-			log.Printf("Closing database connection to %v...\n", confObj.dbPath)
+			log.Printf("Closing database connection to %v...\n", confObj.DBPath)
 			db := <-dbChan
 			if err := db.Close(); err != nil {
 				log.Printf("%v\n", err)
 			}
 
-			if !confObj.stdoutLogging {
+			if !confObj.StdoutLogging {
 				// signal to close the log file
 				closeLog <- true
 			}
 
-			confObj.mu.RUnlock()
+			confObj.Mu.RUnlock()
 			close(dbChan)
 			close(closeLog)
 

@@ -13,13 +13,13 @@ import (
 // Checks whether it's time to refresh
 // the cache.
 func checkCacheTime() bool {
-	return time.Since(confObj.lastCache) > confObj.cacheInterval
+	return time.Since(confObj.LastCache) > confObj.CacheInterval
 }
 
 // Checks whether it's time to push
 // the cache to the database
 func checkDBtime() bool {
-	return time.Since(confObj.lastPush) > confObj.dbInterval
+	return time.Since(confObj.LastPush) > confObj.DBInterval
 }
 
 // Launched by init as a goroutine to constantly watch
@@ -59,9 +59,9 @@ func refreshCache() {
 			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err)
 		}
 	}
-	confObj.mu.Lock()
-	confObj.lastCache = time.Now()
-	confObj.mu.Unlock()
+	confObj.Mu.Lock()
+	confObj.LastCache = time.Now()
+	confObj.Mu.Unlock()
 }
 
 // Pushes the registry's cache data to a local
@@ -104,9 +104,9 @@ func pushDatabase() error {
 	// Update the last push time for
 	// our timer/watch function to
 	// reference.
-	confObj.mu.Lock()
-	confObj.lastPush = time.Now()
-	confObj.mu.Unlock()
+	confObj.Mu.Lock()
+	confObj.LastPush = time.Now()
+	confObj.Mu.Unlock()
 
 	return nil
 }

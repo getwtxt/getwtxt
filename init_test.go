@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var testport = fmt.Sprintf(":%v", confObj.port)
+var testport = fmt.Sprintf(":%v", confObj.Port)
 
 func initTestConf() {
 	initConfig()

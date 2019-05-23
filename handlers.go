@@ -31,9 +31,9 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Pass the confObj.Instance data to the template,
 	// then send it to the client.
-	confObj.mu.RLock()
+	confObj.Mu.RLock()
 	err := tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
-	confObj.mu.RUnlock()
+	confObj.Mu.RUnlock()
 	if err != nil {
 		log500(w, r, err)
 		return
