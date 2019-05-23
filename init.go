@@ -42,6 +42,19 @@ var twtxtCache = registry.NewIndex()
 // remote registry listing
 var remoteRegistries = &RemoteRegistries{}
 
+// static assets cache
+var staticCache = &struct {
+	index    []byte
+	indexMod time.Time
+	css      []byte
+	cssMod   time.Time
+}{
+	index:    nil,
+	indexMod: time.Time{},
+	css:      nil,
+	cssMod:   time.Time{},
+}
+
 func initGetwtxt() {
 	checkFlags()
 	titleScreen()

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"net"
+	"os"
 	"strings"
 	"time"
 
@@ -183,5 +185,54 @@ func pullDatabase() {
 	err := iter.Error()
 	if err != nil {
 		log.Printf("Error while pulling DB into registry cache: %v\n", err)
+	}
+}
+
+// pingAssets checks if the local static assets
+// need to be re-cached. If they do, they are
+// pulled back into memory from disk.
+func pingAssets() {
+
+	cssStat, err := os.Stat("assets/style.css")
+	if err != nil {
+		log.Printf("%v\n", err)
+	}
+	/*
+		indexStat, err := os.Stat("assets/tmpl/index.html")
+		if err != nil {
+			log.Printf("%v\n", err)
+		}
+
+		indexMod := staticCache.indexMod*/
+	cssMod := staticCache.cssMod
+	/*
+		if !indexMod.Equal(indexStat.ModTime()) {
+			var err error
+			tmpls, err = template.ParseFiles("assets/tmpl/index.html")
+			if err != nil {
+				log.Printf("%v\n", err)
+			}
+			buf := bytes.NewBuffer(staticCache.index)
+
+			confObj.Mu.RLock()
+			err = tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance)
+			confObj.Mu.RUnlock()
+			if err != nil {
+				log.Printf("%v\n", err)
+			}
+
+			staticCache.index = buf.Bytes()
+			staticCache.indexMod = indexStat.ModTime()
+		}
+	*/
+	if !cssMod.Equal(cssStat.ModTime()) {
+
+		css, err := ioutil.ReadFile("assets/style.css")
+		if err != nil {
+			log.Printf("%v\n", err)
+		}
+
+		staticCache.css = css
+		staticCache.cssMod = cssStat.ModTime()
 	}
 }

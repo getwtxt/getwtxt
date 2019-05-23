@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -175,30 +174,15 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 // files aren't served directly.
 func cssHandler(w http.ResponseWriter, r *http.Request) {
 
-	// read the raw bytes of the stylesheet
-	css, err := ioutil.ReadFile("assets/style.css")
-	if err != nil {
-		if os.IsNotExist(err) {
-			log404(w, r, err)
-			return
-		}
-		log500(w, r, err)
-		return
-	}
-
-	// Get the mod time for the etag header
-	stat, err := os.Stat("assets/style.css")
-	if err != nil {
-		log.Printf("Couldn't stat CSS file to send ETag header: %v\n", err)
-	}
-
 	// Sending the sha256 sum of the modtime in hexadecimal for the ETag header
-	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(stat.ModTime().String())))
+	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(staticCache.cssMod.String())))
 
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", cssutf8)
 
-	n, err := w.Write(css)
+	pingAssets()
+
+	n, err := w.Write(staticCache.css)
 	if err != nil || n == 0 {
 		log500(w, r, err)
 		return
