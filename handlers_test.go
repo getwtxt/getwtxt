@@ -4,28 +4,10 @@ import (
 	"bytes"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 )
-
-var testport = fmt.Sprintf(":%v", confObj.port)
-
-func initTestConf() {
-	initConfig()
-	tmpls = initTemplates()
-	logToNull()
-}
-
-func logToNull() {
-	hush, err := os.Open("/dev/null")
-	if err != nil {
-		log.Printf("%v\n", err)
-	}
-	log.SetOutput(hush)
-}
 
 // these will be expanded later. currently, they only
 // test for a 200 status code.
