@@ -8,11 +8,19 @@ import (
 	"strings"
 )
 
-// Attaches a request's IP address to the request's context
+// Attaches a request's IP address to the request's context.
+// If getwtxt is behind a reverse proxy, get the last entry
+// in the X-Forwarded-For HTTP header as the user IP.
 func newCtxUserIP(ctx context.Context, r *http.Request) context.Context {
 
 	base := strings.Split(r.RemoteAddr, ":")
 	uip := base[0]
+
+	if _, ok := r.Header["X-Forwarded-For"]; ok {
+		proxied := r.Header["X-Forwarded-For"]
+		base = strings.Split(proxied[len(proxied)-1], ":")
+		uip = base[0]
+	}
 
 	return context.WithValue(ctx, ctxKey, uip)
 }
