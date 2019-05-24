@@ -136,8 +136,8 @@ func pullDatabase() {
 		val := string(iter.Value())
 
 		split := strings.Split(key, "*")
-		urls := string(split[0])
-		field := string(split[1])
+		urls := split[0]
+		field := split[1]
 
 		if urls != "remote" {
 			// Start with an empty Data struct. If
