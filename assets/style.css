@@ -3,6 +3,7 @@
 #container {
   max-width: 50rem;
   margin: auto;
+  margin-top: -2rem;
 }
 
 #head {
@@ -26,14 +27,20 @@
 }
 
 #info {
-  font-size: 1.0em;
+  font-family: monospace;
+  font-size: 1.5em;
   margin-top: -2.0rem;
   padding-bottom: 2rem;
 }
 
+#desc {
+  padding: 0.5rem;
+  text-align: center;
+}
+
 #foot {
-  padding-top: 2rem;
+  padding-top: 3rem;
   padding-bottom: 2rem;
   text-align: center;
-  font-size: 0.8em;
+  font-size: 0.9em;
 }

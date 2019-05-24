@@ -22,39 +22,41 @@
       <span style="padding-left:1em">{{.Mail}}</span><br />
     </div>
     <div id="body">
-      <p>{{.Desc}}</p>
+      <div id="desc">
+        <p>{{.Desc}}</p>
+      </div>
       <p>API base URL:</p>
-      <pre><code>/api</code></pre>
-          <p>Formats available:</p>
+        <pre><code>/api</code></pre>
+      <p>Formats available:</p>
         <pre><code>/api/plain</code></pre>
       <p>Endpoints:</p>
-<pre><code>/api/plain/users
+        <pre><code>/api/plain/users
 /api/plain/mentions
 /api/plain/tweets
 /api/plain/tags</code></pre>
-  <p>Query by user:</p>
+      <p>Query by user:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/users?q=foo'
 foo               https://example.com/twtxt.txt     2019-05-09T08:42:23.000Z
 foobar            https://example2.com/twtxt.txt    2019-03-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z</code></pre>
-          <p>Query by tweet content:</p>
+      <p>Query by tweet content:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
 foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!</code></pre>
-          <p>Query by mention:</p>
+      <p>Query by mention:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
 foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?</code></pre>
-          <p>Query by tag:</p>
+      <p>Query by tag:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
-          <p>Get latest 20 tweets:</p>
+      <p>Get latest 20 tweets:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tweets'
 foobar    https://example2.com/twtxt.txt    2019-05-13T12:46:20.000Z    It's been a busy day at work!
 ...</code></pre>
-          <p>Get all users:</p>
+      <p>Get all users:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/users'
 foo_barrington    https://example3.com/twtxt.txt    2018-11-21T18:31:00.000Z
 ...</code></pre>
-        <p>Add new user by submitting a <code>POST</code> request. If both variables are not used, or the user already exists in this registry, the server will respond with <code>400 Bad Request</code></p>
+      <p>Add new user by submitting a <code>POST</code> request. If both variables are not used, or the user already exists in this registry, the server will respond with <code>400 Bad Request</code></p>
         <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://example3.com/twtxt.txt&amp;nickname=foo_barrington'
 200 OK</code></pre>
     </div>
