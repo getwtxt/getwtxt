@@ -39,7 +39,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 		remoteRegistries.List = append(remoteRegistries.List, urls)
 		remoteRegistries.Mu.Unlock()
 
-		if err := twtxtCache.ScrapeRemoteRegistry(urls); err != nil {
+		if err := twtxtCache.CrawlRemoteRegistry(urls); err != nil {
 			log400(w, r, err.Error())
 			return
 		}

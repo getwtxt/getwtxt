@@ -58,7 +58,7 @@ func refreshCache() {
 	// to add locally.
 	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
-		err := twtxtCache.ScrapeRemoteRegistry(v)
+		err := twtxtCache.CrawlRemoteRegistry(v)
 		if err != nil {
 			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err)
 		}
