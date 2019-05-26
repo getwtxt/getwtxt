@@ -143,7 +143,7 @@ func pullDatabase() {
 			// Start with an empty Data struct. If
 			// there's already one in the cache, pull
 			// it and use it instead.
-			data := registry.NewUserData()
+			data := registry.NewUser()
 			twtxtCache.Mu.RLock()
 			if _, ok := twtxtCache.Reg[urls]; ok {
 				data = twtxtCache.Reg[urls]

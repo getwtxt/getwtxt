@@ -3,9 +3,7 @@ package main
 import (
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -14,13 +12,9 @@ import (
 // handles "/"
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
-	// Stat the index template to get the mod time
-	var etag string
-	if indextmpl, err := os.Stat("assets/tmpl/index.html"); err != nil {
-		log.Printf("Couldn't stat index template for ETag ... %v\n", err)
-	} else {
-		etag = fmt.Sprintf("%x", sha256.Sum256([]byte(indextmpl.ModTime().String())))
-	}
+	pingAssets()
+
+	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(staticCache.indexMod.String())))
 
 	// Take the hex-encoded sha256 sum of the index template's mod time
 	// to send as an ETag. If an error occured when grabbing the file info,
@@ -28,11 +22,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
 
-	// Pass the confObj.Instance data to the template,
-	// then send it to the client.
-	confObj.Mu.RLock()
-	err := tmpls.ExecuteTemplate(w, "index.html", confObj.Instance)
-	confObj.Mu.RUnlock()
+	_, err := w.Write(staticCache.index)
 	if err != nil {
 		log500(w, r, err)
 		return
@@ -91,6 +81,8 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		data = []byte("")
 	}
 
+	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
 	_, err = w.Write(data)
@@ -118,6 +110,8 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := parseQueryOut(out)
 
+	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
 	_, err = w.Write(data)
@@ -160,7 +154,10 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	data := parseQueryOut(out)
 
+	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
+
 	_, err = w.Write(data)
 	if err != nil {
 		log500(w, r, err)

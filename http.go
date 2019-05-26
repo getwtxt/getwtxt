@@ -22,8 +22,9 @@ func newCtxUserIP(ctx context.Context, r *http.Request) context.Context {
 		uip = base[0]
 	}
 
-	if _, ok := r.Header["X-Real-IP"]; ok {
-		proxied := r.Header["X-Real-IP"]
+	xRealIP := http.CanonicalHeaderKey("X-Real-IP")
+	if _, ok := r.Header[xRealIP]; ok {
+		proxied := r.Header[xRealIP]
 		base = strings.Split(proxied[len(proxied)-1], ":")
 		uip = base[0]
 	}

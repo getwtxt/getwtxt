@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"log"
 	"net/http"
@@ -107,7 +108,10 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 
 	data := parseQueryOut(out)
 
+	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
+
 	_, err = w.Write(data)
 
 	return err
