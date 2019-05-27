@@ -7,11 +7,15 @@ import (
 )
 
 var testport = fmt.Sprintf(":%v", confObj.Port)
+var hasInit = false
 
 func initTestConf() {
-	initConfig()
-	tmpls = initTemplates()
-	logToNull()
+	if !hasInit {
+		initConfig()
+		tmpls = initTemplates()
+		logToNull()
+		hasInit = true
+	}
 }
 
 func logToNull() {

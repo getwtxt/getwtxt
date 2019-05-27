@@ -14,11 +14,19 @@ import (
 )
 
 func checkCacheTime() bool {
-	return time.Since(confObj.LastCache) > confObj.CacheInterval
+	confObj.Mu.RLock()
+	answer := time.Since(confObj.LastCache) > confObj.CacheInterval
+	confObj.Mu.RUnlock()
+
+	return answer
 }
 
 func checkDBtime() bool {
-	return time.Since(confObj.LastPush) > confObj.DBInterval
+	confObj.Mu.RLock()
+	answer := time.Since(confObj.LastPush) > confObj.DBInterval
+	confObj.Mu.RUnlock()
+
+	return answer
 }
 
 // Launched by init as a coroutine to watch
@@ -38,6 +46,7 @@ func cacheAndPush() {
 
 func refreshCache() {
 
+	twtxtCache.Mu.RLock()
 	for k := range twtxtCache.Users {
 		err := twtxtCache.UpdateUser(k)
 		if err != nil {
@@ -45,6 +54,7 @@ func refreshCache() {
 			continue
 		}
 	}
+	twtxtCache.Mu.RUnlock()
 
 	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {

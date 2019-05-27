@@ -79,17 +79,19 @@ func Benchmark_pushDatabase(b *testing.B) {
 		initDatabase()
 	}
 
-	out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
-	if err != nil {
-		b.Errorf("Couldn't set up benchmark: %v\n", err)
-	}
+	if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
+		out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
+		if err != nil {
+			b.Errorf("Couldn't set up benchmark: %v\n", err)
+		}
 
-	statusmap, err := registry.ParseUserTwtxt(out, "gbmor", "https://gbmor.dev/twtxt.txt")
-	if err != nil {
-		b.Errorf("Couldn't set up benchmark: %v\n", err)
-	}
+		statusmap, err := registry.ParseUserTwtxt(out, "gbmor", "https://gbmor.dev/twtxt.txt")
+		if err != nil {
+			b.Errorf("Couldn't set up benchmark: %v\n", err)
+		}
 
-	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
+		twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
+	}
 
 	b.ResetTimer()
 
