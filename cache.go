@@ -45,7 +45,7 @@ func refreshCache() {
 
 	// Iterate over the registry and
 	// update each individual user.
-	for k := range twtxtCache.Reg {
+	for k := range twtxtCache.Users {
 		err := twtxtCache.UpdateUser(k)
 		if err != nil {
 			log.Printf("%v\n", err)
@@ -84,7 +84,7 @@ func pushDatabase() error {
 	// per entry.
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
-	for k, v := range twtxtCache.Reg {
+	for k, v := range twtxtCache.Users {
 		dbBasket.Put([]byte(k+"*Nick"), []byte(v.Nick))
 		dbBasket.Put([]byte(k+"*URL"), []byte(v.URL))
 		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP.String()))
@@ -145,8 +145,8 @@ func pullDatabase() {
 			// it and use it instead.
 			data := registry.NewUser()
 			twtxtCache.Mu.RLock()
-			if _, ok := twtxtCache.Reg[urls]; ok {
-				data = twtxtCache.Reg[urls]
+			if _, ok := twtxtCache.Users[urls]; ok {
+				data = twtxtCache.Users[urls]
 			}
 			twtxtCache.Mu.RUnlock()
 
@@ -173,7 +173,7 @@ func pullDatabase() {
 			// Push the data struct (back) into
 			// the cache.
 			twtxtCache.Mu.Lock()
-			twtxtCache.Reg[urls] = data
+			twtxtCache.Users[urls] = data
 			twtxtCache.Mu.Unlock()
 
 		} else {
