@@ -13,20 +13,16 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-// Checks whether it's time to refresh
-// the cache.
 func checkCacheTime() bool {
 	return time.Since(confObj.LastCache) > confObj.CacheInterval
 }
 
-// Checks whether it's time to push
-// the cache to the database
 func checkDBtime() bool {
 	return time.Since(confObj.LastPush) > confObj.DBInterval
 }
 
-// Launched by init as a goroutine to constantly watch
-// for the update interval to pass.
+// Launched by init as a coroutine to watch
+// for the update intervals to pass.
 func cacheAndPush() {
 	for {
 		if checkCacheTime() {
@@ -40,11 +36,8 @@ func cacheAndPush() {
 	}
 }
 
-// Refreshes the cache.
 func refreshCache() {
 
-	// Iterate over the registry and
-	// update each individual user.
 	for k := range twtxtCache.Users {
 		err := twtxtCache.UpdateUser(k)
 		if err != nil {
@@ -53,9 +46,6 @@ func refreshCache() {
 		}
 	}
 
-	// Re-scrape all the remote registries
-	// to see if they have any new users
-	// to add locally.
 	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
 		err := twtxtCache.CrawlRemoteRegistry(v)
@@ -72,16 +62,9 @@ func refreshCache() {
 // Pushes the registry's cache data to a local
 // database for safe keeping.
 func pushDatabase() error {
-	// Acquire the database from the aether.
-	// goleveldb is concurrency-safe, so we
-	// can immediately push it back into the
-	// channel for other functions to use.
 	db := <-dbChan
 	dbChan <- db
 
-	// Create a batch write job so it can
-	// be done at one time rather than
-	// per entry.
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Users {
@@ -96,21 +79,16 @@ func pushDatabase() error {
 	}
 	twtxtCache.Mu.RUnlock()
 
-	// Save our list of remote registries to scrape.
 	remoteRegistries.Mu.RLock()
 	for k, v := range remoteRegistries.List {
 		dbBasket.Put([]byte("remote*"+string(k)), []byte(v))
 	}
 	remoteRegistries.Mu.RUnlock()
 
-	// Execute the batch job.
 	if err := db.Write(dbBasket, nil); err != nil {
 		return err
 	}
 
-	// Update the last push time for
-	// our timer/watch function to
-	// reference.
 	confObj.Mu.Lock()
 	confObj.LastPush = time.Now()
 	confObj.Mu.Unlock()
@@ -118,19 +96,12 @@ func pushDatabase() error {
 	return nil
 }
 
-// Pulls registry data from the DB on startup.
-// Iterates over the database one entry at a time.
 func pullDatabase() {
-	// Acquire the database from the aether.
-	// goleveldb is concurrency-safe, so we
-	// can immediately push it back into the
-	// channel for other functions to use.
 	db := <-dbChan
 	dbChan <- db
 
 	iter := db.NewIterator(nil, nil)
 
-	// Read the database entry-by-entry
 	for iter.Next() {
 		key := string(iter.Key())
 		val := string(iter.Value())
@@ -140,9 +111,6 @@ func pullDatabase() {
 		field := split[1]
 
 		if urls != "remote" {
-			// Start with an empty Data struct. If
-			// there's already one in the cache, pull
-			// it and use it instead.
 			data := registry.NewUser()
 			twtxtCache.Mu.RLock()
 			if _, ok := twtxtCache.Users[urls]; ok {
@@ -160,9 +128,6 @@ func pullDatabase() {
 			case "Date":
 				data.Date = val
 			case "Status":
-				// If we're looking at a Status entry in the DB,
-				// parse the time then add it to the TimeMap under
-				// data.Status
 				thetime, err := time.Parse(time.RFC3339, split[2])
 				if err != nil {
 					log.Printf("%v\n", err)
@@ -170,16 +135,11 @@ func pullDatabase() {
 				data.Status[thetime] = val
 			}
 
-			// Push the data struct (back) into
-			// the cache.
 			twtxtCache.Mu.Lock()
 			twtxtCache.Users[urls] = data
 			twtxtCache.Mu.Unlock()
 
 		} else {
-			// If we've come across an entry for
-			// a remote twtxt registry to scrape,
-			// add it to our list.
 			remoteRegistries.Mu.Lock()
 			remoteRegistries.List = append(remoteRegistries.List, val)
 			remoteRegistries.Mu.Unlock()

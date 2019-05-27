@@ -52,21 +52,18 @@ func ipMiddleware(hop http.Handler) http.Handler {
 	})
 }
 
-// log output for 200s
 func log200(r *http.Request) {
 
 	uip := getIPFromCtx(r.Context())
 	log.Printf("*** %v :: 200 :: %v %v\n", uip, r.Method, r.URL)
 }
 
-// log output for 400s
 func log400(w http.ResponseWriter, r *http.Request, err string) {
 	uip := getIPFromCtx(r.Context())
 	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
 	http.Error(w, "400 Bad Request: "+err, http.StatusBadRequest)
 }
 
-// log output for 404s
 func log404(w http.ResponseWriter, r *http.Request, err error) {
 
 	uip := getIPFromCtx(r.Context())
@@ -74,7 +71,6 @@ func log404(w http.ResponseWriter, r *http.Request, err error) {
 	http.Error(w, err.Error(), http.StatusNotFound)
 }
 
-// log output for 500s
 func log500(w http.ResponseWriter, r *http.Request, err error) {
 
 	uip := getIPFromCtx(r.Context())

@@ -51,7 +51,6 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// if there's a query, execute it
 	if r.FormValue("q") != "" || r.FormValue("url") != "" {
 		err := apiEndpointQuery(w, r)
 		if err != nil {
@@ -168,7 +167,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // Serving the stylesheet virtually because
-// files aren't served directly.
+// files aren't served directly in getwtxt.
 func cssHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Sending the sha256 sum of the modtime in hexadecimal for the ETag header

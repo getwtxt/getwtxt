@@ -19,7 +19,6 @@ func main() {
 	index := mux.NewRouter().StrictSlash(true)
 	api := index.PathPrefix("/api").Subrouter()
 
-	// Begin the path -> handler mapping
 	index.Path("/").
 		Methods("GET").
 		HandlerFunc(indexHandler)
@@ -77,16 +76,15 @@ func main() {
 		Methods("GET").
 		HandlerFunc(apiTagsBaseHandler)
 
-	// Requests tweets with a specific tag
+	// Requests statuses with a specific tag
 	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
 		Methods("GET").
 		HandlerFunc(apiTagsHandler)
 
-	// format the port for the http.Server object
 	confObj.Mu.RLock()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
 	confObj.Mu.RUnlock()
-	// defines options for the http server.
+
 	// handlers.CompressHandler gzips all responses.
 	// Write/Read timeouts are self explanatory.
 	server := &http.Server{

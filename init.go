@@ -17,7 +17,6 @@ import (
 
 const getwtxt = "0.1"
 
-// command line flags
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
 	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the help screen")
@@ -25,7 +24,6 @@ var (
 	flagConfType *string = pflag.StringP("type", "t", "yml", "The filetype of the configuration file.")
 )
 
-// config object
 var confObj = &Configuration{}
 
 // signals to close the log file
@@ -35,16 +33,12 @@ var closeLog = make(chan bool, 1)
 // initialization
 var dbChan = make(chan *leveldb.DB, 1)
 
-// templates
 var tmpls *template.Template
 
-// registry index
 var twtxtCache = registry.NewIndex()
 
-// remote registry listing
 var remoteRegistries = &RemoteRegistries{}
 
-// static assets cache
 var staticCache = &struct {
 	index    []byte
 	indexMod time.Time
@@ -94,8 +88,6 @@ func initConfig() {
 		log.Printf("%v\n", err)
 		log.Printf("Using defaults ...\n")
 	} else {
-		// separate thread to watch for config file changes.
-		// will log event then run rebindConfig()
 		viper.WatchConfig()
 		viper.OnConfigChange(func(e fsnotify.Event) {
 			log.Printf("Config file change detected. Reloading...\n")
@@ -153,7 +145,6 @@ func initConfig() {
 
 func initLogging() {
 
-	// only open a log file if it's necessary
 	confObj.Mu.RLock()
 
 	if confObj.StdoutLogging {
@@ -183,19 +174,18 @@ func initLogging() {
 
 		log.SetOutput(logfile)
 	}
+
 	confObj.Mu.RUnlock()
 }
 
 func rebindConfig() {
 
-	// signal to close the log file then wait
 	confObj.Mu.RLock()
 	if !confObj.StdoutLogging {
 		closeLog <- true
 	}
 	confObj.Mu.RUnlock()
 
-	// reassign values to the config object
 	confObj.Mu.Lock()
 
 	confObj.LogFile = viper.GetString("LogFile")
@@ -212,11 +202,9 @@ func rebindConfig() {
 
 	confObj.Mu.Unlock()
 
-	// reinitialize logging
 	initLogging()
 }
 
-// Parse the HTML templates
 func initTemplates() *template.Template {
 	return template.Must(template.ParseFiles("assets/tmpl/index.html"))
 }
@@ -230,8 +218,6 @@ func initDatabase() {
 		log.Fatalf("%v\n", err)
 	}
 
-	// Send the database reference into
-	// the aether.
 	dbChan <- db
 
 	pullDatabase()
@@ -250,7 +236,6 @@ func watchForInterrupt() {
 			log.Printf("\n\nCaught %v. Cleaning up ...\n", sigint)
 			confObj.Mu.RLock()
 
-			// Close the database cleanly
 			log.Printf("Closing database connection to %v...\n", confObj.DBPath)
 			db := <-dbChan
 			if err := db.Close(); err != nil {
@@ -258,7 +243,6 @@ func watchForInterrupt() {
 			}
 
 			if !confObj.StdoutLogging {
-				// signal to close the log file
 				closeLog <- true
 			}
 
