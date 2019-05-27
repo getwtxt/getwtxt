@@ -81,7 +81,7 @@ func checkFlags() {
 func initConfig() {
 
 	viper.SetConfigName("getwtxt")
-	viper.SetConfigType("json")
+	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/usr/local/getwtxt")
 	viper.AddConfigPath("/etc")

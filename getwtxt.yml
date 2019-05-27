@@ -1,0 +1,71 @@
+#############################################################
+##  This config file can live in the following locations:  ##
+##                                                         ##
+##      ./                                                 ##
+##      /usr/local/getwtxt/                                ##
+##      /etc/                                              ##
+##      /usr/local/etc/                                    ##
+##                                                         ##
+##  The first location found wins. The file must be        ##
+##  called getwtxt.yml                                     ##
+##                                                         ##
+#############################################################
+
+#############################################################
+##  Changing the following options requires a restart.     ##
+#############################################################
+
+# This is the port that getwtxt will bind to.
+ListenPort: 9001
+
+# The location of the LevelDB database structure. Can be
+# a relative or absolute path.
+DatabasePath: "getwtxt.db"
+
+#############################################################
+##  The following options may be changed at any time.      ##
+##  getwtxt will automatically reload the config when      ##
+##  changes are detected.                                  ##
+#############################################################
+
+# If true, getwtxt will send all log messages, including
+# requests, to stdout. It will ignore any set log file.
+# Useful for debugging, but you probably want to keep
+# logs.
+StdoutLogging: true
+
+# The file getwtxt will append log messages to. Can be a
+# relative or absolute path.
+LogFile: "getwtxt.log"
+
+# This is the interval between data pushes from the 
+# in-memory cache to the on-disk database. 
+DatabasePushInterval: "5m"
+
+# The time getwtxt will wait between attempts to scrape
+# users' statuses from their twtxt.txt files
+StatusFetchInterval: "1h"
+
+# The following options pertain to your particular instance.
+# They are used in the default page shown when you visit
+# getwtxt in a web browser.
+Instance:
+
+  # The name of your instance.
+  SiteName: "getwtxt"
+
+  # Your instance's web address.
+  URL: "https://twtxt.example.com"
+
+  # Your name.
+  OwnerName: "foo barrington"
+  
+  # Your email address.
+  Email: "foo@barrington.ext"
+
+  # A short description of your instance, or your site.
+  # This is shown at the top of the default web page
+  # below your instance's name.
+  Description: "This is the twtxt registry for the tildeverse network of public unix servers."
+
+
