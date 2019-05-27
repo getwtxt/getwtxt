@@ -6,8 +6,12 @@
 ##      /etc/                                              ##
 ##      /usr/local/etc/                                    ##
 ##                                                         ##
-##  The first location found wins. The file must be        ##
-##  called getwtxt.yml                                     ##
+##  The first location found wins. The default filename    ##
+##  is getwtxt.yml. This can be configured via command     ##
+##  line flags:                                            ##
+##                                                         ##
+##  For "myconfig.json"                                    ##
+##    ./getwtxt -config myconfig -type json                ##
 ##                                                         ##
 #############################################################
 
@@ -57,15 +61,15 @@ Instance:
   # Your instance's web address.
   URL: "https://twtxt.example.com"
 
-  # Your name.
-  OwnerName: "foo barrington"
+  # Your name. 
+  OwnerName: "Anonymous Microblogger"
   
   # Your email address.
-  Email: "foo@barrington.ext"
+  Email: "nobody@knows"
 
   # A short description of your instance, or your site.
   # This is shown at the top of the default web page
   # below your instance's name.
-  Description: "This is the twtxt registry for the tildeverse network of public unix servers."
+  Description: "A fast, resilient twtxt registry server written in Go!"
 
 

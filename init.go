@@ -19,8 +19,10 @@ const getwtxt = "0.1"
 
 // command line flags
 var (
-	flagVersion *bool = pflag.BoolP("version", "v", false, "Display version information, then exit")
-	flagHelp    *bool = pflag.BoolP("help", "h", false, "")
+	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
+	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the help screen")
+	flagConfFile *string = pflag.StringP("config", "c", "getwtxt", "The name of the configuration file without an extension.")
+	flagConfType *string = pflag.StringP("type", "t", "yml", "The filetype of the configuration file.")
 )
 
 // config object
@@ -80,8 +82,8 @@ func checkFlags() {
 
 func initConfig() {
 
-	viper.SetConfigName("getwtxt")
-	viper.SetConfigType("yml")
+	viper.SetConfigName(*flagConfFile)
+	viper.SetConfigType(*flagConfType)
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("/usr/local/getwtxt")
 	viper.AddConfigPath("/etc")
@@ -89,17 +91,17 @@ func initConfig() {
 
 	log.Printf("Loading configuration ...\n")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("Error reading config file: %v\n", err)
+		log.Printf("%v\n", err)
 		log.Printf("Using defaults ...\n")
+	} else {
+		// separate thread to watch for config file changes.
+		// will log event then run rebindConfig()
+		viper.WatchConfig()
+		viper.OnConfigChange(func(e fsnotify.Event) {
+			log.Printf("Config file change detected. Reloading...\n")
+			rebindConfig()
+		})
 	}
-
-	// separate thread to watch for config file changes.
-	// will log event then run rebindConfig()
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Printf("Config file change detected. Reloading...\n")
-		rebindConfig()
-	})
 
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
@@ -108,29 +110,43 @@ func initConfig() {
 	viper.SetDefault("ReCacheInterval", "1h")
 	viper.SetDefault("DatabasePushInterval", "5m")
 
+	viper.SetDefault("Instance.SiteName", "getwtxt")
+	viper.SetDefault("Instance.OwnerName", "Anonymous Microblogger")
+	viper.SetDefault("Instance.Email", "nobody@knows")
+	viper.SetDefault("Instance.URL", "https://twtxt.example.com")
+	viper.SetDefault("Instance.Description", "A fast, resilient twtxt registry server written in Go!")
+
 	confObj.Mu.Lock()
+
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.LogFile = viper.GetString("LogFile")
+
 	confObj.DBPath = viper.GetString("DatabasePath")
 	log.Printf("Using database: %v\n", confObj.DBPath)
+
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	if confObj.StdoutLogging {
 		log.Printf("Logging to stdout\n")
 	} else {
 		log.Printf("Logging to %v\n", confObj.LogFile)
 	}
+
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
+
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
+
 	confObj.LastCache = time.Now()
 	confObj.LastPush = time.Now()
 	confObj.Version = getwtxt
+
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
 	confObj.Instance.URL = viper.GetString("Instance.URL")
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
+
 	confObj.Mu.Unlock()
 
 }
@@ -181,16 +197,19 @@ func rebindConfig() {
 
 	// reassign values to the config object
 	confObj.Mu.Lock()
+
 	confObj.LogFile = viper.GetString("LogFile")
 	confObj.DBPath = viper.GetString("DatabasePath")
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
+
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
 	confObj.Instance.URL = viper.GetString("Instance.URL")
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
+
 	confObj.Mu.Unlock()
 
 	// reinitialize logging
@@ -271,8 +290,18 @@ func titleScreen() {
 
 func helpScreen() {
 	fmt.Printf(`
-              Help File
+              getwtxt Help
 
-  Sections:
+Command line options:
+    -h               Print this help screen.
+    -v               Print the version information and quit.
+    -c [--config]    Name of an alternate configuration file
+                       to use. Do not include the file extention,
+                       such as ".yml". Must be in the expected
+                       locations.
+    -t [--type]      The file type / extension of the config file.
+                       json, yml, etc.
+
+
 `)
 }
