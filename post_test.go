@@ -1,11 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/getwtxt/registry"
 )
 
 var apiPostUserCases = []struct {
@@ -16,8 +19,8 @@ var apiPostUserCases = []struct {
 }{
 	{
 		name:    "Known Good User",
-		nick:    "soltempore",
-		uri:     "https://enotty.dk/soltempore.txt",
+		nick:    "gbmor",
+		uri:     "https://gbmor.dev/twtxt.txt",
 		wantErr: false,
 	},
 	{
@@ -42,6 +45,8 @@ var apiPostUserCases = []struct {
 
 func Test_apiPostUser(t *testing.T) {
 	initTestConf()
+	portnum := fmt.Sprintf(":%v", confObj.Port)
+	twtxtCache = registry.NewIndex()
 
 	for _, tt := range apiPostUserCases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -49,17 +54,14 @@ func Test_apiPostUser(t *testing.T) {
 			params.Set("url", tt.uri)
 			params.Set("nickname", tt.nick)
 
-			req, err := http.NewRequest("POST", "http://localhost"+testport+"/api/plain/users", strings.NewReader(params.Encode()))
+			req, err := http.NewRequest("POST", "https://localhost"+portnum+"/api/plain/users", strings.NewReader(params.Encode()))
 			if err != nil {
 				t.Errorf("%v\n", err)
 			}
 
 			req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
 			rr := httptest.NewRecorder()
-			handler := http.HandlerFunc(apiEndpointPOSTHandler)
-
-			handler.ServeHTTP(rr, req)
+			apiEndpointPOSTHandler(rr, req)
 
 			if !tt.wantErr {
 				if rr.Code != http.StatusOK {
