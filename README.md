@@ -7,17 +7,19 @@ twtxt registry written in Go!
 * Pushes to `LevelDB` at a configurable interval for data storage. 
 * Run directly facing the internet or behind `Caddy` / `nginx`.
 
+A public instance is currently available:
+* [twtxt.tilde.institute](https://twtxt.tilde.institute)
+
 ## Development Progress
 
-`ETA` 31 May 2019
+`ETA` 07 June 2019
 
 
 * [x] Types and Config
 * [x] HTTP Routing
 * [x] Registry Manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
 * [x] Request Handling
-* [x] Cache Management
-* [x] Persistent Data Storage
+* [x] Database and Caching
 * [ ] Refactor / Test / Debug
 * [ ] Documentation
 
