@@ -68,14 +68,18 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	// something went very wrong.
 	switch endpoint {
 	case "users":
+		var out2 []string
 		if query != "" {
 			out, err = twtxtCache.QueryUser(query)
 			apiErrCheck(err, r)
 		}
 		if urls != "" {
-			out, err = twtxtCache.QueryUser(urls)
+			out2, err = twtxtCache.QueryUser(urls)
 			apiErrCheck(err, r)
 		}
+
+		out = append(out, out2...)
+		out = uniq(out)
 
 	case "mentions":
 		if urls == "" {
