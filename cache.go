@@ -46,13 +46,19 @@ func cacheAndPush() {
 
 func refreshCache() {
 
+	// This clusterfuck of mutex read locks is
+	// necessary to avoid deadlock. This mess
+	// also avoids a panic that would occur
+	// should twtxtCache be written to during
+	// this loop.
 	twtxtCache.Mu.RLock()
 	for k := range twtxtCache.Users {
+		twtxtCache.Mu.RUnlock()
 		err := twtxtCache.UpdateUser(k)
 		if err != nil {
 			log.Printf("%v\n", err)
-			continue
 		}
+		twtxtCache.Mu.RLock()
 	}
 	twtxtCache.Mu.RUnlock()
 
@@ -120,41 +126,46 @@ func pullDatabase() {
 		urls := split[0]
 		field := split[1]
 
-		if urls != "remote" {
-			data := registry.NewUser()
-			twtxtCache.Mu.RLock()
-			if _, ok := twtxtCache.Users[urls]; ok {
-				data = twtxtCache.Users[urls]
-			}
-			twtxtCache.Mu.RUnlock()
-
-			switch field {
-			case "IP":
-				data.IP = net.ParseIP(val)
-			case "Nick":
-				data.Nick = val
-			case "URL":
-				data.URL = val
-			case "Date":
-				data.Date = val
-			case "Status":
-				thetime, err := time.Parse(time.RFC3339, split[2])
-				if err != nil {
-					log.Printf("%v\n", err)
-				}
-				data.Status[thetime] = val
-			}
-
-			twtxtCache.Mu.Lock()
-			twtxtCache.Users[urls] = data
-			twtxtCache.Mu.Unlock()
-
-		} else {
+		if urls == "remote" {
 			remoteRegistries.Mu.Lock()
 			remoteRegistries.List = append(remoteRegistries.List, val)
 			remoteRegistries.Mu.Unlock()
+			continue
 		}
+
+		data := registry.NewUser()
+		twtxtCache.Mu.RLock()
+		if _, ok := twtxtCache.Users[urls]; ok {
+			data = twtxtCache.Users[urls]
+		}
+		twtxtCache.Mu.RUnlock()
+
+		switch field {
+		case "IP":
+			data.IP = net.ParseIP(val)
+		case "Nick":
+			data.Nick = val
+		case "URL":
+			data.URL = val
+		case "Date":
+			data.Date = val
+		case "Status":
+			thetime, err := time.Parse(time.RFC3339, split[2])
+			if err != nil {
+				log.Printf("%v\n", err)
+			}
+			data.Status[thetime] = val
+		}
+
+		twtxtCache.Mu.Lock()
+		twtxtCache.Users[urls] = data
+		twtxtCache.Mu.Unlock()
+
 	}
+
+	remoteRegistries.Mu.Lock()
+	remoteRegistries.List = dedupe(remoteRegistries.List)
+	remoteRegistries.Mu.Unlock()
 
 	iter.Release()
 	err := iter.Error()
@@ -208,4 +219,19 @@ func pingAssets() {
 		staticCache.css = css
 		staticCache.cssMod = cssStat.ModTime()
 	}
+}
+
+// Simple function to deduplicate entries in a []string
+func dedupe(list []string) []string {
+	var out []string
+	var seen = map[string]bool{}
+
+	for _, e := range list {
+		if !seen[e] {
+			out = append(out, e)
+			seen[e] = true
+		}
+	}
+
+	return out
 }
