@@ -154,7 +154,7 @@ foo_barrington  https://foo.barrington.ext/twtxt.txt  2019-03-01T09:31:02.000Z H
 ```
 
 ### Fetch All Users
-Timestamp for when they were added to the registry.
+Timestamp reflects when the user was added to the registry.
 
 ```
 $ curl 'https://twtxt.example.com/api/plain/users'
@@ -191,6 +191,7 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
 ### Query Tweets by Keyword
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets?q=getwtxt'
+
 foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!
 
 ```
