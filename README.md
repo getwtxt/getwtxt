@@ -12,7 +12,7 @@ A public instance is currently available:
 
 ## Development Progress
 
-`ETA` 07 June 2019
+`ETA` 01 June 2019
 
 
 * [x] Types and Config
@@ -20,7 +20,7 @@ A public instance is currently available:
 * [x] Registry Manipulation ([getwtxt/registry](https://github.com/getwtxt/registry))
 * [x] Request Handling
 * [x] Database and Caching
-* [ ] Refactor / Test / Debug
+* [x] Refactor / Test / Debug
 * [ ] Documentation
 
 ## Notes
