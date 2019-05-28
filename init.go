@@ -301,9 +301,11 @@ func helpScreen() {
 
 Command Line Options:
     -h               Print this help screen.
+		-m               Print the configuration manual.
     -v               Print the version information and quit.
     -c [--config]    Path to an alternate configuration file
                        to use. May be relative or absolute.
+
 `)
 }
 func manualScreen() {
