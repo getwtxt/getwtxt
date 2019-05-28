@@ -9,10 +9,6 @@ Registries are designed to aggregate several users' statuses into a single locat
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
-Until now, there has primarily been a single registry application available for 
-enthusiasts to use to run their own `twtxt` registry. Why not add some diversity
-to the landscape?
-
 \[ [Installation](#installation) \] \[ [Configuration](#configuration) \] \[ [Using the Registry](#using-the-registry) \] \[ [Benchmarks](#benchmarks) \] \[ [Notes](#notes) \]
 
 ## Features
