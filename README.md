@@ -150,7 +150,6 @@ $ curl 'https://twtxt.example.com/api/plain/tweets'
 foo_barrington  https://foo.barrington.ext/twtxt.txt  2019-03-01T09:31:02.000Z Hey everybody! It's my first status!
 ...
 ...
-
 ```
 
 ### Fetch All Users
@@ -192,8 +191,7 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets?q=getwtxt'
 
-foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!
-
+foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just installed getwtxt!
 ```
 
 ## Benchmarks
@@ -204,7 +202,7 @@ foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    
 $ bombardier -c 100 -n 200000 http://localhost:9001/api/plain/tweets
 
 Bombarding http://localhost:9001/api/plain/tweets with 200000 request(s) using 100 connection(s)
- 200000 / 200000 [==============================================================================] 100.00% 15100/s 13s
+ 200000 / 200000 [=============================================================] 100.00% 15100/s 13s
 
 Done!
 
