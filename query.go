@@ -24,10 +24,10 @@ func apiErrCheck(err error, r *http.Request) {
 func parseQueryOut(out []string) []byte {
 	var data []byte
 
-	for _, e := range out {
+	for i, e := range out {
 		data = append(data, []byte(e)...)
 
-		if !strings.HasSuffix(e, "\n") {
+		if !strings.HasSuffix(e, "\n") && i != len(out)-1 {
 			data = append(data, byte('\n'))
 		}
 	}

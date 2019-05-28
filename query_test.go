@@ -40,12 +40,6 @@ func Test_parseQueryOut(t *testing.T) {
 
 		conv := strings.Split(string(out), "\n")
 
-		// It likes to append an empty element to the end.
-		// I need to fix that in the library.
-		if len(conv) > 0 && conv[len(conv)-1] == "" {
-			conv = conv[:len(conv)-1]
-		}
-
 		if !reflect.DeepEqual(data, conv) {
 			t.Errorf("Pre- and Post- parseQueryOut data are inequal:\n%#v\n%#v\n", data, conv)
 		}
