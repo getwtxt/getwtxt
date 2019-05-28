@@ -138,7 +138,7 @@ All timestamps are in `RFC3339` format, per the twtxt registry specification
 ### Adding a User
 Both nickname and URL are required
 ```
-$ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext/twtxt.txt&nickname=FooBarringtonJr'
+$ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext/twtxt.txt&nickname=FooJr'
 
 200 OK
 ```
@@ -147,7 +147,7 @@ $ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets'
 
-foo_barrington  https://foo.barrington.ext/twtxt.txt  2019-03-01T09:31:02.000Z Hey everybody! It's my first status!
+foo_barrington  https://foo.bar.ext/twtxt.txt  2019-03-01T09:31:02.000Z Hey! It's my first status!
 ...
 ...
 ```
