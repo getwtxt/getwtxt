@@ -17,7 +17,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(staticCache.indexMod.String())))
 
 	// Take the hex-encoded sha256 sum of the index template's mod time
-	// to send as an ETag. If an error occured when grabbing the file info,
+	// to send as an ETag. If an error occurred when grabbing the file info,
 	// the ETag will be empty.
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)

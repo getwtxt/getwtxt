@@ -44,7 +44,7 @@ func main() {
 		HandlerFunc(apiEndpointHandler)
 
 	// Using stdlib net/url to validate the input URLs rather than regex.
-	// Validating a URL with regex is unwieldly
+	// Validating a URL with regex is unwieldy
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
 		Queries("url", "{url}", "q", "{query}").
 		Methods("GET").
