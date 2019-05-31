@@ -61,7 +61,7 @@ func log200(r *http.Request) {
 
 func log400(w http.ResponseWriter, r *http.Request, err string) {
 	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err.Error())
+	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
 	http.Error(w, "400 Bad Request: "+err, http.StatusBadRequest)
 }
 
