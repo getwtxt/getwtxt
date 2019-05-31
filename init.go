@@ -108,7 +108,7 @@ func initConfig() {
 
 	log.Printf("Loading configuration ...\n")
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("%v\n", err)
+		log.Printf("%v\n", err.Error())
 		log.Printf("Using defaults ...\n")
 	} else {
 		viper.WatchConfig()
@@ -177,7 +177,7 @@ func initLogging() {
 
 		logfile, err := os.OpenFile(confObj.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		if err != nil {
-			log.Printf("Could not open log file: %v\n", err)
+			log.Printf("Could not open log file: %v\n", err.Error())
 		}
 
 		// Listen for the signal to close the log file
@@ -191,7 +191,7 @@ func initLogging() {
 
 			err = logfile.Close()
 			if err != nil {
-				log.Printf("Couldn't close log file: %v\n", err)
+				log.Printf("Couldn't close log file: %v\n", err.Error())
 			}
 		}(logfile)
 
@@ -238,7 +238,7 @@ func initDatabase() {
 	db, err := leveldb.OpenFile(confObj.DBPath, nil)
 	confObj.Mu.RUnlock()
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		log.Fatalf("%v\n", err.Error())
 	}
 
 	dbChan <- db
@@ -262,7 +262,7 @@ func watchForInterrupt() {
 			log.Printf("Closing database connection to %v...\n", confObj.DBPath)
 			db := <-dbChan
 			if err := db.Close(); err != nil {
-				log.Printf("%v\n", err)
+				log.Printf("%v\n", err.Error())
 			}
 
 			if !confObj.StdoutLogging {

@@ -61,7 +61,7 @@ func log200(r *http.Request) {
 
 func log400(w http.ResponseWriter, r *http.Request, err string) {
 	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err.Error())
 	http.Error(w, "400 Bad Request: "+err, http.StatusBadRequest)
 }
 
@@ -69,7 +69,7 @@ func log404(w http.ResponseWriter, r *http.Request, err error) {
 	useragent := r.Header["User-Agent"]
 
 	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 404 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err)
+	log.Printf("*** %v :: 404 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err.Error())
 	http.Error(w, err.Error(), http.StatusNotFound)
 }
 
@@ -77,6 +77,6 @@ func log500(w http.ResponseWriter, r *http.Request, err error) {
 	useragent := r.Header["User-Agent"]
 
 	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 500 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err)
+	log.Printf("*** %v :: 500 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err.Error())
 	http.Error(w, err.Error(), http.StatusInternalServerError)
 }
