@@ -15,7 +15,7 @@ import (
 // registry before adding each user to the local cache.
 func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		log400(w, r, err.Error())
+		log400(w, r, "Error Parsing Values: "+err.Error())
 		return
 	}
 
@@ -49,8 +49,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
 	if err != nil {
-		log400(w, r, "Error Parsing twtxt Data: "+err.Error())
-		return
+		log.Printf("Error Parsing User Data: %v\n", err)
 	}
 
 	if err := twtxtCache.AddUser(nick, urls, uip, statuses); err != nil {
