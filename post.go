@@ -30,7 +30,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	out, remoteRegistry, err := registry.GetTwtxt(urls)
 	if err != nil {
-		log400(w, r, err.Error())
+		log400(w, r, "Error Fetching twtxt Data: "+err.Error())
 		return
 	}
 
@@ -40,7 +40,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 		remoteRegistries.Mu.Unlock()
 
 		if err := twtxtCache.CrawlRemoteRegistry(urls); err != nil {
-			log400(w, r, err.Error())
+			log400(w, r, "Error Crawling Remote Registry: "+err.Error())
 			return
 		}
 		log200(r)
@@ -49,12 +49,12 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
 	if err != nil {
-		log400(w, r, err.Error())
+		log400(w, r, "Error Parsing twtxt Data: "+err.Error())
 		return
 	}
 
 	if err := twtxtCache.AddUser(nick, urls, uip, statuses); err != nil {
-		log400(w, r, err.Error())
+		log400(w, r, "Error Adding User to Cache: "+err.Error())
 		return
 	}
 
