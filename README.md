@@ -2,7 +2,7 @@
 
 twtxt registry written in Go! 
 
-twtxt is a decentralized microblogging platform "for hackers" based
+[twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform "for hackers" based
 on text files. The user is "followed" and "mentioned" by referencing the URL to
 their `twtxt.txt` (or other text) file and a (not necessarily unique) nickname.
 Registries are designed to aggregate several users' statuses into a single location,
