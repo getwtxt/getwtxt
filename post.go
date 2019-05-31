@@ -49,7 +49,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
 	if err != nil {
-		log.Printf("Error Parsing User Data: %v\n", err)
+		log.Printf("Error Parsing User Data: %v\n", err.Error())
 	}
 
 	if err := twtxtCache.AddUser(nick, urls, uip, statuses); err != nil {
@@ -60,6 +60,6 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	log200(r)
 	_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
 	if err != nil {
-		log.Printf("%v\n", err)
+		log.Printf("%v\n", err.Error())
 	}
 }

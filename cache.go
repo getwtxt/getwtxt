@@ -38,7 +38,7 @@ func cacheAndPush() {
 		}
 		if checkDBtime() {
 			if err := pushDatabase(); err != nil {
-				log.Printf("Error pushing cache to database: %v\n", err)
+				log.Printf("Error pushing cache to database: %v\n", err.Error())
 			}
 		}
 	}
@@ -56,7 +56,7 @@ func refreshCache() {
 		twtxtCache.Mu.RUnlock()
 		err := twtxtCache.UpdateUser(k)
 		if err != nil {
-			log.Printf("%v\n", err)
+			log.Printf("%v\n", err.Error())
 		}
 		twtxtCache.Mu.RLock()
 	}
@@ -66,7 +66,7 @@ func refreshCache() {
 	for _, v := range remoteRegistries.List {
 		err := twtxtCache.CrawlRemoteRegistry(v)
 		if err != nil {
-			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err)
+			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err.Error())
 		}
 	}
 	remoteRegistries.Mu.RUnlock()
@@ -152,7 +152,7 @@ func pullDatabase() {
 		case "Status":
 			thetime, err := time.Parse(time.RFC3339, split[2])
 			if err != nil {
-				log.Printf("%v\n", err)
+				log.Printf("%v\n", err.Error())
 			}
 			data.Status[thetime] = val
 		}
@@ -170,7 +170,7 @@ func pullDatabase() {
 	iter.Release()
 	err := iter.Error()
 	if err != nil {
-		log.Printf("Error while pulling DB into registry cache: %v\n", err)
+		log.Printf("Error while pulling DB into registry cache: %v\n", err.Error())
 	}
 }
 
@@ -181,12 +181,12 @@ func pingAssets() {
 
 	cssStat, err := os.Stat("assets/style.css")
 	if err != nil {
-		log.Printf("%v\n", err)
+		log.Printf("%v\n", err.Error())
 	}
 
 	indexStat, err := os.Stat("assets/tmpl/index.html")
 	if err != nil {
-		log.Printf("%v\n", err)
+		log.Printf("%v\n", err.Error())
 	}
 
 	indexMod := staticCache.indexMod
@@ -202,7 +202,7 @@ func pingAssets() {
 		err = tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance)
 		confObj.Mu.RUnlock()
 		if err != nil {
-			log.Printf("%v\n", err)
+			log.Printf("%v\n", err.Error())
 		}
 
 		staticCache.index = buf.Bytes()
@@ -213,7 +213,7 @@ func pingAssets() {
 
 		css, err := ioutil.ReadFile("assets/style.css")
 		if err != nil {
-			log.Printf("%v\n", err)
+			log.Printf("%v\n", err.Error())
 		}
 
 		staticCache.css = css

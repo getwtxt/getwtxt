@@ -13,7 +13,7 @@ import (
 func apiErrCheck(err error, r *http.Request) {
 	if err != nil {
 		uip := getIPFromCtx(r.Context())
-		log.Printf("*** %v :: %v %v :: %v\n", uip, r.Method, r.URL, err)
+		log.Printf("*** %v :: %v %v :: %v\n", uip, r.Method, r.URL, err.Error())
 	}
 }
 
