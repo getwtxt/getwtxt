@@ -24,8 +24,7 @@ A public instance is currently available:
 ## Installation 
 
 First, fetch the sources using either the `go` tool or using `git` (if you haven't 
-set up a `go` development environment and just want to try it out) and jump into
-the directory.
+set up a `go` development environment) and jump into the directory.
 
 ```
 $ go get github.com/getwtxt/getwtxt
