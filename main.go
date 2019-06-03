@@ -20,34 +20,38 @@ func main() {
 	api := index.PathPrefix("/api").Subrouter()
 
 	index.Path("/").
-		Methods("GET").
+		Methods("GET", "HEAD").
 		HandlerFunc(indexHandler)
 
 	index.Path("/css").
-		Methods("GET").
+		Methods("GET", "HEAD").
 		HandlerFunc(cssHandler)
 
 	index.Path("/api").
-		Methods("GET").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiBaseHandler)
 
 	// twtxt will add support for other formats later.
 	// Maybe json? Making this future-proof.
 	api.Path("/{format:(?:plain)}").
-		Methods("GET").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiFormatHandler)
+
+	// Non-standard API call to list *all* tweets
+	// in a single request.
+	api.Path("/{format:(?:plain)}/tweets/all").
+		Methods("GET", "HEAD").
+		HandlerFunc(apiAllTweetsHandler)
 
 	// Specifying the endpoint with and without query information.
 	// Will return 404 on empty queries otherwise.
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
-		Methods("GET").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiEndpointHandler)
 
-	// Using stdlib net/url to validate the input URLs rather than regex.
-	// Validating a URL with regex is unwieldy
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
-		Queries("url", "{url}", "q", "{query}").
-		Methods("GET").
+		Queries("url", "{url}", "q", "{query}", "page", "{[0-9]+}").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiEndpointHandler)
 
 	// This is for submitting new users. Both query variables must exist
@@ -64,7 +68,7 @@ func main() {
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
 
-	// This is for submitting new users incorrectly
+	// This is also for submitting new users incorrectly
 	// and letting the requester know about their error.
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
 		Queries("nickname", "{nickname:[a-zA-Z0-9_-]+}").
@@ -73,12 +77,24 @@ func main() {
 
 	// Show all observed tags
 	api.Path("/{format:(?:plain)}/tags").
-		Methods("GET").
+		Methods("GET", "HEAD").
+		HandlerFunc(apiTagsBaseHandler)
+
+	// Show Nth page of all observed tags
+	api.Path("/{format:(?:plain)}/tags").
+		Queries("page", "{[0-9]+}").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiTagsBaseHandler)
 
 	// Requests statuses with a specific tag
 	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
-		Methods("GET").
+		Methods("GET", "HEAD").
+		HandlerFunc(apiTagsHandler)
+
+	// Requests Nth page of statuses with a specific tag
+	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
+		Queries("page", "{[0-9]+}").
+		Methods("GET", "HEAD").
 		HandlerFunc(apiTagsHandler)
 
 	confObj.Mu.RLock()
