@@ -5,8 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
+	"github.com/getwtxt/registry"
 	"github.com/gorilla/mux"
 )
 
@@ -55,8 +57,15 @@ func uniq(str []string) []string {
 func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	query := r.FormValue("q")
 	urls := r.FormValue("url")
+	pageVal := r.FormValue("page")
 	var out []string
 	var err error
+
+	pageVal = strings.TrimSpace(pageVal)
+	page, err := strconv.Atoi(pageVal)
+	if err != nil {
+		log.Printf("%v\n", err.Error())
+	}
 
 	vars := mux.Vars(r)
 	endpoint := vars["endpoint"]
@@ -78,8 +87,9 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 			apiErrCheck(err, r)
 		}
 
-		out = append(out, out2...)
-		out = uniq(out)
+		if query != "" && urls != "" {
+			out = joinQueryOuts(out2)
+		}
 
 	case "mentions":
 		if urls == "" {
@@ -90,26 +100,13 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 		apiErrCheck(err, r)
 
 	case "tweets":
-		query = strings.ToLower(query)
-		out, err = twtxtCache.QueryInStatus(query)
-		apiErrCheck(err, r)
-
-		query = strings.Title(query)
-		out2, err := twtxtCache.QueryInStatus(query)
-		apiErrCheck(err, r)
-
-		query = strings.ToUpper(query)
-		out3, err := twtxtCache.QueryInStatus(query)
-		apiErrCheck(err, r)
-
-		out = append(out, out2...)
-		out = append(out, out3...)
-		out = uniq(out)
+		out = compositeStatusQuery(query, r)
 
 	default:
 		return fmt.Errorf("endpoint query, no cases match")
 	}
 
+	out = registry.ReduceToPage(page, out)
 	data := parseQueryOut(out)
 
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
@@ -119,4 +116,31 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	_, err = w.Write(data)
 
 	return err
+}
+
+func joinQueryOuts(data ...[]string) []string {
+	single := []string{}
+	for _, e := range data {
+		single = append(single, e...)
+	}
+	single = uniq(single)
+
+	return single
+}
+
+func compositeStatusQuery(query string, r *http.Request) []string {
+	query = strings.ToLower(query)
+	out, err := twtxtCache.QueryInStatus(query)
+	apiErrCheck(err, r)
+
+	query = strings.Title(query)
+	out2, err := twtxtCache.QueryInStatus(query)
+	apiErrCheck(err, r)
+
+	query = strings.ToUpper(query)
+	out3, err := twtxtCache.QueryInStatus(query)
+	apiErrCheck(err, r)
+
+	final := joinQueryOuts(out, out2, out3)
+	return final
 }

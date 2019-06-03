@@ -4,8 +4,10 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
+	"github.com/getwtxt/registry"
 	"github.com/gorilla/mux"
 )
 
@@ -42,6 +44,30 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 	indexHandler(w, r)
 }
 
+func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
+	out, err := twtxtCache.QueryAllStatuses()
+	if err != nil {
+		log500(w, r, err)
+	}
+
+	data := parseQueryOut(out)
+	if err != nil {
+		data = []byte("")
+	}
+
+	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	w.Header().Set("ETag", etag)
+	w.Header().Set("Content-Type", txtutf8)
+
+	_, err = w.Write(data)
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+
+	log200(r)
+}
+
 // handles "/api/plain/(users|mentions|tweets)"
 func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
@@ -61,18 +87,30 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	page := 1
+	pageVal := r.FormValue("page")
+	if pageVal != "" {
+		page, err = strconv.Atoi(pageVal)
+		if err != nil || page == 0 {
+			page = 1
+		}
+	}
+
 	// if there's no query, return everything in
 	// registry for a given endpoint
 	var out []string
 	switch r.URL.Path {
 	case "/api/plain/users":
 		out, err = twtxtCache.QueryUser("")
+		out = registry.ReduceToPage(page, out)
 
 	case "/api/plain/mentions":
 		out, err = twtxtCache.QueryInStatus("@<")
+		out = registry.ReduceToPage(page, out)
 
 	default:
 		out, err = twtxtCache.QueryAllStatuses()
+		out = registry.ReduceToPage(page, out)
 	}
 
 	data := parseQueryOut(out)
@@ -107,6 +145,7 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
 
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
@@ -151,6 +190,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	out = append(out, out3...)
 	out = uniq(out)
 
+	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
 
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
