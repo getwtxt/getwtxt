@@ -52,7 +52,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Error Parsing User Data: %v\n", err.Error())
 	}
 
-	if err := twtxtCache.AddUser(nick, urls, uip, statuses); err != nil {
+	if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
 		log400(w, r, "Error Adding User to Cache: "+err.Error())
 		return
 	}
