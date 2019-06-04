@@ -1,4 +1,4 @@
-# getwtxt [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt)
+# getwtxt &nbsp; [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) ![GitHub last commit](https://img.shields.io/github/last-commit/getwtxt/getwtxt.svg?color=blue&logoColor=blue)
 
 twtxt registry written in Go! 
 
@@ -9,7 +9,8 @@ Registries are designed to aggregate several users' statuses into a single locat
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
-\[ [Installation](#installation) \] \[ [Configuration](#configuration) \] \[ [Using the Registry](#using-the-registry) \] \[ [Benchmarks](#benchmarks) \] \[ [Notes](#notes) \]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+\[ [Installation](#installation) \] &nbsp; &nbsp; \[ [Configuration](#configuration) \] &nbsp; &nbsp; \[ [Using the Registry](#using-the-registry) \] &nbsp; &nbsp; \[ [Benchmarks](#benchmarks) \] &nbsp; &nbsp; \[ [Other Documentation](#other-documentation) \] &nbsp; &nbsp; \[ [Notes](#notes) \]
 
 ## Features
 
@@ -56,12 +57,7 @@ $ go build -v
 
 To configure `getwtxt`, you'll first need to open `getwtxt.yml` in your favorite
 editor and modify any values necessary. There are comments in the file explaining
-each option. Additionally, you may run `getwtxt` with the `-m` flag for a short
-configuration manual.
-
-```
-$ ./getwtxt -m | less
-```
+each option.
 
 If you desire, you may additionally modify the template in `assets/tmpl/index.html`
 to customize the page users will see when they pull up your registry instance in
@@ -131,6 +127,10 @@ All timestamps are in `RFC3339` format, per the twtxt registry specification. Ad
 queries support the `?page=N` parameter, where `N` is a positive integer, that will retrieve page
 `N` of results in groups of twenty.
 
+The example API calls can also be found on the landing page of any `getwtxt` instance, assuming
+the admin has not customized the landing page.
+* [twtxt.tilde.institute](https://twtxt.tilde.institute)
+
 ### Adding a User
 Both nickname and URL are required
 ```
@@ -139,7 +139,7 @@ $ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext
 200 OK
 ```
 
-### Fetch All Statuses
+### Get All Tweets
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets'
 
@@ -148,7 +148,14 @@ foo_barrington  https://foo.bar.ext/twtxt.txt  2019-03-01T09:31:02.000Z Hey! It'
 ...
 ```
 
-### Fetch All Users
+### Query Tweets by Keyword
+```
+$ curl 'https://twtxt.example.com/api/plain/tweets?q=getwtxt'
+
+foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just installed getwtxt!
+```
+
+### Get All Users
 Timestamp reflects when the user was added to the registry.
 
 ```
@@ -176,18 +183,37 @@ foobar            https://example2.com/twtxt.txt    2019-03-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z
 ```
 
+### Get all tweets with mentions
+Mentions are placed within a status using the format `@<nickname http://url/twtxt.txt>`
+```
+$ curl 'https://twtxt.tilde.institute/api/plain/mentions'
+
+foo               https://example.com/twtxt.txt     2019-02-28T11:06:44.000Z    @<foo_barrington https://example3.com/twtxt.txt> Hey!! Are you still working on that project?
+bar               https://mxmmplm.com/twtxt.txt     2019-02-27T11:06:44.000Z    @<foobar https://example2.com/twtxt.txt> How's your day going, bud?
+foo_barrington    https://example3.com/twtxt.txt    2019-02-26T11:06:44.000Z    @<foo https://example.com/twtxt.txt> Did you eat my lunch?
+```
+
+### Query tweets by mention URL
+```
+$ curl 'https://twtxt.tilde.institute/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
+
+foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @<foo_barrington https://foobarrington.co.uk/twtxt.txt> Hey!! Are you still working on that project?e
+```
+
+### Get all Tags
+```
+$ curl 'https://twtxt.example.com/api/plain/tags'
+
+foo    https://example.com/twtxt.txt    2019-03-01T09:33:04.000Z    No, seriously, I need #help
+foo    https://example.com/twtxt.txt    2019-03-01T09:32:12.000Z    Seriously, I love #programming!
+foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!
+```
+
 ### Query by Tag
 ```
 $ curl 'https://twtxt.example.com/api/plain/tags/programming'
 
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!
-```
-
-### Query Tweets by Keyword
-```
-$ curl 'https://twtxt.example.com/api/plain/tweets?q=getwtxt'
-
-foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just installed getwtxt!
 ```
 
 ## Benchmarks
@@ -211,7 +237,19 @@ Statistics        Avg      Stdev        Max
   Throughput:     7.83MB/s
 ```
 
-## <a name="notes"></a>Notes
+## Other Documentation
+
+In addition to what is provided here, additional information, particularly regarding the configuration
+file, may be found by running `getwtxt` with the `-m` or `--manual` flags. You will likely want to pipe the output
+to `less` as it is quite long.
+
+```
+$ ./getwtxt -m | less
+
+$ ./getwtxt --manual | less
+```
+
+## Notes
 
 twtxt Information
   * [twtxt.readthedocs.io](https://twtxt.readthedocs.io)
