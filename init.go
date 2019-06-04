@@ -22,7 +22,7 @@ const getwtxt = "0.2.1"
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
 	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the quick-help screen.")
-	flagMan      *bool   = pflag.BoolP("man", "m", false, "Display the configuration manual.")
+	flagMan      *bool   = pflag.BoolP("manual", "m", false, "Display the configuration manual.")
 	flagConfFile *string = pflag.StringP("config", "c", "", "The name/path of the configuration file you wish to use.")
 )
 
@@ -304,9 +304,10 @@ func helpScreen() {
 
                  :: Command Line Options ::
 
-    -h               Print this help screen.
-    -m               Print the configuration manual.
-    -v               Print the version information and quit.
+Command Line Options:
+    -h [--help]      Print this help screen.
+    -m [--manual]    Print the manual.
+    -v [--version]   Print the version information and quit.
     -c [--config]    Path to an alternate configuration file
                        to use. May be relative or absolute.
 
