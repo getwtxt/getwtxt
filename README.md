@@ -14,10 +14,11 @@ for tags and key words.
 
 ## Features
 
-* Easy to set up and maintain. 
-* Uses an in-memory cache to serve requests.
-* Pushes to `LevelDB` at a configurable interval for data storage. 
-* Run directly facing the internet or behind `Caddy` / `nginx`.
+* Easy to set up and maintain 
+* Uses an in-memory cache to serve requests
+* Pushes to `LevelDB` at a configurable interval for data storage
+  * Back-ends for other databases currently in development
+* Run directly facing the internet or behind `Caddy` / `nginx`
 
 A public instance is currently available:
 * [twtxt.tilde.institute](https://twtxt.tilde.institute)
