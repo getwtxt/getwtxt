@@ -254,5 +254,8 @@ $ ./getwtxt --manual | less
 twtxt Information
   * [twtxt.readthedocs.io](https://twtxt.readthedocs.io)
 
+twtxt Client Repo
+  * [buckket/twtxt](https://github.com/buckket/twtxt) (Includes links to additional related projects. See "Contributions")
+
 Registry Specification
   * [twtxt.readthedocs.io/.../registry.html](https://twtxt.readthedocs.io/en/latest/user/registry.html)
