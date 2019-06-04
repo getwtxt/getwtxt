@@ -17,7 +17,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-const getwtxt = "0.1"
+const getwtxt = "0.2.0"
 
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
@@ -289,7 +289,7 @@ func titleScreen() {
 | (_| |  __/ |_ \ V  V /| |_ >  <| |_
  \__, |\___|\__| \_/\_/  \__/_/\_\\__|
  |___/
-             version ` + getwtxt + `
+            version ` + getwtxt + `
       github.com/getwtxt/getwtxt
                GPL  v3  
 `)
