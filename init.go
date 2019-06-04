@@ -17,7 +17,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-const getwtxt = "0.2.1"
+const getwtxt = "0.3.0"
 
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
