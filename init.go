@@ -156,6 +156,7 @@ func initConfig() {
 	confObj.LastPush = time.Now()
 	confObj.Version = getwtxt
 
+	confObj.Instance.Vers = getwtxt
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
 	confObj.Instance.URL = viper.GetString("Instance.URL")
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")

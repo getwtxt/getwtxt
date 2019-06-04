@@ -27,6 +27,7 @@ type Configuration struct {
 
 // Instance refers to this specific instance of getwtxt
 type Instance struct {
+	Vers  string `json:"-"`
 	Name  string `json:"Instance.SiteName"`
 	URL   string `json:"Instance.URL"`
 	Owner string `json:"Instance.OwnerName"`

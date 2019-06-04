@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="application-name" content="getwtxt">
+  <meta name="application-name" content="getwtxt {{.Vers}}">
   <link rel="stylesheet" type="text/css" href="/css">
   <title>{{.Name}} - twtxt Registry</title>
 </head>
@@ -34,7 +34,7 @@
 /api/plain/mentions
 /api/plain/tweets
 /api/plain/tags</code></pre>
-      <p>All queries accept <code>?page=N</code> as a parameter, returning sets of 20 results. 
+      <p>All queries accept <code>?page=N</code> as a parameter, returning groups of 20 results. 
       This may be omitted for the first page of results.</p>
       <p>Query by user:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/users?q=foo'
