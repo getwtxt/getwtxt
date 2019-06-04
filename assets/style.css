@@ -24,6 +24,7 @@
 
 #body {
   font-size: 1.0em;
+  margin-top: -1.5rem;
 }
 
 #info {
@@ -43,4 +44,10 @@
   padding-bottom: 2rem;
   text-align: center;
   font-size: 0.9em;
+}
+
+p {
+  text-indent: 1.5em;
+  padding-top: 1.0rem;
+  margin-bottom: -0.3rem;
 }
