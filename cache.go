@@ -75,12 +75,7 @@ func refreshCache() {
 	confObj.Mu.Unlock()
 }
 
-// Pushes the registry's cache data to a local
-// database for safe keeping.
-func pushDatabase() error {
-	db := <-dbChan
-	dbChan <- db
-
+func (lvl dbLevel) push() error {
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Users {
@@ -101,7 +96,7 @@ func pushDatabase() error {
 	}
 	remoteRegistries.Mu.RUnlock()
 
-	if err := db.Write(dbBasket, nil); err != nil {
+	if err := lvl.db.Write(dbBasket, nil); err != nil {
 		return err
 	}
 
@@ -112,11 +107,33 @@ func pushDatabase() error {
 	return nil
 }
 
-func pullDatabase() {
+func (lite dbSqlite) push() error {
+
+	return nil
+}
+
+func (lite dbSqlite) pull() {
+
+}
+
+// Pushes the registry's cache data to a local
+// database for safe keeping.
+func pushDatabase() error {
 	db := <-dbChan
 	dbChan <- db
 
-	iter := db.NewIterator(nil, nil)
+	return db.push()
+}
+
+func pullDatabase() {
+	db := <-dbChan
+	dbChan <- db
+	db.pull()
+}
+
+func (lvl dbLevel) pull() {
+
+	iter := lvl.db.NewIterator(nil, nil)
 
 	for iter.Next() {
 		key := string(iter.Key())

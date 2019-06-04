@@ -22,7 +22,12 @@
 # This is the port that getwtxt will bind to.
 ListenPort: 9001
 
-# The location of the LevelDB database structure. Can be
+# The type of database you want to use. Currently,
+# the following are supported:
+#   leveldb
+DatabaseType: "leveldb"
+
+# The location of the database structure. Can be
 # a relative or absolute path.
 DatabasePath: "getwtxt.db"
 

@@ -1,8 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"sync"
 	"time"
+
+	"github.com/syndtr/goleveldb/leveldb"
 )
 
 // content-type consts
@@ -13,26 +16,40 @@ const cssutf8 = "text/css; charset=utf-8"
 // Configuration object definition
 type Configuration struct {
 	Mu            sync.RWMutex
-	Port          int           `json:"ListenPort"`
-	LogFile       string        `json:"LogFile"`
-	DBPath        string        `json:"DatabasePath"`
-	StdoutLogging bool          `json:"StdoutLogging"`
-	Version       string        `json:"-"`
-	CacheInterval time.Duration `json:"StatusFetchInterval"`
-	DBInterval    time.Duration `json:"DatabasePushInterval"`
-	LastCache     time.Time     `json:"-"`
-	LastPush      time.Time     `json:"-"`
-	Instance      `json:"Instance"`
+	Port          int           `yaml:"ListenPort"`
+	LogFile       string        `yaml:"LogFile"`
+	DBType        string        `yaml:"DatabaseType"`
+	DBPath        string        `yaml:"DatabasePath"`
+	StdoutLogging bool          `yaml:"StdoutLogging"`
+	Version       string        `yaml:"-"`
+	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
+	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
+	LastCache     time.Time     `yaml:"-"`
+	LastPush      time.Time     `yaml:"-"`
+	Instance      `yaml:"Instance"`
 }
 
 // Instance refers to this specific instance of getwtxt
 type Instance struct {
-	Vers  string `json:"-"`
-	Name  string `json:"Instance.SiteName"`
-	URL   string `json:"Instance.URL"`
-	Owner string `json:"Instance.OwnerName"`
-	Mail  string `json:"Instance.Email"`
-	Desc  string `json:"Instance.Description"`
+	Vers  string `yaml:"-"`
+	Name  string `yaml:"Instance.SiteName"`
+	URL   string `yaml:"Instance.URL"`
+	Owner string `yaml:"Instance.OwnerName"`
+	Mail  string `yaml:"Instance.Email"`
+	Desc  string `yaml:"Instance.Description"`
+}
+
+type dbLevel struct {
+	db *leveldb.DB
+}
+
+type dbSqlite struct {
+	db *sql.DB
+}
+
+type dbase interface {
+	push() error
+	pull()
 }
 
 // RemoteRegistries holds a list of remote registries to
