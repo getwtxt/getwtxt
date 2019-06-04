@@ -34,13 +34,15 @@
 /api/plain/mentions
 /api/plain/tweets
 /api/plain/tags</code></pre>
+      <p>All queries accept <code>?page=N</code> as a parameter, returning sets of 20 results. 
+      This may be omitted for the first page of results.</p>
       <p>Query by user:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/users?q=foo'
 foo               https://example.com/twtxt.txt     2019-05-09T08:42:23.000Z
 foobar            https://example2.com/twtxt.txt    2019-03-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z</code></pre>
       <p>Query by tweet content:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
+        <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt&amp;page=2'
 foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!</code></pre>
       <p>Query by mention:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
@@ -48,8 +50,8 @@ foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_bar
       <p>Query by tag:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
-      <p>Get latest 20 tweets:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tweets'
+      <p>Get 20 tweets:</p>
+        <pre><code>$ curl '{{.URL}}/api/plain/tweets?page=2'
 foobar    https://example2.com/twtxt.txt    2019-05-13T12:46:20.000Z    It's been a busy day at work!
 ...</code></pre>
       <p>Get all users:</p>
