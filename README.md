@@ -127,7 +127,9 @@ $ ./getwtxt
 ## Using the Registry
 
 The following examples will all apply to using `curl` from a `Linux`, `BSD`, or `macOS` terminal.
-All timestamps are in `RFC3339` format, per the twtxt registry specification
+All timestamps are in `RFC3339` format, per the twtxt registry specification. Additionally, all
+queries support the `?page=N` parameter, where `N` is a positive integer, that will retrieve page
+`N` of results in groups of twenty.
 
 ### Adding a User
 Both nickname and URL are required
