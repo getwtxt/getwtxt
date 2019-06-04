@@ -38,7 +38,7 @@
         If both <code>?url=X</code> and <code>?nickname=X</code> are not passed, or the user already exists in 
         this registry, you will receive <code>400 Bad Request</code> as a response. If you are unsure what went
         wrong, the error message should provide enough information for you to correct the request.</p>
-        <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://example3.com/twtxt.txt&amp;nickname=foo_barrington'
+        <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://foo.ext/twtxt.txt&amp;nickname=foobar'
 200 OK</code></pre>
       <p>Query responses are in descending chronological order. This means the newest user or tweet will be in the
       first row of the response, with older users or tweets in subsequent rows. Additionally, All queries accept <code>?page=N</code> 
@@ -61,15 +61,7 @@ foobar    https://example2.com/twtxt.txt    2019-05-13T12:46:20.000Z    It's bee
 ...</code></pre>
       <p>Query tweets by keyword:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
-foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just built getwtxt, time to set it up!</code></pre>
-      <p>Get all tweets with mentions:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/mentions'
-foo               https://example.com/twtxt.txt     2019-02-28T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?
-bar               https://mxmmplm.com/twtxt.txt     2019-02-27T11:06:44.000Z    @&lt;foobar https://example2.com/twtxt.txt&gt; How's your day going, bud?
-foo_barrington    https://example3.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo https://example.com/twtxt.txt&gt; Did you eat my lunch?</code></pre>
-      <p>Query tweets by mention URL:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
-foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?</code></pre>
+foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just installed getwtxt</code></pre>
       <p>Get all tweets with tags:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tags'
 foo    https://example.com/twtxt.txt    2019-03-01T09:33:12.000Z    No, seriously, I need #help
@@ -78,6 +70,14 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
       <p>Query tweets by tag:</p>
         <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
+      <p>Get all tweets with mentions:</p>
+        <pre><code>$ curl '{{.URL}}/api/plain/mentions'
+foo               https://example.com/twtxt.txt     2019-02-28T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?
+bar               https://mxmmplm.com/twtxt.txt     2019-02-27T11:06:44.000Z    @&lt;foobar https://example2.com/twtxt.txt&gt; How's your day going, bud?
+foo_barrington    https://example3.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo https://example.com/twtxt.txt&gt; Did you eat my lunch?</code></pre>
+      <p>Query tweets by mention URL:</p>
+        <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
+foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?</code></pre>
     </div>
     <div id="foot">
       powered by <a href="https://github.com/getwtxt/getwtxt">getwtxt</a>
