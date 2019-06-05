@@ -86,7 +86,10 @@ twtxt.example.com
 proxy / example.com:9001
 ```
 
-If you're using `nginx`, here's a skeleton config to get you started:
+If you're using `nginx`, here's a skeleton config to get you started. Don't forget to change 
+the 5 instances of `twtxt.example.com` to the (sub)domain you'll be using to access the registry, 
+generate SSL/TLS certificates using `letsencrypt`, and change the port in `proxy_pass` to whichever 
+port you specified when modifying the configuration file. Currently, it's set to the default port `9001`
 
 ```nginx
 server {
@@ -100,7 +103,7 @@ server {
     location / {
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $remote_addr;
-        proxy_pass http://127.0.0.1:9010;
+        proxy_pass http://127.0.0.1:9001;
     }
 }
 server {
