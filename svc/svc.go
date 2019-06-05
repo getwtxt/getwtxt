@@ -1,4 +1,4 @@
-package main
+package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"fmt"
@@ -10,7 +10,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func main() {
+// Start is the initialization function for getwtxt
+func Start() {
 
 	// StrictSlash(true) allows /api and /api/
 	// to serve the same content without duplicating

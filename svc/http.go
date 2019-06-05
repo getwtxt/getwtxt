@@ -1,4 +1,4 @@
-package main
+package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"context"
