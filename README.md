@@ -25,14 +25,8 @@ A public instance is currently available:
 
 ## Installation 
 
-First, fetch the sources using either the `go` tool or using `git`
+First, fetch the sources using `git`
 and jump into the directory.
-
-```
-$ go get github.com/getwtxt/getwtxt
-...
-$ cd $GOPATH/src/github.com/getwtxt/getwtxt
-```
 
 ```
 $ git clone git://github.com/getwtxt/getwtxt.git
@@ -46,24 +40,27 @@ Optionally, use the `go` tool to test and benchmark it:
 $ go test -v -bench . -benchmem
 ```
 
-Use the `go` tool to build:
+Use `make` to initiate the build and install process
 
 ```
-$ go build -v
+$ make
+...
+$ sudo make install
 ```
 
 ## Configuration
 
 \[ [Proxying](#proxying) \] \[ [Starting getwtxt](#starting-getwtxt) \]
 
-To configure `getwtxt`, you'll first need to open `getwtxt.yml` in your favorite
-editor and modify any values necessary. There are comments in the file explaining
-each option.
+To configure `getwtxt`, you'll first need to open `/usr/local/getwtxt/getwtxt.yml` 
+in your favorite editor and modify any values necessary. There are comments in the 
+file explaining each option.
 
-If you desire, you may additionally modify the template in `assets/tmpl/index.html`
-to customize the page users will see when they pull up your registry instance in
-a web browser. The values in the configuration file under `Instance:` are used
-to replace text `{{.Like This}}` in the template.
+If you desire, you may additionally modify the template in 
+`/usr/local/getwtxt/assets/tmpl/index.html` to customize the page users will see 
+when they pull up your registry instance in a web browser. The values in the 
+configuration file under `Instance:` are used to replace text `{{.Like This}}` in 
+the template.
 
 ### Proxying
 
@@ -107,18 +104,13 @@ server {
 
 ### Starting `getwtxt`
 
-Once you've customized the configuration, start it within a `tmux` session (or `screen` works) and detach.
-If you're using a configuration file not in one of the expected locations or with a non-default name, 
-start `getwtxt` like this:
+Once you have everything configured to your needs, use `systemd` to enable it
+to run on system boot, then start it via `systemctl`
 
 ```
-$ ./getwtxt -c /path/to/configuration/file.yml
-```
-
-Otherwise, just:
-
-```
-$ ./getwtxt
+$ sudo systemctl enable getwtxt
+...
+$ sudo systemctl start getwtxt
 ```
 
 ## Using the Registry
@@ -225,17 +217,17 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
 $ bombardier -c 100 -n 200000 http://localhost:9001/api/plain/tweets
 
 Bombarding http://localhost:9001/api/plain/tweets with 200000 request(s) using 100 connection(s)
- 200000 / 200000 [=============================================================] 100.00% 15100/s 13s
+ 200000 / 200000 [=============================================================] 100.00% 19574/s 10s
 
 Done!
 
 Statistics        Avg      Stdev        Max
-  Reqs/sec     15249.12    3526.87   25047.46
-  Latency        6.56ms     2.93ms    64.54ms
+  Reqs/sec     19905.42    3597.45   27879.77
+  Latency        5.02ms     3.43ms    80.11ms
   HTTP codes:
     1xx - 0, 2xx - 200000, 3xx - 0, 4xx - 0, 5xx - 0
     others - 0
-  Throughput:     7.83MB/s
+  Throughput:    34.56MB/s
 ```
 
 ## Other Documentation
@@ -248,6 +240,14 @@ to `less` as it is quite long.
 $ ./getwtxt -m | less
 
 $ ./getwtxt --manual | less
+```
+
+If you need to remove `getwtxt` from your system, navigate to the source directory
+you acquired using `git` during the installation process and run the appropriate
+`make` hook:
+
+```
+$ sudo make uninstall
 ```
 
 ## Notes
