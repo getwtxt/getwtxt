@@ -7,6 +7,7 @@ import (
 	"github.com/getwtxt/registry"
 )
 
+/*
 func Test_pushpullDatabase(t *testing.T) {
 	initTestConf()
 	initDatabase()
@@ -47,7 +48,7 @@ func Test_pushpullDatabase(t *testing.T) {
 
 	})
 }
-
+*/
 func Benchmark_pushDatabase(b *testing.B) {
 	initTestConf()
 
