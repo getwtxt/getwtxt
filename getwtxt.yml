@@ -41,7 +41,7 @@ DatabasePath: "getwtxt.db"
 # requests, to stdout. It will ignore any set log file.
 # Useful for debugging, but you probably want to keep
 # logs.
-StdoutLogging: true
+StdoutLogging: false
 
 # The file getwtxt will append log messages to. Can be a
 # relative or absolute path.

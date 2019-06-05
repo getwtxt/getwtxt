@@ -67,12 +67,16 @@ func refreshCache() {
 // pulled back into memory from disk.
 func pingAssets() {
 
-	cssStat, err := os.Stat("assets/style.css")
+	confObj.Mu.RLock()
+	assetsDir := confObj.AssetsDir
+	confObj.Mu.RUnlock()
+
+	cssStat, err := os.Stat(assetsDir + "/style.css")
 	if err != nil {
 		log.Printf("%v\n", err.Error())
 	}
 
-	indexStat, err := os.Stat("assets/tmpl/index.html")
+	indexStat, err := os.Stat(assetsDir + "/tmpl/index.html")
 	if err != nil {
 		log.Printf("%v\n", err.Error())
 	}
@@ -99,7 +103,7 @@ func pingAssets() {
 
 	if !cssMod.Equal(cssStat.ModTime()) {
 
-		css, err := ioutil.ReadFile("assets/style.css")
+		css, err := ioutil.ReadFile(assetsDir + "/style.css")
 		if err != nil {
 			log.Printf("%v\n", err.Error())
 		}

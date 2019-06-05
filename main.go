@@ -11,7 +11,6 @@ import (
 )
 
 func main() {
-	initGetwtxt()
 
 	// StrictSlash(true) allows /api and /api/
 	// to serve the same content without duplicating

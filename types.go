@@ -20,6 +20,7 @@ type Configuration struct {
 	LogFile       string        `yaml:"LogFile"`
 	DBType        string        `yaml:"DatabaseType"`
 	DBPath        string        `yaml:"DatabasePath"`
+	AssetsDir     string        `yaml:"-"`
 	StdoutLogging bool          `yaml:"StdoutLogging"`
 	Version       string        `yaml:"-"`
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`

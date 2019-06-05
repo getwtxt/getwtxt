@@ -25,6 +25,9 @@ var (
 	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the quick-help screen.")
 	flagMan      *bool   = pflag.BoolP("manual", "m", false, "Display the configuration manual.")
 	flagConfFile *string = pflag.StringP("config", "c", "", "The name/path of the configuration file you wish to use.")
+	flagAssets   *string = pflag.StringP("assets", "a", "", "The location of the getwtxt assets directory")
+	flagDBPath   *string = pflag.StringP("db", "d", "", "Path to the getwtxt database")
+	flagDBType   *string = pflag.StringP("dbtype", "t", "", "Type of database being used")
 )
 
 var confObj = &Configuration{}
@@ -54,7 +57,7 @@ var staticCache = &struct {
 	cssMod:   time.Time{},
 }
 
-func initGetwtxt() {
+func init() {
 	checkFlags()
 	titleScreen()
 	initConfig()
@@ -122,6 +125,7 @@ func initConfig() {
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
+	viper.SetDefault("DatabaseType", "leveldb")
 	viper.SetDefault("StdoutLogging", false)
 	viper.SetDefault("ReCacheInterval", "1h")
 	viper.SetDefault("DatabasePushInterval", "5m")
@@ -137,9 +141,24 @@ func initConfig() {
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.LogFile = viper.GetString("LogFile")
 
-	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
-	confObj.DBPath = viper.GetString("DatabasePath")
-	log.Printf("Using database: %v\n", confObj.DBPath)
+	if *flagDBType == "" {
+		confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
+	} else {
+		confObj.DBType = *flagDBType
+	}
+
+	if *flagDBPath == "" {
+		confObj.DBPath = viper.GetString("DatabasePath")
+	} else {
+		confObj.DBPath = *flagDBPath
+	}
+	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
+
+	if *flagAssets == "" {
+		confObj.AssetsDir = "assets"
+	} else {
+		confObj.AssetsDir = *flagAssets
+	}
 
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	if confObj.StdoutLogging {
@@ -233,7 +252,11 @@ func rebindConfig() {
 }
 
 func initTemplates() *template.Template {
-	return template.Must(template.ParseFiles("assets/tmpl/index.html"))
+	confObj.Mu.RLock()
+	assetsDir := confObj.AssetsDir
+	confObj.Mu.RUnlock()
+
+	return template.Must(template.ParseFiles(assetsDir + "/tmpl/index.html"))
 }
 
 // Pull DB data into cache, if available.

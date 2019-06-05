@@ -1,0 +1,14 @@
+[Unit]
+Description=getwtxt
+
+[Service]
+Type=simple
+ExecStart=/usr/local/getwtxt/getwtxt \
+          --assets /usr/local/getwtxt/assets \
+          --config /usr/local/getwtxt/getwtxt.yml \
+          --db /usr/local/getwtxt/getwtxt.db \
+          --dbtype leveldb
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
