@@ -28,6 +28,7 @@ func cacheAndPush() {
 				log.Printf("Error pushing cache to database: %v\n", err.Error())
 			}
 		}
+		time.Sleep(1000 * time.Millisecond)
 	}
 }
 
