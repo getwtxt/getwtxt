@@ -25,7 +25,18 @@ A public instance is currently available:
 
 ## Installation 
 
-First, fetch the sources using `git`
+While I've included macOS builds in `.travis.yml`, I have only
+personally tested `getwtxt` on Linux, specifically:
+* Debian 9, 10/Testing, Sid
+* Ubuntu Server 18.04LTS, 18.10, 19.04
+
+Build dependencies are minimal, and only include:
+* `gnu make`
+* `go >= 1.11`
+
+`git` is not required if you download the sources via the [`Releases`](https://github.com/getwtxt/getwtxt/releases) tab
+
+Now, on with the directions. First, fetch the sources using `git`
 and jump into the directory.
 
 ```
