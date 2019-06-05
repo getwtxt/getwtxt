@@ -126,6 +126,7 @@ func initConfig() {
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
+	viper.SetDefault("AssetsDirectory", "assets")
 	viper.SetDefault("DatabaseType", "leveldb")
 	viper.SetDefault("StdoutLogging", false)
 	viper.SetDefault("ReCacheInterval", "1h")
@@ -156,7 +157,7 @@ func initConfig() {
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 
 	if *flagAssets == "" {
-		confObj.AssetsDir = "assets"
+		confObj.AssetsDir = viper.GetString("AssetsDirectory")
 	} else {
 		confObj.AssetsDir = *flagAssets
 	}
@@ -352,12 +353,19 @@ func helpScreen() {
 
                  :: Command Line Options ::
 
-Command Line Options:
+    Command line options are used to explicitly override defaults,
+ or what has been specified in the configuration file.
+
     -h [--help]      Print this help screen.
     -m [--manual]    Print the manual.
     -v [--version]   Print the version information and quit.
     -c [--config]    Path to an alternate configuration file
                        to use. May be relative or absolute.
+    -a [--assets]    Path to the assets directory, containing
+                       style.css and tmpl/index.html
+    -d [--db]        Path getwtxt should use for the database.
+    -t [--dbtype]    Type of database to use.
+                       Options: leveldb
 
 `)
 }
@@ -414,10 +422,21 @@ func manualScreen() {
     ListenPort: Defines the port getwtxt should bind to.
         Default: 9001
 
+    DatabaseType: The type of back-end getwtxt should use
+        to store registry data. Currently, only leveldb
+        is available, with more options in development.
+        Default: leveldb
+
     DatabasePath: The location of the LevelDB structure
         used by getwtxt to back up registry data. This
         can be a relative or absolute path.
         Default: getwtxt.db
+
+    AssetsDirectory: This is the directory where getwtxt
+        can find style.css and tmpl/index.html -- the
+        stylesheet for the landing page and the landing
+        page template, respectively.
+        Default: assets
 
     StdoutLogging: Boolean used to determine whether
         getwtxt should send logging output to stdout.
