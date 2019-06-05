@@ -1,4 +1,4 @@
-package svc // import github.com/getwtxt/getwtxt/svc
+package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"errors"
