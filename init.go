@@ -64,6 +64,7 @@ func init() {
 	initLogging()
 	tmpls = initTemplates()
 	initDatabase()
+	go cacheAndPush()
 	watchForInterrupt()
 }
 
@@ -286,7 +287,6 @@ func initDatabase() {
 	dbChan <- db
 
 	pullDatabase()
-	go cacheAndPush()
 }
 
 // Watch for SIGINT aka ^C
