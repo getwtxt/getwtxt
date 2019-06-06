@@ -3,27 +3,59 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 import (
 	"crypto/sha256"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/getwtxt/registry"
 	"github.com/gorilla/mux"
 )
+
+func getEtag(modtime time.Time) string {
+	shabytes, err := modtime.MarshalText()
+	if err != nil {
+		log.Printf("%v\n", err.Error())
+	}
+	return fmt.Sprintf("%x", sha256.Sum256(shabytes))
+}
 
 // handles "/"
 func indexHandler(w http.ResponseWriter, r *http.Request) {
 
 	pingAssets()
 
-	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(staticCache.indexMod.String())))
-
 	// Take the hex-encoded sha256 sum of the index template's mod time
 	// to send as an ETag. If an error occurred when grabbing the file info,
 	// the ETag will be empty.
+	staticCache.mu.RLock()
+	etag := getEtag(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
 
 	_, err := w.Write(staticCache.index)
+	staticCache.mu.RUnlock()
+	if err != nil {
+		log500(w, r, err)
+		return
+	}
+
+	log200(r)
+}
+
+// Serving the stylesheet virtually because
+// files aren't served directly in getwtxt.
+func cssHandler(w http.ResponseWriter, r *http.Request) {
+
+	pingAssets()
+
+	staticCache.mu.RLock()
+	etag := getEtag(staticCache.cssMod)
+	w.Header().Set("ETag", "\""+etag+"\"")
+	w.Header().Set("Content-Type", cssutf8)
+
+	_, err := w.Write(staticCache.css)
+	staticCache.mu.RUnlock()
 	if err != nil {
 		log500(w, r, err)
 		return
@@ -177,27 +209,6 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err := w.Write(data)
 	if err != nil {
-		log500(w, r, err)
-		return
-	}
-
-	log200(r)
-}
-
-// Serving the stylesheet virtually because
-// files aren't served directly in getwtxt.
-func cssHandler(w http.ResponseWriter, r *http.Request) {
-
-	// Sending the sha256 sum of the modtime in hexadecimal for the ETag header
-	etag := fmt.Sprintf("%x", sha256.Sum256([]byte(staticCache.cssMod.String())))
-
-	w.Header().Set("ETag", "\""+etag+"\"")
-	w.Header().Set("Content-Type", cssutf8)
-
-	pingAssets()
-
-	n, err := w.Write(staticCache.css)
-	if err != nil || n == 0 {
 		log500(w, r, err)
 		return
 	}

@@ -18,6 +18,7 @@ type RemoteRegistries struct {
 }
 
 type staticAssets struct {
+	mu       sync.RWMutex
 	index    []byte
 	indexMod time.Time
 	css      []byte
@@ -98,8 +99,10 @@ func pingAssets() {
 		log.Printf("%v\n", err.Error())
 	}
 
+	staticCache.mu.RLock()
 	indexMod := staticCache.indexMod
 	cssMod := staticCache.cssMod
+	staticCache.mu.RUnlock()
 
 	if !indexMod.Equal(indexStat.ModTime()) {
 		tmpls = initTemplates()
@@ -114,8 +117,10 @@ func pingAssets() {
 			log.Printf("%v\n", err.Error())
 		}
 
+		staticCache.mu.Lock()
 		staticCache.index = buf.Bytes()
 		staticCache.indexMod = indexStat.ModTime()
+		staticCache.mu.Unlock()
 	}
 
 	if !cssMod.Equal(cssStat.ModTime()) {
@@ -125,7 +130,9 @@ func pingAssets() {
 			log.Printf("%v\n", err.Error())
 		}
 
+		staticCache.mu.Lock()
 		staticCache.css = css
 		staticCache.cssMod = cssStat.ModTime()
+		staticCache.mu.Unlock()
 	}
 }

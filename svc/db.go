@@ -11,6 +11,11 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
+type dbase interface {
+	push() error
+	pull()
+}
+
 type dbLevel struct {
 	db *leveldb.DB
 }
@@ -19,9 +24,8 @@ type dbSqlite struct {
 	db *sql.DB
 }
 
-type dbase interface {
-	push() error
-	pull()
+type dbPostgres struct {
+	db *sql.DB
 }
 
 // Pull DB data into cache, if available.
@@ -40,6 +44,10 @@ func initDatabase() {
 	case "sqlite":
 		var lite *sql.DB
 		db = &dbSqlite{db: lite}
+
+	case "postgres":
+		var pg *sql.DB
+		db = &dbPostgres{db: pg}
 
 	}
 	confObj.Mu.RUnlock()
@@ -65,15 +73,16 @@ func dbTimer() bool {
 // database for safe keeping.
 func pushDB() error {
 	db := <-dbChan
+	err := db.push()
 	dbChan <- db
 
-	return db.push()
+	return err
 }
 
 func pullDB() {
 	db := <-dbChan
-	dbChan <- db
 	db.pull()
+	dbChan <- db
 }
 
 func (lvl dbLevel) push() error {
@@ -174,5 +183,14 @@ func (lite dbSqlite) push() error {
 }
 
 func (lite dbSqlite) pull() {
+
+}
+
+func (pg dbPostgres) push() error {
+
+	return nil
+}
+
+func (pg dbPostgres) pull() {
 
 }
