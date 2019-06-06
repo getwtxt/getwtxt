@@ -1,6 +1,7 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
+	"database/sql"
 	"log"
 	"net"
 	"strings"
@@ -9,6 +10,35 @@ import (
 	"github.com/getwtxt/registry"
 	"github.com/syndtr/goleveldb/leveldb"
 )
+
+// Pull DB data into cache, if available.
+func initDatabase() {
+	var db dbase
+	var err error
+
+	confObj.Mu.RLock()
+	switch confObj.DBType {
+
+	case "leveldb":
+		var lvl *leveldb.DB
+		lvl, err = leveldb.OpenFile(confObj.DBPath, nil)
+		db = &dbLevel{db: lvl}
+
+	case "sqlite":
+		var lite *sql.DB
+		db = &dbSqlite{db: lite}
+
+	}
+	confObj.Mu.RUnlock()
+
+	if err != nil {
+		log.Fatalf("%v\n", err.Error())
+	}
+
+	dbChan <- db
+
+	pullDatabase()
+}
 
 func checkDBtime() bool {
 	confObj.Mu.RLock()
