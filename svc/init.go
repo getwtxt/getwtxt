@@ -101,11 +101,10 @@ func watchForInterrupt() {
 			db := <-dbChan
 
 			switch dbType := db.(type) {
-
 			case *dbLevel:
-				lvl := dbType
-				err := lvl.db.Close()
-				errLog("", err)
+				errLog("", dbType.db.Close())
+			case *dbSqlite:
+				errLog("", dbType.db.Close())
 			}
 
 			if !confObj.StdoutLogging {

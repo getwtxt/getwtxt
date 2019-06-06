@@ -40,8 +40,7 @@ func cacheAndPush() {
 			refreshCache()
 		}
 		if dbTimer() {
-			err := pushDB()
-			errLog("Error pushing cache to database: ", err)
+			errLog("Error pushing cache to database: ", pushDB())
 		}
 		time.Sleep(1000 * time.Millisecond)
 	}
@@ -57,16 +56,14 @@ func refreshCache() {
 	twtxtCache.Mu.RLock()
 	for k := range twtxtCache.Users {
 		twtxtCache.Mu.RUnlock()
-		err := twtxtCache.UpdateUser(k)
-		errLog("", err)
+		errLog("", twtxtCache.UpdateUser(k))
 		twtxtCache.Mu.RLock()
 	}
 	twtxtCache.Mu.RUnlock()
 
 	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
-		err := twtxtCache.CrawlRemoteRegistry(v)
-		errLog("Error refreshing local copy of remote registry data: ", err)
+		errLog("Error refreshing local copy of remote registry data: ", twtxtCache.CrawlRemoteRegistry(v))
 	}
 	remoteRegistries.Mu.RUnlock()
 	confObj.Mu.Lock()
@@ -101,9 +98,8 @@ func pingAssets() {
 		buf := bytes.NewBuffer(b)
 
 		confObj.Mu.RLock()
-		err = tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance)
+		errLog("", tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance))
 		confObj.Mu.RUnlock()
-		errLog("", err)
 
 		staticCache.mu.Lock()
 		staticCache.index = buf.Bytes()

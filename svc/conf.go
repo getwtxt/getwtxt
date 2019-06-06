@@ -58,9 +58,7 @@ func initLogging() {
 	} else {
 
 		logfile, err := os.OpenFile(confObj.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
-		if err != nil {
-			log.Printf("Could not open log file: %v\n", err.Error())
-		}
+		errLog("Could not open log file: ", err)
 
 		// Listen for the signal to close the log file
 		// in a separate thread. Passing it as an argument
@@ -69,12 +67,10 @@ func initLogging() {
 		go func(logfile *os.File) {
 
 			<-closeLog
-			log.Printf("Closing log file ...\n")
 
-			err = logfile.Close()
-			if err != nil {
-				log.Printf("Couldn't close log file: %v\n", err.Error())
-			}
+			log.Printf("Closing log file ...\n")
+			errLog("Could not close log file: ", logfile.Close())
+
 		}(logfile)
 
 		log.SetOutput(logfile)

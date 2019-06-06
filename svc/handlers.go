@@ -79,9 +79,6 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := parseQueryOut(out)
-	if err != nil {
-		data = []byte("")
-	}
 
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
 	w.Header().Set("ETag", etag)
@@ -140,11 +137,9 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		out, err = twtxtCache.QueryAllStatuses()
 		out = registry.ReduceToPage(page, out)
 	}
+	errLog("", err)
 
 	data := parseQueryOut(out)
-	if err != nil {
-		data = []byte("")
-	}
 
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
 	w.Header().Set("ETag", etag)
