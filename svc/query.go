@@ -19,6 +19,20 @@ func apiErrCheck(err error, r *http.Request) {
 	}
 }
 
+func dedupe(list []string) []string {
+	out := []string{}
+	seen := make(map[string]bool)
+
+	for _, e := range list {
+		if !seen[e] {
+			out = append(out, e)
+			seen[e] = true
+		}
+	}
+
+	return out
+}
+
 // Takes the output of queries and formats it for
 // an HTTP response. Iterates over the string slice,
 // appending each entry to a byte slice, and adding
@@ -37,20 +51,7 @@ func parseQueryOut(out []string) []byte {
 	return data
 }
 
-// Removes duplicate statuses from query output
-func uniq(str []string) []string {
-	keys := make(map[string]bool)
-	out := []string{}
-	for _, e := range str {
-		if _, ok := keys[e]; !ok {
-			keys[e] = true
-			out = append(out, e)
-		}
-	}
-	return out
-}
-
-// apiUserQuery is called via apiEndpointHandler when
+// apiEndpointQuery is called via apiEndpointHandler when
 // the endpoint is "users" and r.FormValue("q") is not empty.
 // It queries the registry cache for users or user URLs
 // matching the term supplied via r.FormValue("q")
@@ -123,9 +124,8 @@ func joinQueryOuts(data ...[]string) []string {
 	for _, e := range data {
 		single = append(single, e...)
 	}
-	single = uniq(single)
 
-	return single
+	return dedupe(single)
 }
 
 func compositeStatusQuery(query string, r *http.Request) []string {

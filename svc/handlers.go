@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 
 	"github.com/getwtxt/registry"
 	"github.com/gorilla/mux"
@@ -167,28 +166,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	tags := vars["tags"]
 
-	tags = strings.ToLower(tags)
-	out, err := twtxtCache.QueryInStatus("#" + tags)
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-	tags = strings.Title(tags)
-	out2, err := twtxtCache.QueryInStatus("#" + tags)
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-	tags = strings.ToUpper(tags)
-	out3, err := twtxtCache.QueryInStatus("#" + tags)
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
-
-	out = append(out, out2...)
-	out = append(out, out3...)
-	out = uniq(out)
+	out := compositeStatusQuery("#"+tags, r)
 
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
@@ -197,7 +175,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
-	_, err = w.Write(data)
+	_, err := w.Write(data)
 	if err != nil {
 		log500(w, r, err)
 		return
