@@ -73,7 +73,7 @@ func Benchmark_pushDatabase(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		err := pushDatabase()
+		err := pushDB()
 		if err != nil {
 			b.Errorf("%v\n", err)
 		}
@@ -87,6 +87,6 @@ func Benchmark_pullDatabase(b *testing.B) {
 	}
 
 	for i := 0; i < b.N; i++ {
-		pullDatabase()
+		pullDB()
 	}
 }

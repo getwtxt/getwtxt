@@ -37,10 +37,10 @@ func initDatabase() {
 
 	dbChan <- db
 
-	pullDatabase()
+	pullDB()
 }
 
-func checkDBtime() bool {
+func dbTimer() bool {
 	confObj.Mu.RLock()
 	answer := time.Since(confObj.LastPush) > confObj.DBInterval
 	confObj.Mu.RUnlock()
@@ -50,14 +50,14 @@ func checkDBtime() bool {
 
 // Pushes the registry's cache data to a local
 // database for safe keeping.
-func pushDatabase() error {
+func pushDB() error {
 	db := <-dbChan
 	dbChan <- db
 
 	return db.push()
 }
 
-func pullDatabase() {
+func pullDB() {
 	db := <-dbChan
 	dbChan <- db
 	db.pull()

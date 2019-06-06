@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func checkCacheTime() bool {
+func cacheTimer() bool {
 	confObj.Mu.RLock()
 	answer := time.Since(confObj.LastCache) > confObj.CacheInterval
 	confObj.Mu.RUnlock()
@@ -20,11 +20,11 @@ func checkCacheTime() bool {
 // for the update intervals to pass.
 func cacheAndPush() {
 	for {
-		if checkCacheTime() {
+		if cacheTimer() {
 			refreshCache()
 		}
-		if checkDBtime() {
-			if err := pushDatabase(); err != nil {
+		if dbTimer() {
+			if err := pushDB(); err != nil {
 				log.Printf("Error pushing cache to database: %v\n", err.Error())
 			}
 		}
@@ -112,19 +112,4 @@ func pingAssets() {
 		staticCache.css = css
 		staticCache.cssMod = cssStat.ModTime()
 	}
-}
-
-// Simple function to deduplicate entries in a []string
-func dedupe(list []string) []string {
-	var out []string
-	var seen = map[string]bool{}
-
-	for _, e := range list {
-		if !seen[e] {
-			out = append(out, e)
-			seen[e] = true
-		}
-	}
-
-	return out
 }
