@@ -64,9 +64,7 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 
 	pageVal = strings.TrimSpace(pageVal)
 	page, err := strconv.Atoi(pageVal)
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 
 	vars := mux.Vars(r)
 	endpoint := vars["endpoint"]

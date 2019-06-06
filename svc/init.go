@@ -40,6 +40,18 @@ var remoteRegistries = &RemoteRegistries{}
 
 var staticCache = &staticAssets{}
 
+func errFatal(context string, err error) {
+	if err != nil {
+		log.Fatalf(context+"%v\n", err.Error())
+	}
+}
+
+func errLog(context string, err error) {
+	if err != nil {
+		log.Printf(context+"%v\n", err.Error())
+	}
+}
+
 // I'm not using init() because it runs
 // even during testing and was causing
 // problems.
@@ -92,10 +104,8 @@ func watchForInterrupt() {
 
 			case *dbLevel:
 				lvl := dbType
-				if err := lvl.db.Close(); err != nil {
-					log.Printf("%v\n", err.Error())
-				}
-
+				err := lvl.db.Close()
+				errLog("", err)
 			}
 
 			if !confObj.StdoutLogging {

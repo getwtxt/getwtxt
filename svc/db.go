@@ -2,13 +2,12 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"database/sql"
-	"log"
 	"net"
 	"strings"
 	"time"
 
 	"github.com/getwtxt/registry"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // for the sqlite3 driver
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
@@ -45,11 +44,11 @@ func initDatabase() {
 	case "sqlite":
 		var lite *sql.DB
 		lite, err := sql.Open("sqlite3", confObj.DBPath)
-		errFatal(err)
+		errFatal("Error opening sqlite3 DB: ", err)
 		litePrep, err := lite.Prepare("CREATE TABLE IF NOT EXISTS getwtxt (urlKey TEXT PRIMARY KEY, isUser BOOL, blobKey TEXT, data BLOB)")
-		errFatal(err)
+		errFatal("Error preparing sqlite3 DB: ", err)
 		_, err = litePrep.Exec()
-		errFatal(err)
+		errFatal("Error creating sqlite3 DB: ", err)
 		db = &dbSqlite{db: lite}
 
 	case "postgres":
@@ -59,9 +58,7 @@ func initDatabase() {
 	}
 	confObj.Mu.RUnlock()
 
-	if err != nil {
-		log.Fatalf("%v\n", err.Error())
-	}
+	errFatal("", err)
 
 	dbChan <- db
 
@@ -161,9 +158,7 @@ func (lvl dbLevel) pull() {
 			data.Date = val
 		case "Status":
 			thetime, err := time.Parse(time.RFC3339, split[2])
-			if err != nil {
-				log.Printf("%v\n", err.Error())
-			}
+			errLog("", err)
 			data.Status[thetime] = val
 		}
 
@@ -179,9 +174,7 @@ func (lvl dbLevel) pull() {
 
 	iter.Release()
 	err := iter.Error()
-	if err != nil {
-		log.Printf("Error while pulling DB into registry cache: %v\n", err.Error())
-	}
+	errLog("Error while pulling DB into registry cache: ", err)
 }
 
 func (lite dbSqlite) push() error {

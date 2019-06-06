@@ -3,7 +3,6 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 import (
 	"crypto/sha256"
 	"fmt"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,9 +13,7 @@ import (
 
 func getEtag(modtime time.Time) string {
 	shabytes, err := modtime.MarshalText()
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 	return fmt.Sprintf("%x", sha256.Sum256(shabytes))
 }
 

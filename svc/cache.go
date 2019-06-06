@@ -3,7 +3,6 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 import (
 	"bytes"
 	"io/ioutil"
-	"log"
 	"os"
 	"sync"
 	"time"
@@ -41,9 +40,8 @@ func cacheAndPush() {
 			refreshCache()
 		}
 		if dbTimer() {
-			if err := pushDB(); err != nil {
-				log.Printf("Error pushing cache to database: %v\n", err.Error())
-			}
+			err := pushDB()
+			errLog("Error pushing cache to database: ", err)
 		}
 		time.Sleep(1000 * time.Millisecond)
 	}
@@ -60,9 +58,7 @@ func refreshCache() {
 	for k := range twtxtCache.Users {
 		twtxtCache.Mu.RUnlock()
 		err := twtxtCache.UpdateUser(k)
-		if err != nil {
-			log.Printf("%v\n", err.Error())
-		}
+		errLog("", err)
 		twtxtCache.Mu.RLock()
 	}
 	twtxtCache.Mu.RUnlock()
@@ -70,9 +66,7 @@ func refreshCache() {
 	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
 		err := twtxtCache.CrawlRemoteRegistry(v)
-		if err != nil {
-			log.Printf("Error while refreshing local copy of remote registry user data: %v\n", err.Error())
-		}
+		errLog("Error refreshing local copy of remote registry data: ", err)
 	}
 	remoteRegistries.Mu.RUnlock()
 	confObj.Mu.Lock()
@@ -90,14 +84,10 @@ func pingAssets() {
 	confObj.Mu.RUnlock()
 
 	cssStat, err := os.Stat(assetsDir + "/style.css")
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 
 	indexStat, err := os.Stat(assetsDir + "/tmpl/index.html")
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 
 	staticCache.mu.RLock()
 	indexMod := staticCache.indexMod
@@ -113,9 +103,7 @@ func pingAssets() {
 		confObj.Mu.RLock()
 		err = tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance)
 		confObj.Mu.RUnlock()
-		if err != nil {
-			log.Printf("%v\n", err.Error())
-		}
+		errLog("", err)
 
 		staticCache.mu.Lock()
 		staticCache.index = buf.Bytes()
@@ -126,9 +114,7 @@ func pingAssets() {
 	if !cssMod.Equal(cssStat.ModTime()) {
 
 		css, err := ioutil.ReadFile(assetsDir + "/style.css")
-		if err != nil {
-			log.Printf("%v\n", err.Error())
-		}
+		errLog("", err)
 
 		staticCache.mu.Lock()
 		staticCache.css = css

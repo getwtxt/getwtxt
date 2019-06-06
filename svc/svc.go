@@ -113,9 +113,7 @@ func Start() {
 
 	log.Printf("Listening on %v\n", portnum)
 	err := server.ListenAndServe()
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 
 	closeLog <- true
 }

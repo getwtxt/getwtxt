@@ -2,7 +2,6 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/getwtxt/registry"
@@ -48,9 +47,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
-	if err != nil {
-		log.Printf("Error Parsing User Data: %v\n", err.Error())
-	}
+	errLog("Error Parsing User Data: ", err)
 
 	if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
 		log400(w, r, "Error Adding User to Cache: "+err.Error())
@@ -59,7 +56,5 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	log200(r)
 	_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
-	if err != nil {
-		log.Printf("%v\n", err.Error())
-	}
+	errLog("", err)
 }
