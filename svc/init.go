@@ -38,17 +38,7 @@ var twtxtCache = registry.NewIndex()
 
 var remoteRegistries = &RemoteRegistries{}
 
-var staticCache = &struct {
-	index    []byte
-	indexMod time.Time
-	css      []byte
-	cssMod   time.Time
-}{
-	index:    nil,
-	indexMod: time.Time{},
-	css:      nil,
-	cssMod:   time.Time{},
-}
+var staticCache = &staticAssets{}
 
 // I'm not using init() because it runs
 // even during testing and was causing

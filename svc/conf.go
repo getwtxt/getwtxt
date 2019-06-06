@@ -6,11 +6,39 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
+
+// Configuration object definition
+type Configuration struct {
+	Mu            sync.RWMutex
+	Port          int           `yaml:"ListenPort"`
+	LogFile       string        `yaml:"LogFile"`
+	DBType        string        `yaml:"DatabaseType"`
+	DBPath        string        `yaml:"DatabasePath"`
+	AssetsDir     string        `yaml:"-"`
+	StdoutLogging bool          `yaml:"StdoutLogging"`
+	Version       string        `yaml:"-"`
+	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
+	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
+	LastCache     time.Time     `yaml:"-"`
+	LastPush      time.Time     `yaml:"-"`
+	Instance      `yaml:"Instance"`
+}
+
+// Instance refers to this specific instance of getwtxt
+type Instance struct {
+	Vers  string `yaml:"-"`
+	Name  string `yaml:"Instance.SiteName"`
+	URL   string `yaml:"Instance.URL"`
+	Owner string `yaml:"Instance.OwnerName"`
+	Mail  string `yaml:"Instance.Email"`
+	Desc  string `yaml:"Instance.Description"`
+}
 
 func initTemplates() *template.Template {
 	confObj.Mu.RLock()

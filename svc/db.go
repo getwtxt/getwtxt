@@ -11,6 +11,19 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
+type dbLevel struct {
+	db *leveldb.DB
+}
+
+type dbSqlite struct {
+	db *sql.DB
+}
+
+type dbase interface {
+	push() error
+	pull()
+}
+
 // Pull DB data into cache, if available.
 func initDatabase() {
 	var db dbase

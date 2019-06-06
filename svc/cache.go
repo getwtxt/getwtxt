@@ -5,8 +5,24 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"sync"
 	"time"
 )
+
+// RemoteRegistries holds a list of remote registries to
+// periodically scrape for new users. The remote registries
+// must have been added via POST like a user.
+type RemoteRegistries struct {
+	Mu   sync.RWMutex
+	List []string
+}
+
+type staticAssets struct {
+	index    []byte
+	indexMod time.Time
+	css      []byte
+	cssMod   time.Time
+}
 
 func cacheTimer() bool {
 	confObj.Mu.RLock()

@@ -8,6 +8,16 @@ import (
 	"strings"
 )
 
+// content-type consts
+const txtutf8 = "text/plain; charset=utf-8"
+const htmlutf8 = "text/html; charset=utf-8"
+const cssutf8 = "text/css; charset=utf-8"
+
+// ipCtxKey is the Context value key for user IP addresses
+type ipCtxKey int
+
+const ctxKey ipCtxKey = iota
+
 // Attaches a request's IP address to the request's context.
 // If getwtxt is behind a reverse proxy, get the last entry
 // in the X-Forwarded-For or X-Real-IP HTTP header as the user IP.
