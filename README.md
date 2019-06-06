@@ -1,16 +1,24 @@
-# getwtxt &nbsp; [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) ![GitHub last commit](https://img.shields.io/github/last-commit/getwtxt/getwtxt.svg?color=blue&logoColor=blue)
+# getwtxt 
+&nbsp;[![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) 
+&nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) 
+&nbsp;![GitHub last commit](https://img.shields.io/github/last-commit/getwtxt/getwtxt.svg?color=blue&logoColor=blue)
 
 twtxt registry written in Go! 
 
-[twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform "for hackers" based
-on text files. The user is "followed" and "mentioned" by referencing the URL to
-their `twtxt.txt` (or other text) file and a (not necessarily unique) nickname.
+[twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform 
+"for hackers" based on text files. The user is "followed" and "mentioned" by referencing 
+the URL to their `twtxt.txt` file and a nickname.
 Registries are designed to aggregate several users' statuses into a single location,
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-\[ [Installation](#installation) \] &nbsp; &nbsp; \[ [Configuration](#configuration) \] &nbsp; &nbsp; \[ [Using the Registry](#using-the-registry) \] &nbsp; &nbsp; \[ [Benchmarks](#benchmarks) \] &nbsp; &nbsp; \[ [Other Documentation](#other-documentation) \] &nbsp; &nbsp; \[ [Notes](#notes) \]
+\[ [Installation](#installation) \] 
+&nbsp; &nbsp; \[ [Configuration](#configuration) \] 
+&nbsp; &nbsp; \[ [Using the Registry](#using-the-registry) \] 
+&nbsp; &nbsp; \[ [Benchmarks](#benchmarks) \] 
+&nbsp; &nbsp; \[ [Other Documentation](#other-documentation) \] 
+&nbsp; &nbsp; \[ [Notes](#notes) \]
 
 ## Features
 
@@ -25,16 +33,17 @@ A public instance is currently available:
 
 ## Installation 
 
-While I've included macOS builds in `.travis.yml`, I have only
-personally tested `getwtxt` on Linux, specifically:
-* Debian 9, 10/Testing, Sid
-* Ubuntu Server 18.04LTS, 18.10, 19.04
+While I've included macOS builds in Travis CI, I have only
+personally tested getwtxt on Linux, specifically:
+* `Debian 9, 10/Testing, Sid`
+* `Ubuntu Server 18.04LTS, 18.10, 19.04`
 
 Build dependencies are minimal, and only include:
 * `gnu make`
 * `go >= 1.11`
 
-`git` is not required if you download the sources via the [`Releases`](https://github.com/getwtxt/getwtxt/releases) tab
+`git` is not required if you download the sources via the 
+[`Releases`](https://github.com/getwtxt/getwtxt/releases) tab
 
 Now, on with the directions. First, fetch the sources using `git`
 and jump into the directory.
@@ -45,14 +54,19 @@ $ git clone git://github.com/getwtxt/getwtxt.git
 $ cd getwtxt
 ```
 
-Optionally, use the `go` tool to test and benchmark it:
+Optionally, use the `go` tool to test and benchmark the files in `svc`.
+If you choose to run the tests, be sure to return to the main directory afterwards.
 
 ```
-$ go test -v -bench . -benchmem
+$ cd svc && go test -v -bench . -benchmem
+...
+...
+PASS
+
+$ cd ..
 ```
 
-Use `make` to initiate the build and install process
-
+Use `make` to initiate the build and install process. 
 ```
 $ make
 ...
@@ -61,9 +75,9 @@ $ sudo make install
 
 ## Configuration
 
-\[ [Proxying](#proxying) \] \[ [Starting getwtxt](#starting-getwtxt) \]
+\[ [Proxying](#proxying) \] &nbsp; \[ [Starting getwtxt](#starting-getwtxt) \]
 
-To configure `getwtxt`, you'll first need to open `/usr/local/getwtxt/getwtxt.yml` 
+To configure getwtxt, you'll first need to open `/usr/local/getwtxt/getwtxt.yml` 
 in your favorite editor and modify any values necessary. There are comments in the 
 file explaining each option.
 
@@ -75,7 +89,7 @@ the template.
 
 ### Proxying
 
-Though `getwtxt` will run perfectly fine facing the internet directly, it does not
+Though getwtxt will run perfectly fine facing the internet directly, it does not
 understand virtual hosts, nor does it use TLS (yet). You'll probably want to proxy it behind
 `Caddy` or `nginx` for this reason. 
 
@@ -116,10 +130,10 @@ server {
 }
 ```
 
-### Starting `getwtxt`
+### Starting getwtxt
 
-Once you have everything configured to your needs, use `systemd` to enable it
-to run on system boot, then start it via `systemctl`
+Once you have everything configured to your needs, use `systemctl` to enable it
+to run on system boot, then start the service.
 
 ```
 $ sudo systemctl enable getwtxt
@@ -134,7 +148,7 @@ All timestamps are in `RFC3339` format, per the twtxt registry specification. Ad
 queries support the `?page=N` parameter, where `N` is a positive integer, that will retrieve page
 `N` of results in groups of twenty.
 
-The example API calls can also be found on the landing page of any `getwtxt` instance, assuming
+The example API calls can also be found on the landing page of any getwtxt instance, assuming
 the admin has not customized the landing page.
 * [twtxt.tilde.institute](https://twtxt.tilde.institute)
 
@@ -247,7 +261,7 @@ Statistics        Avg      Stdev        Max
 ## Other Documentation
 
 In addition to what is provided here, additional information, particularly regarding the configuration
-file, may be found by running `getwtxt` with the `-m` or `--manual` flags. You will likely want to pipe the output
+file, may be found by running getwtxt with the `-m` or `--manual` flags. You will likely want to pipe the output
 to `less` as it is quite long.
 
 ```
@@ -256,7 +270,7 @@ $ ./getwtxt -m | less
 $ ./getwtxt --manual | less
 ```
 
-If you need to remove `getwtxt` from your system, navigate to the source directory
+If you need to remove getwtxt from your system, navigate to the source directory
 you acquired using `git` during the installation process and run the appropriate
 `make` hook:
 
@@ -270,7 +284,7 @@ twtxt Information
   * [twtxt.readthedocs.io](https://twtxt.readthedocs.io)
 
 twtxt Client Repo
-  * [buckket/twtxt](https://github.com/buckket/twtxt) (Includes links to additional related projects. See "Contributions")
+  * [buckket/twtxt](https://github.com/buckket/twtxt) (Includes links to additional related projects. See `Contributions`)
 
 Registry Specification
   * [twtxt.readthedocs.io/.../registry.html](https://twtxt.readthedocs.io/en/latest/user/registry.html)
