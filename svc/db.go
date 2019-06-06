@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/getwtxt/registry"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
@@ -43,6 +44,12 @@ func initDatabase() {
 
 	case "sqlite":
 		var lite *sql.DB
+		lite, err := sql.Open("sqlite3", confObj.DBPath)
+		errFatal(err)
+		litePrep, err := lite.Prepare("CREATE TABLE IF NOT EXISTS getwtxt (urlKey TEXT PRIMARY KEY, isUser BOOL, blobKey TEXT, data BLOB)")
+		errFatal(err)
+		_, err = litePrep.Exec()
+		errFatal(err)
 		db = &dbSqlite{db: lite}
 
 	case "postgres":
