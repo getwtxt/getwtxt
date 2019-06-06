@@ -64,7 +64,6 @@ func Test_apiEndpointHandler(t *testing.T) {
 	})
 }
 
-/*
 func Test_apiTagsBaseHandler(t *testing.T) {
 	initTestConf()
 	t.Run("apiTagsBaseHandler", func(t *testing.T) {
@@ -89,7 +88,7 @@ func Test_apiTagsHandler(t *testing.T) {
 		}
 	})
 }
-*/
+
 func Test_cssHandler(t *testing.T) {
 	initTestConf()
 
