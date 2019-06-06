@@ -18,7 +18,7 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
-const getwtxt = "0.2.2"
+const getwtxt = "0.3.0"
 
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
@@ -57,7 +57,10 @@ var staticCache = &struct {
 	cssMod:   time.Time{},
 }
 
-func init() {
+// I'm not using init() because it runs
+// even during testing and was causing
+// problems.
+func initSvc() {
 	checkFlags()
 	titleScreen()
 	initConfig()

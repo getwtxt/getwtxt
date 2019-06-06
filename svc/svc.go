@@ -12,6 +12,7 @@ import (
 
 // Start is the initialization function for getwtxt
 func Start() {
+	initSvc()
 
 	// StrictSlash(true) allows /api and /api/
 	// to serve the same content without duplicating

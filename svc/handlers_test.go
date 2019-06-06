@@ -94,9 +94,9 @@ func Test_cssHandler(t *testing.T) {
 	initTestConf()
 
 	name := "CSS Handler Test"
-	css, err := ioutil.ReadFile("assets/style.css")
+	css, err := ioutil.ReadFile("../assets/style.css")
 	if err != nil {
-		t.Errorf("Couldn't read assets/style.css: %v\n", err)
+		t.Errorf("Couldn't read ../assets/style.css: %v\n", err)
 	}
 
 	w := httptest.NewRecorder()
