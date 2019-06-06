@@ -126,7 +126,7 @@ func manualScreen() {
         will push registry data from the in-memory cache
         to the on-disk LevelDB database. The following
         time suffixes may be used:
-            ns, us, ms, s, m, h
+            s, m, h
         Default: 5m
 
     StatusFetchInterval: The interval on which getwtxt
