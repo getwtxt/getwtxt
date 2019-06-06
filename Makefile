@@ -3,10 +3,7 @@ _INSTDIR=$(PREFIX)
 BINDIR?=$(_INSTDIR)/getwtxt
 GOFLAGS?=
 
-GOSRC!=find . -name '*.go'
-GOSRC+=go.mod go.sum
-
-getwtxt: $(GOSRC)
+getwtxt: getwtxt.go go.mod go.sum
 	go build $(GOFLAGS) \
 		-o $@
 
