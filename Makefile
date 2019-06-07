@@ -1,7 +1,9 @@
 PREFIX?=/usr/local
 _INSTDIR=$(PREFIX)
 BINDIR?=$(_INSTDIR)/getwtxt
-GOFLAGS?=
+GOFLAGS?=-tags netgo \
+				 -ldflags '-extldflags "-static"' \
+				 -buildmode pie
 
 getwtxt: getwtxt.go go.mod go.sum
 	go build $(GOFLAGS) \
