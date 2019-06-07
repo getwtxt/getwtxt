@@ -93,10 +93,13 @@ func (lvl dbLevel) push() error {
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Users {
+
 		dbBasket.Put([]byte(k+"*Nick"), []byte(v.Nick))
 		dbBasket.Put([]byte(k+"*URL"), []byte(v.URL))
 		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP.String()))
 		dbBasket.Put([]byte(k+"*Date"), []byte(v.Date))
+		dbBasket.Put([]byte(k+"*RLen"), []byte(v.RLen))
+
 		for i, e := range v.Status {
 			rfc := i.Format(time.RFC3339)
 			dbBasket.Put([]byte(k+"*Status*"+rfc), []byte(e))
@@ -110,15 +113,13 @@ func (lvl dbLevel) push() error {
 	}
 	remoteRegistries.Mu.RUnlock()
 
-	if err := lvl.db.Write(dbBasket, nil); err != nil {
-		return err
-	}
-
 	confObj.Mu.Lock()
 	confObj.LastPush = time.Now()
 	confObj.Mu.Unlock()
 
-	return nil
+	err := lvl.db.Write(dbBasket, nil)
+
+	return err
 }
 
 func (lvl dbLevel) pull() {
@@ -154,6 +155,8 @@ func (lvl dbLevel) pull() {
 			data.Nick = val
 		case "URL":
 			data.URL = val
+		case "RLen":
+			data.RLen = val
 		case "Date":
 			data.Date = val
 		case "Status":
