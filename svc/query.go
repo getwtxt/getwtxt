@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"sync"
 
 	"github.com/getwtxt/registry"
 	"github.com/gorilla/mux"
@@ -127,18 +128,35 @@ func joinQueryOuts(data ...[]string) []string {
 }
 
 func compositeStatusQuery(query string, r *http.Request) []string {
+	var wg sync.WaitGroup
+	var out, out2, out3 []string
+	var err, err2, err3 error
+
+	wg.Add(3)
+
 	query = strings.ToLower(query)
-	out, err := twtxtCache.QueryInStatus(query)
-	apiErrCheck(err, r)
+	go func(query string) {
+		out, err = twtxtCache.QueryInStatus(query)
+		wg.Done()
+	}(query)
 
 	query = strings.Title(query)
-	out2, err := twtxtCache.QueryInStatus(query)
-	apiErrCheck(err, r)
+	go func(query string) {
+		out2, err2 = twtxtCache.QueryInStatus(query)
+		wg.Done()
+	}(query)
 
 	query = strings.ToUpper(query)
-	out3, err := twtxtCache.QueryInStatus(query)
-	apiErrCheck(err, r)
+	go func(query string) {
+		out3, err3 = twtxtCache.QueryInStatus(query)
+		wg.Done()
+	}(query)
 
-	final := joinQueryOuts(out, out2, out3)
-	return final
+	wg.Wait()
+
+	apiErrCheck(err, r)
+	apiErrCheck(err2, r)
+	apiErrCheck(err3, r)
+
+	return joinQueryOuts(out, out2, out3)
 }
