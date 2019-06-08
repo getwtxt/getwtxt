@@ -102,12 +102,13 @@ func (lite dbSqlite) pull() {
 
 	twtxtCache.Mu.Lock()
 	for rows.Next() {
+		var uid int
 		var urls string
 		var isUser bool
 		var dataKey string
 		var dBlob []byte
 
-		errLog("", rows.Scan(&urls, &isUser, &dataKey, &dBlob))
+		errLog("", rows.Scan(&uid, &urls, &isUser, &dataKey, &dBlob))
 
 		if !isUser {
 			remoteRegistries.Mu.Lock()
