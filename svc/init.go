@@ -1,6 +1,7 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
+	"html/template"
 	"log"
 	"os"
 	"os/signal"
@@ -10,7 +11,7 @@ import (
 	"github.com/spf13/pflag"
 )
 
-const getwtxt = "0.2.3"
+const getwtxt = "0.2.4"
 
 var (
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
@@ -31,7 +32,7 @@ var closeLog = make(chan bool, 1)
 // initialization
 var dbChan = make(chan dbase, 1)
 
-var tmpls = initTemplates()
+var tmpls *template.Template
 
 var twtxtCache = registry.NewIndex()
 
@@ -61,6 +62,7 @@ func initSvc() {
 	initLogging()
 	initDatabase()
 	go cacheAndPush()
+	tmpls = initTemplates()
 	watchForInterrupt()
 }
 
