@@ -12,3 +12,5 @@ dist: xenial
 
 env:
   - GO111MODULE=on
+
+script: cd svc && go test -v
