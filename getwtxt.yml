@@ -24,7 +24,8 @@ ListenPort: 9001
 
 # The type of database you want to use. Currently,
 # the following are supported:
-#   leveldb
+#   leveldb (default)
+#   sqlite
 DatabaseType: "leveldb"
 
 # The location of the database structure. Can be
