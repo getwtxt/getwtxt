@@ -84,10 +84,7 @@ func Test_compositeStatusQuery(t *testing.T) {
 	if err != nil {
 		t.Errorf("%v\n", err)
 	}
-	err = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
-	if err != nil {
-		t.Errorf("%v\n", err)
-	}
+	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
 
 	t.Run("Composite Query Test", func(t *testing.T) {
 		out1, err := twtxtCache.QueryInStatus("sqlite")
