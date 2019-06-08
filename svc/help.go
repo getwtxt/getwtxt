@@ -37,7 +37,8 @@ func helpScreen() {
                        style.css and tmpl/index.html
     -d [--db]        Path getwtxt should use for the database.
     -t [--dbtype]    Type of database to use.
-                       Options: leveldb
+                       Options: leveldb (default)
+                                sqlite
 
 `)
 }
@@ -96,8 +97,9 @@ func manualScreen() {
         Default: 9001
 
     DatabaseType: The type of back-end getwtxt should use
-        to store registry data. Currently, only leveldb
-        is available, with more options in development.
+        to store registry data. The available types of
+        databases are: leveldb
+                       sqlite
         Default: leveldb
 
     DatabasePath: The location of the LevelDB structure
