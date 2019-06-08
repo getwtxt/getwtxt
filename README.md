@@ -24,8 +24,10 @@ for tags and key words.
 
 * Easy to set up and maintain 
 * Uses an in-memory cache to serve requests
-* Pushes to `LevelDB` at a configurable interval for data storage
-  * Back-ends for other databases currently in development
+* Pushes to a database at a configurable interval for persistent storage
+  * `leveldb (default)` 
+  * `sqlite3`
+* More database support is in development
 * Run directly facing the internet or behind `Caddy` / `nginx`
 
 A public instance is currently available:
