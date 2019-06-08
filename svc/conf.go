@@ -135,22 +135,19 @@ func initConfig() {
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.LogFile = viper.GetString("LogFile")
 
-	if *flagDBType == "" {
-		confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
-	} else {
+	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
+	if *flagDBType != "" {
 		confObj.DBType = *flagDBType
 	}
 
-	if *flagDBPath == "" {
-		confObj.DBPath = viper.GetString("DatabasePath")
-	} else {
+	confObj.DBPath = viper.GetString("DatabasePath")
+	if *flagDBPath != "" {
 		confObj.DBPath = *flagDBPath
 	}
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 
-	if *flagAssets == "" {
-		confObj.AssetsDir = viper.GetString("AssetsDirectory")
-	} else {
+	confObj.AssetsDir = viper.GetString("AssetsDirectory")
+	if *flagAssets != "" {
 		confObj.AssetsDir = *flagAssets
 	}
 
@@ -192,9 +189,16 @@ func rebindConfig() {
 
 	confObj.Mu.Lock()
 
-	confObj.LogFile = viper.GetString("LogFile")
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
+	if *flagDBType != "" {
+		confObj.DBType = *flagDBType
+	}
+
+	confObj.LogFile = viper.GetString("LogFile")
 	confObj.DBPath = viper.GetString("DatabasePath")
+	if *flagDBPath != "" {
+		confObj.DBPath = *flagDBPath
+	}
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")

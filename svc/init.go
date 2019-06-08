@@ -1,7 +1,6 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
-	"html/template"
 	"log"
 	"os"
 	"os/signal"
@@ -32,7 +31,7 @@ var closeLog = make(chan bool, 1)
 // initialization
 var dbChan = make(chan dbase, 1)
 
-var tmpls *template.Template
+var tmpls = initTemplates()
 
 var twtxtCache = registry.NewIndex()
 
@@ -60,7 +59,6 @@ func initSvc() {
 	titleScreen()
 	initConfig()
 	initLogging()
-	tmpls = initTemplates()
 	initDatabase()
 	go cacheAndPush()
 	watchForInterrupt()
