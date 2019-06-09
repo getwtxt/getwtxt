@@ -6,49 +6,81 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 )
 
-// Currently, these only test for a 200 status code.
-// More in-depth unit tests are planned, however, several
-// of these will quickly turn into integration tests as
-// they'll need more than a barebones test environment to
-// get any real information. The HTTP responses are being
-// tested by me by hand, mostly.
-
+// The first three are testing whether the landing page is
+// being sent correctly. If i change the base behavior of
+//    /api
+//    /api/plain
+// later, then I'll change the tests.
 func Test_indexHandler(t *testing.T) {
 	initTestConf()
 	t.Run("indexHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "localhost"+testport+"/", nil)
+		req := httptest.NewRequest("GET", "http://localhost"+testport+"/", nil)
 		indexHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
+
+		bt, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("%v\n", err)
+		}
+		if !reflect.DeepEqual(bt, staticCache.index) {
+			t.Errorf("Byte mismatch\n")
+		}
 	})
+}
+func Benchmark_indexHandler(b *testing.B) {
+	initTestConf()
+	w := httptest.NewRecorder()
+	req := httptest.NewRequest("GET", "http://localhost"+testport+"/", nil)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		indexHandler(w, req)
+	}
 }
 func Test_apiBaseHandler(t *testing.T) {
 	initTestConf()
-	t.Run("apiBaseHandler", func(t *testing.T) {
+	t.Run("indexHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "localhost"+testport+"/api", nil)
-		apiBaseHandler(w, req)
+		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api", nil)
+		indexHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
+		}
+
+		bt, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("%v\n", err)
+		}
+		if !reflect.DeepEqual(bt, staticCache.index) {
+			t.Errorf("Byte mismatch\n")
 		}
 	})
 }
 func Test_apiFormatHandler(t *testing.T) {
 	initTestConf()
-	t.Run("apiFormatHandler", func(t *testing.T) {
+	t.Run("indexHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain", nil)
-		apiFormatHandler(w, req)
+		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain", nil)
+		indexHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
+		}
+
+		bt, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("%v\n", err)
+		}
+		if !reflect.DeepEqual(bt, staticCache.index) {
+			t.Errorf("Byte mismatch\n")
 		}
 	})
 }
@@ -122,15 +154,33 @@ func Benchmark_apiEndpointHandler(b *testing.B) {
 
 func Test_apiTagsBaseHandler(t *testing.T) {
 	initTestConf()
+	mockRegistry()
 	t.Run("apiTagsBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags", nil)
+		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags", nil)
 		apiTagsBaseHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
+		bd, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("%v\n", err)
+		}
+		if len(bd) == 0 {
+			t.Errorf("Got no data from registry\n")
+		}
 	})
+}
+func Benchmark_apiTagsBaseHandler(b *testing.B) {
+	initTestConf()
+	mockRegistry()
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags", nil)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		apiTagsBaseHandler(w, r)
+	}
 }
 func Test_apiTagsHandler(t *testing.T) {
 	initTestConf()
@@ -164,7 +214,7 @@ func Test_cssHandler(t *testing.T) {
 		if resp.StatusCode != 200 {
 			t.Errorf("cssHandler(): %v\n", resp.StatusCode)
 		}
-		if !bytes.Equal(body, css) {
+		if !reflect.DeepEqual(body, css) {
 			t.Errorf("cssHandler(): Byte mismatch\n")
 		}
 	})
