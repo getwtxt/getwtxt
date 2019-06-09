@@ -83,7 +83,7 @@ func (lite dbSqlite) push() error {
 
 	err = tx.Commit()
 	if err != nil {
-		tx.Rollback()
+		errLog("", tx.Rollback())
 		return err
 	}
 
