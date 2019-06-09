@@ -9,16 +9,20 @@ import (
 
 func Test_pushpullDatabase(t *testing.T) {
 	initTestConf()
-	initDatabase()
+	initTestDB()
+
 	out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
+
 	statusmap, err := registry.ParseUserTwtxt(out, "gbmor", "https://gbmor.dev/twtxt.txt")
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
+
 	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "", net.ParseIP("127.0.0.1"), statusmap)
+
 	remoteRegistries.Mu.Lock()
 	remoteRegistries.List = append(remoteRegistries.List, "https://twtxt.tilde.institute/api/plain/users")
 	remoteRegistries.Mu.Unlock()
@@ -39,6 +43,7 @@ func Test_pushpullDatabase(t *testing.T) {
 
 	t.Run("Pulling from Database", func(t *testing.T) {
 		pullDB()
+
 		twtxtCache.Mu.RLock()
 		if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
 			t.Errorf("Missing user previously pushed to database\n")
@@ -49,10 +54,7 @@ func Test_pushpullDatabase(t *testing.T) {
 }
 func Benchmark_pushDatabase(b *testing.B) {
 	initTestConf()
-
-	if len(dbChan) < 1 {
-		initDatabase()
-	}
+	initTestDB()
 
 	if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
 		out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
@@ -79,10 +81,8 @@ func Benchmark_pushDatabase(b *testing.B) {
 }
 func Benchmark_pullDatabase(b *testing.B) {
 	initTestConf()
-
-	if len(dbChan) < 1 {
-		initDatabase()
-	}
+	initTestDB()
+	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
 		pullDB()

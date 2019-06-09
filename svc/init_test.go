@@ -9,20 +9,32 @@ import (
 	"sync"
 	"time"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
 
-var testport = fmt.Sprintf(":%v", confObj.Port)
-var hasInit = false
-
-var initTestOnce sync.Once
+var (
+	testport     string
+	initTestOnce sync.Once
+	initDBOnce   sync.Once
+)
 
 func initTestConf() {
 	initTestOnce.Do(func() {
+
 		testConfig()
 		tmpls = testTemplates()
+
+		confObj.Mu.RLock()
+		testport = fmt.Sprintf(":%v", confObj.Port)
+		confObj.Mu.RUnlock()
+
 		logToNull()
+	})
+}
+
+func initTestDB() {
+	initDBOnce.Do(func() {
+		initDatabase()
 	})
 }
 
@@ -44,27 +56,12 @@ func testConfig() {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath("..")
 
-	log.Printf("Loading configuration ...\n")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("%v\n", err.Error())
-		log.Printf("Using defaults ...\n")
-	} else {
-		viper.WatchConfig()
-		viper.OnConfigChange(func(e fsnotify.Event) {
-			log.Printf("Config file change detected. Reloading...\n")
-			rebindConfig()
-		})
-	}
-
 	viper.SetDefault("ListenPort", 9001)
-	viper.SetDefault("LogFile", "getwtxt.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
 	viper.SetDefault("AssetsDirectory", "assets")
 	viper.SetDefault("DatabaseType", "leveldb")
-	viper.SetDefault("StdoutLogging", false)
 	viper.SetDefault("ReCacheInterval", "1h")
 	viper.SetDefault("DatabasePushInterval", "5m")
-
 	viper.SetDefault("Instance.SiteName", "getwtxt")
 	viper.SetDefault("Instance.OwnerName", "Anonymous Microblogger")
 	viper.SetDefault("Instance.Email", "nobody@knows")
@@ -74,25 +71,14 @@ func testConfig() {
 	confObj.Mu.Lock()
 
 	confObj.Port = viper.GetInt("ListenPort")
-	confObj.LogFile = viper.GetString("LogFile")
+	confObj.AssetsDir = "../" + viper.GetString("AssetsDirectory")
 
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
-
 	confObj.DBPath = viper.GetString("DatabasePath")
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 
-	confObj.AssetsDir = "../" + viper.GetString("AssetsDirectory")
-
-	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
-	if confObj.StdoutLogging {
-		log.Printf("Logging to stdout\n")
-	} else {
-		log.Printf("Logging to %v\n", confObj.LogFile)
-	}
-
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
-
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
 
