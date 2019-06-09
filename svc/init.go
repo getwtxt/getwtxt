@@ -67,7 +67,6 @@ func initSvc() {
 	initDatabase()
 	go cacheAndPush()
 	tmpls = initTemplates()
-	staticCache = initAssets()
 	watchForInterrupt()
 	pingAssets()
 }

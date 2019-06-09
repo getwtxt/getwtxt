@@ -19,4 +19,5 @@ func Test_initConfig(t *testing.T) {
 			}
 		}
 	})
+	testConfig()
 }

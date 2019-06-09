@@ -15,6 +15,7 @@ import (
 // they'll need more than a barebones test environment to
 // get any real information. The HTTP responses are being
 // tested by me by hand, mostly.
+
 func Test_indexHandler(t *testing.T) {
 	initTestConf()
 	t.Run("indexHandler", func(t *testing.T) {

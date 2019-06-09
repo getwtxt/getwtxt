@@ -33,33 +33,6 @@ func initTemplates() *template.Template {
 	return template.Must(template.ParseFiles(assetsDir + "/tmpl/index.html"))
 }
 
-func initAssets() *staticAssets {
-	confObj.Mu.RLock()
-	defer confObj.Mu.RUnlock()
-
-	css, err := os.Open(confObj.AssetsDir + "/style.css")
-	errLog("", err)
-	cssStat, err := css.Stat()
-	errLog("", err)
-	cssData, err := ioutil.ReadAll(css)
-	errLog("", err)
-
-	indStat, err := os.Stat(confObj.AssetsDir + "/tmpl/index.html")
-	errLog("", err)
-
-	var b []byte
-	buf := bytes.NewBuffer(b)
-	errLog("", tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance))
-
-	return &staticAssets{
-		mu:       sync.RWMutex{},
-		index:    buf.Bytes(),
-		indexMod: indStat.ModTime(),
-		css:      cssData,
-		cssMod:   cssStat.ModTime(),
-	}
-}
-
 func cacheTimer() bool {
 	confObj.Mu.RLock()
 	answer := time.Since(confObj.LastCache) > confObj.CacheInterval

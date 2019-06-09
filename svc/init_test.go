@@ -2,7 +2,6 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"os"
 	"strings"
@@ -20,16 +19,15 @@ var (
 
 func initTestConf() {
 	initTestOnce.Do(func() {
+		logToNull()
 
 		testConfig()
-		tmpls = testTemplates()
-		staticCache = initAssets()
+		tmpls = initTemplates()
+		pingAssets()
 
 		confObj.Mu.RLock()
 		defer confObj.Mu.RUnlock()
 		testport = fmt.Sprintf(":%v", confObj.Port)
-
-		logToNull()
 	})
 }
 
@@ -45,10 +43,6 @@ func logToNull() {
 		log.Printf("%v\n", err)
 	}
 	log.SetOutput(hush)
-}
-
-func testTemplates() *template.Template {
-	return template.Must(template.ParseFiles("../assets/tmpl/index.html"))
 }
 
 func testConfig() {
