@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/fsnotify/fsnotify"
@@ -15,13 +16,14 @@ import (
 var testport = fmt.Sprintf(":%v", confObj.Port)
 var hasInit = false
 
+var initTestOnce sync.Once
+
 func initTestConf() {
-	if !hasInit {
+	initTestOnce.Do(func() {
 		testConfig()
 		tmpls = testTemplates()
 		logToNull()
-		hasInit = true
-	}
+	})
 }
 
 func logToNull() {
