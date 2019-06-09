@@ -7,7 +7,6 @@ import (
 	"github.com/getwtxt/registry"
 )
 
-/*
 func Test_pushpullDatabase(t *testing.T) {
 	initTestConf()
 	initDatabase()
@@ -25,7 +24,7 @@ func Test_pushpullDatabase(t *testing.T) {
 	remoteRegistries.Mu.Unlock()
 
 	t.Run("Push to Database", func(t *testing.T) {
-		err := pushDatabase()
+		err := pushDB()
 		if err != nil {
 			t.Errorf("%v\n", err)
 		}
@@ -39,7 +38,7 @@ func Test_pushpullDatabase(t *testing.T) {
 	})
 
 	t.Run("Pulling from Database", func(t *testing.T) {
-		pullDatabase()
+		pullDB()
 		twtxtCache.Mu.RLock()
 		if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
 			t.Errorf("Missing user previously pushed to database\n")
@@ -48,7 +47,6 @@ func Test_pushpullDatabase(t *testing.T) {
 
 	})
 }
-*/
 func Benchmark_pushDatabase(b *testing.B) {
 	initTestConf()
 
