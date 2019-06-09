@@ -111,7 +111,8 @@ func Start() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	log.Printf("Listening on %v\n", portnum)
+	log.Printf("\nListening on %v\n", portnum)
+	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", getwtxt, time.Now().Format(time.RFC3339))
 	errLog("", server.ListenAndServe())
 
 	closeLog <- true
