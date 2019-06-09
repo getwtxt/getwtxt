@@ -133,9 +133,13 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		out, err = twtxtCache.QueryInStatus("@<")
 		out = registry.ReduceToPage(page, out)
 
-	default:
+	case "/api/plain/tweets":
 		out, err = twtxtCache.QueryAllStatuses()
 		out = registry.ReduceToPage(page, out)
+
+	default:
+		log404(w, r, fmt.Errorf("endpoint not found"))
+		return
 	}
 	errLog("", err)
 
