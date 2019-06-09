@@ -25,8 +25,8 @@ func initTestConf() {
 		tmpls = testTemplates()
 
 		confObj.Mu.RLock()
+		defer confObj.Mu.RUnlock()
 		testport = fmt.Sprintf(":%v", confObj.Port)
-		confObj.Mu.RUnlock()
 
 		logToNull()
 	})
@@ -69,6 +69,7 @@ func testConfig() {
 	viper.SetDefault("Instance.Description", "A fast, resilient twtxt registry server written in Go!")
 
 	confObj.Mu.Lock()
+	defer confObj.Mu.Unlock()
 
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.AssetsDir = "../" + viper.GetString("AssetsDirectory")
@@ -92,7 +93,4 @@ func testConfig() {
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
-
-	confObj.Mu.Unlock()
-
 }
