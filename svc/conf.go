@@ -1,7 +1,6 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
-	"html/template"
 	"log"
 	"os"
 	"path/filepath"
@@ -38,14 +37,6 @@ type Instance struct {
 	Owner string `yaml:"Instance.OwnerName"`
 	Mail  string `yaml:"Instance.Email"`
 	Desc  string `yaml:"Instance.Description"`
-}
-
-func initTemplates() *template.Template {
-	confObj.Mu.RLock()
-	assetsDir := confObj.AssetsDir
-	confObj.Mu.RUnlock()
-
-	return template.Must(template.ParseFiles(assetsDir + "/tmpl/index.html"))
 }
 
 func initLogging() {

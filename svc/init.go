@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/getwtxt/registry"
@@ -36,7 +37,10 @@ var tmpls *template.Template
 
 var twtxtCache = registry.NewIndex()
 
-var remoteRegistries = &RemoteRegistries{}
+var remoteRegistries = &RemoteRegistries{
+	Mu:   sync.RWMutex{},
+	List: make([]string, 0),
+}
 
 var staticCache = &staticAssets{}
 
@@ -63,7 +67,9 @@ func initSvc() {
 	initDatabase()
 	go cacheAndPush()
 	tmpls = initTemplates()
+	staticCache = initAssets()
 	watchForInterrupt()
+	pingAssets()
 }
 
 func checkFlags() {

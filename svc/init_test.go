@@ -23,6 +23,7 @@ func initTestConf() {
 
 		testConfig()
 		tmpls = testTemplates()
+		staticCache = initAssets()
 
 		confObj.Mu.RLock()
 		defer confObj.Mu.RUnlock()
