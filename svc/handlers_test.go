@@ -15,11 +15,12 @@ import (
 //    /api
 //    /api/plain
 // later, then I'll change the tests.
-func Test_indexHandler(t *testing.T) {
+
+func basicHandlerTest(path string, name string, t *testing.T) {
 	initTestConf()
-	t.Run("indexHandler", func(t *testing.T) {
+	t.Run(name, func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "http://localhost"+testport+"/", nil)
+		req := httptest.NewRequest("GET", path, nil)
 		indexHandler(w, req)
 		resp := w.Result()
 		if resp.StatusCode != http.StatusOK {
@@ -34,6 +35,9 @@ func Test_indexHandler(t *testing.T) {
 			t.Errorf("Byte mismatch\n")
 		}
 	})
+}
+func Test_indexHandler(t *testing.T) {
+	basicHandlerTest("http://localhost"+testport+"/", "indexHandler", t)
 }
 func Benchmark_indexHandler(b *testing.B) {
 	initTestConf()
@@ -45,44 +49,10 @@ func Benchmark_indexHandler(b *testing.B) {
 	}
 }
 func Test_apiBaseHandler(t *testing.T) {
-	initTestConf()
-	t.Run("indexHandler", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api", nil)
-		indexHandler(w, req)
-		resp := w.Result()
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
-		}
-
-		bt, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			t.Errorf("%v\n", err)
-		}
-		if !reflect.DeepEqual(bt, staticCache.index) {
-			t.Errorf("Byte mismatch\n")
-		}
-	})
+	basicHandlerTest("http://localhost"+testport+"/api", "apiBaseHandler", t)
 }
 func Test_apiFormatHandler(t *testing.T) {
-	initTestConf()
-	t.Run("indexHandler", func(t *testing.T) {
-		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain", nil)
-		indexHandler(w, req)
-		resp := w.Result()
-		if resp.StatusCode != http.StatusOK {
-			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
-		}
-
-		bt, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			t.Errorf("%v\n", err)
-		}
-		if !reflect.DeepEqual(bt, staticCache.index) {
-			t.Errorf("Byte mismatch\n")
-		}
-	})
+	basicHandlerTest("http://localhost"+testport+"/api/format", "apiFormatHandler", t)
 }
 
 var endpointCases = []struct {
