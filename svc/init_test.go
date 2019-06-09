@@ -3,11 +3,13 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 import (
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"strings"
 	"sync"
 	"time"
 
+	"github.com/getwtxt/registry"
 	"github.com/spf13/viper"
 )
 
@@ -88,4 +90,11 @@ func testConfig() {
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
+}
+
+func mockRegistry() {
+
+	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
+	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
+	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
 }

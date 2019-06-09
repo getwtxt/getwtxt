@@ -76,15 +76,7 @@ func Benchmark_parseQueryOut(b *testing.B) {
 
 func Test_compositeStatusQuery(t *testing.T) {
 	initTestConf()
-	statuses, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
-	if err != nil {
-		t.Errorf("%v\n", err)
-	}
-	parsed, err := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
-	if err != nil {
-		t.Errorf("%v\n", err)
-	}
-	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
+	mockRegistry()
 
 	t.Run("Composite Query Test", func(t *testing.T) {
 		out1, err := twtxtCache.QueryInStatus("sqlite")
