@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/syndtr/goleveldb/leveldb"
+	"golang.org/x/sys/unix"
 )
 
 type dbase interface {
@@ -48,6 +49,8 @@ func pushDB() error {
 	db := <-dbChan
 	err := db.push()
 	dbChan <- db
+
+	unix.Sync()
 
 	return err
 }
