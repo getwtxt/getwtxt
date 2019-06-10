@@ -29,8 +29,8 @@ func Start() {
 
 	server := newServer(portnum, index)
 
-	log.Printf("\nListening on %v\n", portnum)
-	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
+	log.Printf("*** Listening on %v\n", portnum)
+	log.Printf("*** getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
 	errLog("", server.ListenAndServe())
 
 	closeLog <- true

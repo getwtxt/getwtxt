@@ -59,7 +59,7 @@ func initLogging() {
 
 			<-closeLog
 
-			log.Printf("Closing log file ...\n")
+			log.Printf("Closing log file ...\n\n")
 			errLog("Could not close log file: ", logfile.Close())
 
 		}(logfile)
