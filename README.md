@@ -249,17 +249,17 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
 $ bombardier -c 100 -n 200000 http://localhost:9001/api/plain/tweets
 
 Bombarding http://localhost:9001/api/plain/tweets with 200000 request(s) using 100 connection(s)
- 200000 / 200000 [=============================================================] 100.00% 19574/s 10s
+ 200000 / 200000 [=============================================================] 100.00% 19961/s 10s
 
 Done!
 
 Statistics        Avg      Stdev        Max
-  Reqs/sec     19905.42    3597.45   27879.77
-  Latency        5.02ms     3.43ms    80.11ms
+  Reqs/sec     20006.58    2408.55   26054.73
+  Latency        5.00ms     3.58ms    62.99ms
   HTTP codes:
     1xx - 0, 2xx - 200000, 3xx - 0, 4xx - 0, 5xx - 0
     others - 0
-  Throughput:    34.56MB/s
+  Throughput:    39.27MB/s	
 ```
 
 ## Other Documentation
