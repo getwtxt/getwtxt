@@ -22,7 +22,7 @@ for tags and key words.
 &nbsp; &nbsp; \[ [Notes](#notes) \]
 
 ## Features 
-&nbsp;![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)
+&nbsp;[![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)](https://github.com/getwtxt/getwtxt/releases/latest)
 
 * Easy to set up and maintain 
 * Uses an in-memory cache to serve requests
