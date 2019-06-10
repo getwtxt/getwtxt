@@ -34,6 +34,8 @@ github.com/getwtxt/getwtxt/svc v0.0.0-20190610033007-e539d23e6499 h1:riqbZLN6RZe
 github.com/getwtxt/getwtxt/svc v0.0.0-20190610033007-e539d23e6499/go.mod h1:bFemHgSXam5dJe4Q7wWgi0BRDB3MyG4xK//pQu6VtYg=
 github.com/getwtxt/getwtxt/svc v0.0.0-20190610052041-4fb7785e4552 h1:IfOzpqQI9Ye6VAHw1/VwQd+6h8iZPzqKGTlkauA+rbc=
 github.com/getwtxt/getwtxt/svc v0.0.0-20190610052041-4fb7785e4552/go.mod h1:GU8P6TGIvXkLKQGt8Iv74TGITKgDAtYinYaLDZBGvYs=
+github.com/getwtxt/getwtxt/svc v0.0.0-20190610071147-524936cf8bc9 h1:izJKaV88QMuHCNs2W1fzNS/FCXSfz7sdCg6iZ9jBRec=
+github.com/getwtxt/getwtxt/svc v0.0.0-20190610071147-524936cf8bc9/go.mod h1:GU8P6TGIvXkLKQGt8Iv74TGITKgDAtYinYaLDZBGvYs=
 github.com/getwtxt/registry v0.2.3 h1:gOc6fSBljD/6QKwr+UXtY2bPepsifVei49XQaR5i1mk=
 github.com/getwtxt/registry v0.2.3/go.mod h1:BGSIALOFqIRj+ACLB8etWGUOgFAKN8oFDpCsw6YOdYQ=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
