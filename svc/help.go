@@ -11,7 +11,7 @@ func titleScreen() {
            | (_| |  __/ |_ \ V  V /| |_ >  <| |_
             \__, |\___|\__| \_/\_/  \__/_/\_\\__|
             |___/
-                       version ` + getwtxt + `
+                       version ` + Vers + `
                  github.com/getwtxt/getwtxt
                           GPL  v3  
 

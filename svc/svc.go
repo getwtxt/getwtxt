@@ -112,7 +112,7 @@ func Start() {
 	}
 
 	log.Printf("\nListening on %v\n", portnum)
-	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", getwtxt, time.Now().Format(time.RFC3339))
+	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
 	errLog("", server.ListenAndServe())
 
 	closeLog <- true

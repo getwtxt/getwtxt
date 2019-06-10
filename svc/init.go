@@ -12,9 +12,9 @@ import (
 	"github.com/spf13/pflag"
 )
 
-const getwtxt = "0.3.0"
-
 var (
+	// Vers contains the version number set at build time
+	Vers         string
 	flagVersion  *bool   = pflag.BoolP("version", "v", false, "Display version information, then exit.")
 	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the quick-help screen.")
 	flagMan      *bool   = pflag.BoolP("manual", "m", false, "Display the configuration manual.")

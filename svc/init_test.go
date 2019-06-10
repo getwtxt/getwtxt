@@ -82,9 +82,9 @@ func testConfig() {
 
 	confObj.LastCache = time.Now()
 	confObj.LastPush = time.Now()
-	confObj.Version = getwtxt
+	confObj.Version = Vers
 
-	confObj.Instance.Vers = getwtxt
+	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
 	confObj.Instance.URL = viper.GetString("Instance.URL")
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
@@ -93,7 +93,6 @@ func testConfig() {
 }
 
 func mockRegistry() {
-
 	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
 	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
 	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
