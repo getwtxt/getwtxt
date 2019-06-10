@@ -99,7 +99,7 @@ func watchForInterrupt() {
 	go func() {
 		for sigint := range c {
 
-			log.Printf("\nCaught %v. Cleaning up ...\n\n", sigint)
+			log.Printf("Caught %v. Cleaning up ...\n", sigint)
 			confObj.Mu.RLock()
 			log.Printf("Closing database connection to %v...\n", confObj.DBPath)
 
