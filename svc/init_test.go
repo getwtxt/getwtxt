@@ -93,6 +93,7 @@ func testConfig() {
 }
 
 func mockRegistry() {
+	twtxtCache = registry.NewIndex()
 	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
 	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
 	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)

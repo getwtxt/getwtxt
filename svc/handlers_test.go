@@ -154,15 +154,34 @@ func Benchmark_apiTagsBaseHandler(b *testing.B) {
 }
 func Test_apiTagsHandler(t *testing.T) {
 	initTestConf()
+	mockRegistry()
 	t.Run("apiTagsHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
-		req := httptest.NewRequest("GET", "localhost"+testport+"/api/plain/tags/tag", nil)
+		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags/programming", nil)
 		apiTagsHandler(w, req)
 		resp := w.Result()
+		data, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			t.Errorf("%v\n", err)
+		}
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
+		if len(data) == 0 {
+			t.Errorf("Got no data: %v\n", data)
+		}
 	})
+}
+
+func Benchmark_apiTagsHandler(b *testing.B) {
+	initTestConf()
+	mockRegistry()
+	w := httptest.NewRecorder()
+	r := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags/programming", nil)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		apiTagsHandler(w, r)
+	}
 }
 
 func Test_cssHandler(t *testing.T) {
@@ -175,7 +194,7 @@ func Test_cssHandler(t *testing.T) {
 	}
 
 	w := httptest.NewRecorder()
-	req := httptest.NewRequest("GET", "localhost"+testport+"/css", nil)
+	req := httptest.NewRequest("GET", "http://localhost"+testport+"/css", nil)
 
 	t.Run(name, func(t *testing.T) {
 		cssHandler(w, req)
