@@ -20,6 +20,34 @@ func Start() {
 	index := mux.NewRouter().StrictSlash(true)
 	api := index.PathPrefix("/api").Subrouter()
 
+	setIndexRouting(index)
+	setEndpointRouting(api)
+
+	confObj.Mu.RLock()
+	portnum := fmt.Sprintf(":%v", confObj.Port)
+	confObj.Mu.RUnlock()
+
+	server := newServer(portnum, index)
+
+	log.Printf("\nListening on %v\n", portnum)
+	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
+	errLog("", server.ListenAndServe())
+
+	closeLog <- true
+}
+
+func newServer(port string, index *mux.Router) *http.Server {
+	// handlers.CompressHandler gzips all responses.
+	// Write/Read timeouts are self explanatory.
+	return &http.Server{
+		Handler:      handlers.CompressHandler(ipMiddleware(index)),
+		Addr:         port,
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+}
+
+func setIndexRouting(index *mux.Router) {
 	index.Path("/").
 		Methods("GET", "HEAD").
 		HandlerFunc(indexHandler)
@@ -31,7 +59,9 @@ func Start() {
 	index.Path("/api").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiBaseHandler)
+}
 
+func setEndpointRouting(api *mux.Router) {
 	// twtxt will add support for other formats later.
 	// Maybe json? Making this future-proof.
 	api.Path("/{format:(?:plain)}").
@@ -97,23 +127,4 @@ func Start() {
 		Queries("page", "{[0-9]+}").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiTagsHandler)
-
-	confObj.Mu.RLock()
-	portnum := fmt.Sprintf(":%v", confObj.Port)
-	confObj.Mu.RUnlock()
-
-	// handlers.CompressHandler gzips all responses.
-	// Write/Read timeouts are self explanatory.
-	server := &http.Server{
-		Handler:      handlers.CompressHandler(ipMiddleware(index)),
-		Addr:         portnum,
-		WriteTimeout: 15 * time.Second,
-		ReadTimeout:  15 * time.Second,
-	}
-
-	log.Printf("\nListening on %v\n", portnum)
-	log.Printf("\n:: getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
-	errLog("", server.ListenAndServe())
-
-	closeLog <- true
 }
