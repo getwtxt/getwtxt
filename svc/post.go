@@ -14,14 +14,14 @@ import (
 // registry before adding each user to the local cache.
 func apiPostUser(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		log400(w, r, "Error Parsing Values: "+err.Error())
+		errHTTP(w, r, fmt.Errorf("error parsing values: %v", err.Error()), http.StatusBadRequest)
 		return
 	}
 
 	nick := r.FormValue("nickname")
 	urls := r.FormValue("url")
 	if nick == "" || urls == "" {
-		log400(w, r, "Nickname or URL missing")
+		errHTTP(w, r, fmt.Errorf("nickname or URL missing"), http.StatusBadRequest)
 		return
 	}
 
@@ -29,32 +29,36 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	out, remoteRegistry, err := registry.GetTwtxt(urls)
 	if err != nil {
-		log400(w, r, "Error Fetching twtxt Data: "+err.Error())
+		errHTTP(w, r, fmt.Errorf("error fetching twtxt Data: %v", err.Error()), http.StatusBadRequest)
 		return
 	}
 
-	if remoteRegistry {
+	switch remoteRegistry {
+	case true:
 		remoteRegistries.Mu.Lock()
 		remoteRegistries.List = append(remoteRegistries.List, urls)
 		remoteRegistries.Mu.Unlock()
 
 		if err := twtxtCache.CrawlRemoteRegistry(urls); err != nil {
-			log400(w, r, "Error Crawling Remote Registry: "+err.Error())
+			errHTTP(w, r, fmt.Errorf("error crawling remote registry: %v", err.Error()), http.StatusInternalServerError)
+		} else {
+			log200(r)
+		}
+
+	case false:
+		statuses, err := registry.ParseUserTwtxt(out, nick, urls)
+		errLog("Error Parsing User Data: ", err)
+
+		if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
+			errHTTP(w, r, fmt.Errorf("error adding user to cache: %v", err.Error()), http.StatusBadRequest)
 			return
 		}
-		log200(r)
-		return
+
+		_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
+		if err != nil {
+			errHTTP(w, r, err, http.StatusInternalServerError)
+		} else {
+			log200(r)
+		}
 	}
-
-	statuses, err := registry.ParseUserTwtxt(out, nick, urls)
-	errLog("Error Parsing User Data: ", err)
-
-	if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
-		log400(w, r, "Error Adding User to Cache: "+err.Error())
-		return
-	}
-
-	log200(r)
-	_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
-	errLog("", err)
 }

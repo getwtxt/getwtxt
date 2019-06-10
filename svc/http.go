@@ -2,6 +2,7 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net"
 	"net/http"
@@ -69,24 +70,10 @@ func log200(r *http.Request) {
 	log.Printf("*** %v :: 200 :: %v %v :: %v\n", uip, r.Method, r.URL, useragent)
 }
 
-func log400(w http.ResponseWriter, r *http.Request, err string) {
-	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 400 :: %v %v :: %v\n", uip, r.Method, r.URL, err)
-	http.Error(w, "400 Bad Request: "+err, http.StatusBadRequest)
-}
-
-func log404(w http.ResponseWriter, r *http.Request, err error) {
+func errHTTP(w http.ResponseWriter, r *http.Request, err error, code int) {
 	useragent := r.Header["User-Agent"]
-
 	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 404 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err.Error())
-	http.Error(w, err.Error(), http.StatusNotFound)
-}
 
-func log500(w http.ResponseWriter, r *http.Request, err error) {
-	useragent := r.Header["User-Agent"]
-
-	uip := getIPFromCtx(r.Context())
-	log.Printf("*** %v :: 500 :: %v %v :: %v :: %v\n", uip, r.Method, r.URL, useragent, err.Error())
-	http.Error(w, err.Error(), http.StatusInternalServerError)
+	log.Printf("*** %v :: %v :: %v %v :: %v :: %v\n", uip, code, r.Method, r.URL, useragent, err.Error())
+	http.Error(w, fmt.Sprintf("Error %v: %v", code, err.Error()), code)
 }

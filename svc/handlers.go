@@ -33,7 +33,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write(staticCache.index)
 	staticCache.mu.RUnlock()
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -54,7 +54,7 @@ func cssHandler(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write(staticCache.css)
 	staticCache.mu.RUnlock()
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -75,7 +75,7 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	out, err := twtxtCache.QueryAllStatuses()
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 	}
 
 	data := parseQueryOut(out)
@@ -86,7 +86,7 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = w.Write(data)
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -96,27 +96,28 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 // handles "/api/plain/(users|mentions|tweets)"
 func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
-	err := r.ParseForm()
-	if err != nil {
-		log500(w, r, err)
-		return
-	}
+	errLog("Error when parsing query values: ", r.ParseForm())
 
 	if r.FormValue("q") != "" || r.FormValue("url") != "" {
 		err := apiEndpointQuery(w, r)
 		if err != nil {
-			log500(w, r, err)
+			errHTTP(w, r, err, http.StatusInternalServerError)
 			return
 		}
 		log200(r)
 		return
 	}
 
+	var err error
 	page := 1
 	pageVal := r.FormValue("page")
-	if pageVal != "" {
+
+	switch pageVal {
+	case "":
+		break
+	default:
 		page, err = strconv.Atoi(pageVal)
-		if err != nil || page == 0 {
+		if err != nil || page < 1 {
 			page = 1
 		}
 	}
@@ -138,7 +139,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		out = registry.ReduceToPage(page, out)
 
 	default:
-		log404(w, r, fmt.Errorf("endpoint not found"))
+		errHTTP(w, r, fmt.Errorf("endpoint not found"), http.StatusNotFound)
 		return
 	}
 	errLog("", err)
@@ -151,11 +152,10 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = w.Write(data)
 	if err != nil {
-		log500(w, r, err)
-		return
+		errHTTP(w, r, err, http.StatusInternalServerError)
+	} else {
+		log200(r)
 	}
-
-	log200(r)
 }
 
 // handles POST for "/api/plain/users"
@@ -168,7 +168,7 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	out, err := twtxtCache.QueryInStatus("#")
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -181,7 +181,7 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err = w.Write(data)
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
@@ -205,7 +205,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 
 	_, err := w.Write(data)
 	if err != nil {
-		log500(w, r, err)
+		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
 
