@@ -82,7 +82,6 @@ func testConfig() {
 
 	confObj.LastCache = time.Now()
 	confObj.LastPush = time.Now()
-	confObj.Version = Vers
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")

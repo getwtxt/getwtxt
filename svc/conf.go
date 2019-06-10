@@ -21,7 +21,6 @@ type Configuration struct {
 	DBPath        string        `yaml:"DatabasePath"`
 	AssetsDir     string        `yaml:"-"`
 	StdoutLogging bool          `yaml:"StdoutLogging"`
-	Version       string        `yaml:"-"`
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
 	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
 	LastCache     time.Time     `yaml:"-"`
@@ -37,6 +36,29 @@ type Instance struct {
 	Owner string `yaml:"Instance.OwnerName"`
 	Mail  string `yaml:"Instance.Email"`
 	Desc  string `yaml:"Instance.Description"`
+}
+
+func initConfig() {
+
+	parseConfigFlag()
+
+	setConfigDefaults()
+
+	log.Printf("Loading configuration ...\n")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Printf("%v\n", err.Error())
+		log.Printf("Using defaults ...\n")
+		bindConfig()
+		return
+	}
+
+	viper.WatchConfig()
+	viper.OnConfigChange(func(e fsnotify.Event) {
+		log.Printf("Config file change detected. Reloading...\n")
+		bindConfig()
+		initLogging()
+	})
+	bindConfig()
 }
 
 func initLogging() {
@@ -70,42 +92,7 @@ func initLogging() {
 	confObj.Mu.RUnlock()
 }
 
-func initConfig() {
-
-	if *flagConfFile == "" {
-		viper.SetConfigName("getwtxt")
-		viper.SetConfigType("yml")
-		viper.AddConfigPath(".")
-		viper.AddConfigPath("/usr/local/getwtxt")
-		viper.AddConfigPath("/etc")
-		viper.AddConfigPath("/usr/local/etc")
-
-	} else {
-		path, file := filepath.Split(*flagConfFile)
-		if path == "" {
-			path = "."
-		}
-		if file == "" {
-			file = *flagConfFile
-		}
-		filename := strings.Split(file, ".")
-		viper.SetConfigName(filename[0])
-		viper.SetConfigType(filename[1])
-		viper.AddConfigPath(path)
-	}
-
-	log.Printf("Loading configuration ...\n")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("%v\n", err.Error())
-		log.Printf("Using defaults ...\n")
-	} else {
-		viper.WatchConfig()
-		viper.OnConfigChange(func(e fsnotify.Event) {
-			log.Printf("Config file change detected. Reloading...\n")
-			rebindConfig()
-		})
-	}
-
+func setConfigDefaults() {
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
@@ -120,7 +107,30 @@ func initConfig() {
 	viper.SetDefault("Instance.Email", "nobody@knows")
 	viper.SetDefault("Instance.URL", "https://twtxt.example.com")
 	viper.SetDefault("Instance.Description", "A fast, resilient twtxt registry server written in Go!")
+}
 
+func parseConfigFlag() {
+	if *flagConfFile == "" {
+		viper.SetConfigName("getwtxt")
+		viper.SetConfigType("yml")
+		viper.AddConfigPath(".")
+		viper.AddConfigPath("/usr/local/getwtxt")
+		viper.AddConfigPath("/etc")
+		viper.AddConfigPath("/usr/local/etc")
+
+	} else {
+		path, file := filepath.Split(*flagConfFile)
+		if path == "" {
+			path = "."
+		}
+		filename := strings.Split(file, ".")
+		viper.SetConfigName(filename[0])
+		viper.SetConfigType(filename[1])
+		viper.AddConfigPath(path)
+	}
+}
+
+func bindConfig() {
 	confObj.Mu.Lock()
 
 	confObj.Port = viper.GetInt("ListenPort")
@@ -157,7 +167,6 @@ func initConfig() {
 
 	confObj.LastCache = time.Now()
 	confObj.LastPush = time.Now()
-	confObj.Version = Vers
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
@@ -167,40 +176,4 @@ func initConfig() {
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
 
 	confObj.Mu.Unlock()
-
-}
-
-func rebindConfig() {
-
-	confObj.Mu.RLock()
-	if !confObj.StdoutLogging {
-		closeLog <- true
-	}
-	confObj.Mu.RUnlock()
-
-	confObj.Mu.Lock()
-
-	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
-	if *flagDBType != "" {
-		confObj.DBType = *flagDBType
-	}
-
-	confObj.LogFile = viper.GetString("LogFile")
-	confObj.DBPath = viper.GetString("DatabasePath")
-	if *flagDBPath != "" {
-		confObj.DBPath = *flagDBPath
-	}
-	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
-	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
-	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
-
-	confObj.Instance.Name = viper.GetString("Instance.SiteName")
-	confObj.Instance.URL = viper.GetString("Instance.URL")
-	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
-	confObj.Instance.Mail = viper.GetString("Instance.Email")
-	confObj.Instance.Desc = viper.GetString("Instance.Description")
-
-	confObj.Mu.Unlock()
-
-	initLogging()
 }
