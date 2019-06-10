@@ -1,7 +1,8 @@
-# getwtxt 
 &nbsp;[![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) 
-&nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) 
-&nbsp;![GitHub last commit](https://img.shields.io/github/last-commit/getwtxt/getwtxt.svg?color=blue&logoColor=blue)
+&nbsp;[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt)
+&nbsp;[![Code Climate issues](https://img.shields.io/codeclimate/issues/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt/issues)
+&nbsp;[![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt/trends/technical_debt)
+# getwtxt &nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) 
 
 twtxt registry written in Go! 
 
@@ -20,7 +21,8 @@ for tags and key words.
 &nbsp; &nbsp; \[ [Other Documentation](#other-documentation) \] 
 &nbsp; &nbsp; \[ [Notes](#notes) \]
 
-## Features
+## Features 
+&nbsp;![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)
 
 * Easy to set up and maintain 
 * Uses an in-memory cache to serve requests
@@ -282,11 +284,10 @@ $ sudo make uninstall
 
 ## Notes
 
-twtxt Information
-  * [twtxt.readthedocs.io](https://twtxt.readthedocs.io)
+twtxt Information: [`twtxt.readthedocs.io`](https://twtxt.readthedocs.io)
 
-twtxt Client Repo
-  * [buckket/twtxt](https://github.com/buckket/twtxt) (Includes links to additional related projects. See `Contributions`)
+twtxt Client Repo: [`github.com/buckket/twtxt`](https://github.com/buckket/twtxt)
 
-Registry Specification
-  * [twtxt.readthedocs.io/.../registry.html](https://twtxt.readthedocs.io/en/latest/user/registry.html)
+Registry Specification: [`twtxt.readthedocs.io/en/latest/user/registry.html`](https://twtxt.readthedocs.io/en/latest/user/registry.html)
+
+Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/water.css) for open-sourcing a pleasant, easy-to-use, importable stylesheet
