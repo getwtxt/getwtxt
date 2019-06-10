@@ -18,11 +18,15 @@ import (
 
 func basicHandlerTest(path string, name string, t *testing.T) {
 	initTestConf()
+
 	t.Run(name, func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", path, nil)
+
 		indexHandler(w, req)
 		resp := w.Result()
+		defer resp.Body.Close()
+
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
@@ -41,9 +45,11 @@ func Test_indexHandler(t *testing.T) {
 }
 func Benchmark_indexHandler(b *testing.B) {
 	initTestConf()
+
 	w := httptest.NewRecorder()
 	req := httptest.NewRequest("GET", "http://localhost"+testport+"/", nil)
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		indexHandler(w, req)
 	}
@@ -85,17 +91,24 @@ var endpointCases = []struct {
 func Test_apiEndpointHandler(t *testing.T) {
 	initTestConf()
 	mockRegistry()
+
 	for _, tt := range endpointCases {
+
 		t.Run(tt.name, func(t *testing.T) {
 			w := httptest.NewRecorder()
 			apiEndpointHandler(w, tt.req)
+
 			resp := w.Result()
+			defer resp.Body.Close()
+
 			if resp.StatusCode != tt.status {
 				t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 			}
+
 			if tt.status == http.StatusOK {
 				var body []byte
 				buf := bytes.NewBuffer(body)
+
 				err := resp.Write(buf)
 				if err != nil {
 					t.Errorf("%v\n", err)
@@ -113,8 +126,10 @@ func Test_apiEndpointHandler(t *testing.T) {
 func Benchmark_apiEndpointHandler(b *testing.B) {
 	initTestConf()
 	mockRegistry()
+
 	w := httptest.NewRecorder()
 	b.ResetTimer()
+
 	for _, tt := range endpointCases {
 		for i := 0; i < b.N; i++ {
 			apiEndpointHandler(w, tt.req)
@@ -125,14 +140,19 @@ func Benchmark_apiEndpointHandler(b *testing.B) {
 func Test_apiTagsBaseHandler(t *testing.T) {
 	initTestConf()
 	mockRegistry()
+
 	t.Run("apiTagsBaseHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags", nil)
+
 		apiTagsBaseHandler(w, req)
 		resp := w.Result()
+		defer resp.Body.Close()
+
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
+
 		bd, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			t.Errorf("%v\n", err)
@@ -148,6 +168,7 @@ func Benchmark_apiTagsBaseHandler(b *testing.B) {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags", nil)
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		apiTagsBaseHandler(w, r)
 	}
@@ -155,15 +176,20 @@ func Benchmark_apiTagsBaseHandler(b *testing.B) {
 func Test_apiTagsHandler(t *testing.T) {
 	initTestConf()
 	mockRegistry()
+
 	t.Run("apiTagsHandler", func(t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags/programming", nil)
+
 		apiTagsHandler(w, req)
 		resp := w.Result()
+		defer resp.Body.Close()
+
 		data, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			t.Errorf("%v\n", err)
 		}
+
 		if resp.StatusCode != http.StatusOK {
 			t.Errorf(fmt.Sprintf("%v", resp.StatusCode))
 		}
@@ -179,6 +205,7 @@ func Benchmark_apiTagsHandler(b *testing.B) {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequest("GET", "http://localhost"+testport+"/api/plain/tags/programming", nil)
 	b.ResetTimer()
+
 	for i := 0; i < b.N; i++ {
 		apiTagsHandler(w, r)
 	}
@@ -198,8 +225,12 @@ func Test_cssHandler(t *testing.T) {
 
 	t.Run(name, func(t *testing.T) {
 		cssHandler(w, req)
+
 		resp := w.Result()
+		defer resp.Body.Close()
+
 		body, _ := ioutil.ReadAll(resp.Body)
+
 		if resp.StatusCode != 200 {
 			t.Errorf("cssHandler(): %v\n", resp.StatusCode)
 		}
