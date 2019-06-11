@@ -17,59 +17,58 @@ func getEtag(modtime time.Time) string {
 	return fmt.Sprintf("%x", sha256.Sum256(shabytes))
 }
 
-// handles "/"
-func indexHandler(w http.ResponseWriter, r *http.Request) {
+func sendStaticEtag(w http.ResponseWriter, isCSS bool) {
+	if isCSS {
+		etag := getEtag(staticCache.cssMod)
+		w.Header().Set("ETag", "\""+etag+"\"")
+		w.Header().Set("Content-Time", txtutf8)
+		return
+	}
+	etag := getEtag(staticCache.indexMod)
+	w.Header().Set("ETag", "\""+etag+"\"")
+	w.Header().Set("Content-Time", htmlutf8)
+}
 
+// handles "/" and "/css"
+func staticHandler(w http.ResponseWriter, r *http.Request) {
 	pingAssets()
 
 	// Take the hex-encoded sha256 sum of the index template's mod time
 	// to send as an ETag. If an error occurred when grabbing the file info,
 	// the ETag will be empty.
 	staticCache.mu.RLock()
-	etag := getEtag(staticCache.indexMod)
-	w.Header().Set("ETag", "\""+etag+"\"")
-	w.Header().Set("Content-Type", htmlutf8)
-
-	_, err := w.Write(staticCache.index)
-	staticCache.mu.RUnlock()
-	if err != nil {
-		errHTTP(w, r, err, http.StatusInternalServerError)
-		return
+	switch r.URL.Path {
+	case "/css":
+		sendStaticEtag(w, true)
+		_, err := w.Write(staticCache.css)
+		if err != nil {
+			staticCache.mu.RUnlock()
+			errHTTP(w, r, err, http.StatusInternalServerError)
+			return
+		}
+	default:
+		sendStaticEtag(w, false)
+		_, err := w.Write(staticCache.index)
+		if err != nil {
+			staticCache.mu.RUnlock()
+			errHTTP(w, r, err, http.StatusInternalServerError)
+			return
+		}
 	}
-
-	log200(r)
-}
-
-// Serving the stylesheet virtually because
-// files aren't served directly in getwtxt.
-func cssHandler(w http.ResponseWriter, r *http.Request) {
-
-	pingAssets()
-
-	staticCache.mu.RLock()
-	etag := getEtag(staticCache.cssMod)
-	w.Header().Set("ETag", "\""+etag+"\"")
-	w.Header().Set("Content-Type", cssutf8)
-
-	_, err := w.Write(staticCache.css)
 	staticCache.mu.RUnlock()
-	if err != nil {
-		errHTTP(w, r, err, http.StatusInternalServerError)
-		return
-	}
 
 	log200(r)
 }
 
 // handles "/api"
 func apiBaseHandler(w http.ResponseWriter, r *http.Request) {
-	indexHandler(w, r)
+	staticHandler(w, r)
 }
 
 // handles "/api/plain"
 // maybe add json/xml support later
 func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
-	indexHandler(w, r)
+	staticHandler(w, r)
 }
 
 func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +94,6 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles "/api/plain/(users|mentions|tweets)"
 func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
-
 	errLog("Error when parsing query values: ", r.ParseForm())
 
 	if r.FormValue("q") != "" || r.FormValue("url") != "" {
@@ -165,7 +163,6 @@ func apiEndpointPOSTHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles "/api/plain/tags"
 func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
-
 	out, err := twtxtCache.QueryInStatus("#")
 	if err != nil {
 		errHTTP(w, r, err, http.StatusInternalServerError)
@@ -190,12 +187,10 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 // handles "/api/plain/tags/[a-zA-Z0-9]+"
 func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
-
 	vars := mux.Vars(r)
 	tags := vars["tags"]
 
 	out := compositeStatusQuery("#"+tags, r)
-
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
 
