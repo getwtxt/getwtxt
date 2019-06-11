@@ -51,9 +51,9 @@ func initConfig() {
 		bindConfig()
 		return
 	}
+
 	viper.WatchConfig()
 	viper.OnConfigChange(reInit)
-
 	bindConfig()
 }
 
@@ -62,12 +62,10 @@ func initConfig() {
 func initLogging() {
 
 	confObj.Mu.RLock()
-
 	if confObj.StdoutLogging {
 		log.SetOutput(os.Stdout)
 
 	} else {
-
 		logfile, err := os.OpenFile(confObj.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		errLog("Could not open log file: ", err)
 
@@ -76,17 +74,13 @@ func initLogging() {
 		// to prevent race conditions when the config is
 		// reloaded.
 		go func(logfile *os.File) {
-
 			<-closeLog
-
 			log.Printf("Closing log file ...\n\n")
 			errLog("Could not close log file: ", logfile.Close())
-
 		}(logfile)
 
 		log.SetOutput(logfile)
 	}
-
 	confObj.Mu.RUnlock()
 }
 
@@ -140,35 +134,12 @@ func bindConfig() {
 
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.LogFile = viper.GetString("LogFile")
-
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
-	if *flagDBType != "" {
-		confObj.DBType = *flagDBType
-	}
-
 	confObj.DBPath = viper.GetString("DatabasePath")
-	if *flagDBPath != "" {
-		confObj.DBPath = *flagDBPath
-	}
-	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
-
 	confObj.AssetsDir = viper.GetString("AssetsDirectory")
-	if *flagAssets != "" {
-		confObj.AssetsDir = *flagAssets
-	}
-
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
-	if confObj.StdoutLogging {
-		log.Printf("Logging to stdout\n")
-	} else {
-		log.Printf("Logging to %v\n", confObj.LogFile)
-	}
-
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
-	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
-
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
-	log.Printf("Database push interval: %v\n", confObj.DBInterval)
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")
@@ -176,6 +147,25 @@ func bindConfig() {
 	confObj.Instance.Owner = viper.GetString("Instance.OwnerName")
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
+
+	if *flagDBType != "" {
+		confObj.DBType = *flagDBType
+	}
+	if *flagDBPath != "" {
+		confObj.DBPath = *flagDBPath
+	}
+	if *flagAssets != "" {
+		confObj.AssetsDir = *flagAssets
+	}
+
+	if confObj.StdoutLogging {
+		log.Printf("Logging to: stdout\n")
+	} else {
+		log.Printf("Logging to: %v\n", confObj.LogFile)
+	}
+	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
+	log.Printf("Database push interval: %v\n", confObj.DBInterval)
+	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
 
 	confObj.Mu.Unlock()
 }
