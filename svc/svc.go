@@ -50,11 +50,11 @@ func newServer(port string, index *mux.Router) *http.Server {
 func setIndexRouting(index *mux.Router) {
 	index.Path("/").
 		Methods("GET", "HEAD").
-		HandlerFunc(indexHandler)
+		HandlerFunc(staticHandler)
 
 	index.Path("/css").
 		Methods("GET", "HEAD").
-		HandlerFunc(cssHandler)
+		HandlerFunc(staticHandler)
 
 	index.Path("/api").
 		Methods("GET", "HEAD").

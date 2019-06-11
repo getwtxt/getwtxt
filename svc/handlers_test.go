@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-// The first three are testing whether the landing page is
+// The first few are testing whether the landing page is
 // being sent correctly. If i change the base behavior of
 //    /api
 //    /api/plain
@@ -23,7 +23,7 @@ func basicHandlerTest(path string, name string, t *testing.T) {
 		w := httptest.NewRecorder()
 		req := httptest.NewRequest("GET", path, nil)
 
-		indexHandler(w, req)
+		staticHandler(w, req)
 		resp := w.Result()
 		defer resp.Body.Close()
 
@@ -51,7 +51,7 @@ func Benchmark_indexHandler(b *testing.B) {
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
-		indexHandler(w, req)
+		staticHandler(w, req)
 	}
 }
 func Test_apiBaseHandler(t *testing.T) {
@@ -224,7 +224,7 @@ func Test_cssHandler(t *testing.T) {
 	req := httptest.NewRequest("GET", "http://localhost"+testport+"/css", nil)
 
 	t.Run(name, func(t *testing.T) {
-		cssHandler(w, req)
+		staticHandler(w, req)
 
 		resp := w.Result()
 		defer resp.Body.Close()
