@@ -13,7 +13,7 @@ type dbLevel struct {
 	db *leveldb.DB
 }
 
-func (lvl dbLevel) push() error {
+func (lvl *dbLevel) push() error {
 
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
@@ -45,7 +45,7 @@ func (lvl dbLevel) push() error {
 	return lvl.db.Write(dbBasket, nil)
 }
 
-func (lvl dbLevel) pull() {
+func (lvl *dbLevel) pull() {
 
 	iter := lvl.db.NewIterator(nil, nil)
 
