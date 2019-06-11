@@ -30,9 +30,12 @@ var confObj = &Configuration{}
 // Signals to close the log file
 var closeLog = make(chan bool, 1)
 
-// Used to transmit database pointer, database ticker,
-// and cache ticker after initialization
+// Used to transmit database pointer
 var dbChan = make(chan dbase, 1)
+
+// Used to transmit the wrapped tickers
+// corresponding to the in-memory cache
+// or the on-disk database.
 var dbTickC = make(chan *tick, 1)
 var cTickC = make(chan *tick, 1)
 
@@ -98,22 +101,6 @@ func checkFlags() {
 		manualScreen()
 		os.Exit(0)
 	}
-}
-
-// Starts the tickers that periodically:
-//  - pull new user statuses into cache
-//  - push cached data to disk
-func initPersistence() {
-	confObj.Mu.RLock()
-	cacheTkr := initTicker(false, confObj.CacheInterval)
-	dbTkr := initTicker(true, confObj.DBInterval)
-	confObj.Mu.RUnlock()
-
-	go dataTimer(cacheTkr)
-	go dataTimer(dbTkr)
-
-	dbTickC <- dbTkr
-	cTickC <- cacheTkr
 }
 
 // Watch for SIGINT aka ^C
