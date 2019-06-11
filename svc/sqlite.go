@@ -42,10 +42,13 @@ func initSqlite() *dbSqlite {
 	}
 }
 
-func (lite dbSqlite) push() error {
-	err := lite.db.Ping()
-	if err != nil {
-		return err
+func (lite *dbSqlite) push() error {
+	confObj.Mu.Lock()
+	confObj.LastPush = time.Now()
+	confObj.Mu.Unlock()
+
+	if err := lite.db.Ping(); err != nil {
+		lite = initSqlite()
 	}
 
 	tx, err := lite.db.Begin()
@@ -90,7 +93,7 @@ func (lite dbSqlite) push() error {
 	return nil
 }
 
-func (lite dbSqlite) pull() {
+func (lite *dbSqlite) pull() {
 	errLog("Error pinging sqlite DB: ", lite.db.Ping())
 
 	rows, err := lite.pullStmt.Query()
