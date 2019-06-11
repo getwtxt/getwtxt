@@ -30,8 +30,8 @@ github.com/dgryski/go-sip13 v0.0.0-20181026042036-e10d5fee7954/go.mod h1:vAd38F8
 github.com/dgryski/go-sip13 v0.0.0-20190329191031-25c5027a8c7b/go.mod h1:vAd38F8PWV+bWy6jNmig1y/TA+kYO4g3RSRF0IAv0no=
 github.com/fsnotify/fsnotify v1.4.7 h1:IXs+QLmnXW2CcXuY+8Mzv/fWEsPGWxqefPtCP5CnV9I=
 github.com/fsnotify/fsnotify v1.4.7/go.mod h1:jwhsz4b93w/PPRr/qN1Yymfu8t87LnFCMoQvtojpjFo=
-github.com/getwtxt/getwtxt/svc v0.0.0-20190610071437-eaa62215ae92 h1:ZA3vy++cfRccMTR6Vk5P2FQD9SZU1caEYvVmoI5gmLQ=
-github.com/getwtxt/getwtxt/svc v0.0.0-20190610071437-eaa62215ae92/go.mod h1:GU8P6TGIvXkLKQGt8Iv74TGITKgDAtYinYaLDZBGvYs=
+github.com/getwtxt/getwtxt/svc v0.0.0-20190611092730-64d24f3f43f7 h1:YTpZswljuLnsIR2ybUowjLDyyQYvFfLKZIlROlPDOMs=
+github.com/getwtxt/getwtxt/svc v0.0.0-20190611092730-64d24f3f43f7/go.mod h1:5+hD5hsI4Uphdfqfwj7/Hx68wEtT1CNj/DLYixejbW4=
 github.com/getwtxt/registry v0.2.3 h1:gOc6fSBljD/6QKwr+UXtY2bPepsifVei49XQaR5i1mk=
 github.com/getwtxt/registry v0.2.3/go.mod h1:BGSIALOFqIRj+ACLB8etWGUOgFAKN8oFDpCsw6YOdYQ=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
