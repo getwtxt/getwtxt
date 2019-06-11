@@ -21,7 +21,7 @@ func sendStaticEtag(w http.ResponseWriter, isCSS bool) {
 	if isCSS {
 		etag := getEtag(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
-		w.Header().Set("Content-Time", txtutf8)
+		w.Header().Set("Content-Time", cssutf8)
 		return
 	}
 	etag := getEtag(staticCache.indexMod)
