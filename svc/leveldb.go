@@ -14,7 +14,6 @@ type dbLevel struct {
 }
 
 func (lvl *dbLevel) push() error {
-
 	twtxtCache.Mu.RLock()
 	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Users {
@@ -42,13 +41,11 @@ func (lvl *dbLevel) push() error {
 }
 
 func (lvl *dbLevel) pull() {
-
 	iter := lvl.db.NewIterator(nil, nil)
 
 	for iter.Next() {
 		key := string(iter.Key())
 		val := string(iter.Value())
-
 		split := strings.Split(key, "*")
 		urls := split[0]
 		field := split[1]

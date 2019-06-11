@@ -4,5 +4,6 @@ go 1.11
 
 require (
 	github.com/getwtxt/getwtxt/svc v0.0.0-20190611092730-64d24f3f43f7
+	github.com/go-logfmt/logfmt v0.4.0 // indirect
 	golang.org/x/sys v0.0.0-20190610200419-93c9922d18ae // indirect
 )
