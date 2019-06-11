@@ -21,12 +21,12 @@ func sendStaticEtag(w http.ResponseWriter, isCSS bool) {
 	if isCSS {
 		etag := getEtag(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
-		w.Header().Set("Content-Time", cssutf8)
+		w.Header().Set("Content-Type", cssutf8)
 		return
 	}
 	etag := getEtag(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
-	w.Header().Set("Content-Time", htmlutf8)
+	w.Header().Set("Content-Type", htmlutf8)
 }
 
 // handles "/" and "/css"
