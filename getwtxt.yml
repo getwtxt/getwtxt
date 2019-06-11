@@ -19,6 +19,10 @@
 ##  Changing the following options requires a restart.     ##
 #############################################################
 
+# Set to true if getwtxt will be behind a reverse
+# proxy server, such as Caddy or nginx
+BehindProxy: true
+
 # This is the port that getwtxt will bind to.
 ListenPort: 9001
 

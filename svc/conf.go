@@ -15,6 +15,7 @@ import (
 // this struct.
 type Configuration struct {
 	Mu            sync.RWMutex
+	IsProxied     bool          `yaml:"BehindProxy"`
 	Port          int           `yaml:"ListenPort"`
 	LogFile       string        `yaml:"LogFile"`
 	DBType        string        `yaml:"DatabaseType"`
@@ -132,6 +133,7 @@ func parseConfigFlag() {
 func bindConfig() {
 	confObj.Mu.Lock()
 
+	confObj.IsProxied = viper.GetBool("BehindProxy")
 	confObj.Port = viper.GetInt("ListenPort")
 	confObj.LogFile = viper.GetString("LogFile")
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
@@ -157,7 +159,15 @@ func bindConfig() {
 	if *flagAssets != "" {
 		confObj.AssetsDir = *flagAssets
 	}
+	if *flagProxied {
+		confObj.IsProxied = true
+	}
 
+	if confObj.IsProxied {
+		log.Printf("Behind reverse proxy, not using host matching\n")
+	} else {
+		log.Printf("Matching host: %v\n", confObj.Instance.URL)
+	}
 	if confObj.StdoutLogging {
 		log.Printf("Logging to: stdout\n")
 	} else {

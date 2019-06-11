@@ -12,28 +12,35 @@ import (
 
 // Start is the initialization function for getwtxt
 func Start() {
+	before := time.Now()
 	initSvc()
 
 	// StrictSlash(true) allows /api and /api/
 	// to serve the same content without duplicating
 	// handlers/paths
 	index := mux.NewRouter().StrictSlash(true)
-	api := index.PathPrefix("/api").Subrouter()
-
-	setIndexRouting(index)
-	setEndpointRouting(api)
 
 	confObj.Mu.RLock()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
+	if !confObj.IsProxied {
+		index.Host(confObj.Instance.URL)
+	}
 	confObj.Mu.RUnlock()
 
-	server := newServer(portnum, index)
+	setIndexRouting(index)
+	api := index.PathPrefix("/api").Subrouter()
+	setEndpointRouting(api)
 
+	server := newServer(portnum, index)
 	log.Printf("*** Listening on %v\n", portnum)
-	log.Printf("*** getwtxt %v Started :: %v ::\n\n", Vers, time.Now().Format(time.RFC3339))
+	log.Printf("*** getwtxt %v Startup finished at %v, took %v\n\n", Vers, time.Now().Format(time.RFC3339), time.Since(before))
 	errLog("", server.ListenAndServe())
 
 	closeLog <- true
+	killTickers()
+	killDB()
+	close(dbChan)
+	close(closeLog)
 }
 
 func newServer(port string, index *mux.Router) *http.Server {

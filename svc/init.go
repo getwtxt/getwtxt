@@ -19,9 +19,10 @@ var (
 	flagHelp     *bool   = pflag.BoolP("help", "h", false, "Display the quick-help screen.")
 	flagMan      *bool   = pflag.BoolP("manual", "m", false, "Display the configuration manual.")
 	flagConfFile *string = pflag.StringP("config", "c", "", "The name/path of the configuration file you wish to use.")
-	flagAssets   *string = pflag.StringP("assets", "a", "", "The location of the getwtxt assets directory")
-	flagDBPath   *string = pflag.StringP("db", "d", "", "Path to the getwtxt database")
-	flagDBType   *string = pflag.StringP("dbtype", "t", "", "Type of database being used")
+	flagAssets   *string = pflag.StringP("assets", "a", "", "The location of the getwtxt assets directory.")
+	flagDBPath   *string = pflag.StringP("db", "d", "", "Path to the getwtxt database.")
+	flagDBType   *string = pflag.StringP("dbtype", "t", "", "Type of database being used.")
+	flagProxied  *bool   = pflag.BoolP("proxied", "p", false, "Use if getwtxt is behind a reverse proxy.")
 )
 
 // Holds the global configuration
