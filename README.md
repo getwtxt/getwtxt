@@ -46,12 +46,14 @@ Build dependencies are minimal, and only include:
 [`Releases`](https://github.com/getwtxt/getwtxt/releases) tab
 
 Now, on with the directions. First, fetch the sources using `git`
-and jump into the directory.
+and jump into the directory. Then, check out the latest tag.
 
 ```
 $ git clone git://github.com/getwtxt/getwtxt.git
 ...
 $ cd getwtxt
+...
+$ git checkout $(git describe --tags --abbrev=0)
 ```
 
 Optionally, use the `go` tool to test and benchmark the files in `svc`.
