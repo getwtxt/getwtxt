@@ -1,8 +1,4 @@
-&nbsp;[![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) 
-&nbsp;[![Code Climate maintainability](https://img.shields.io/codeclimate/maintainability-percentage/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt)
-&nbsp;[![Code Climate issues](https://img.shields.io/codeclimate/issues/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt/issues)
-&nbsp;[![Code Climate technical debt](https://img.shields.io/codeclimate/tech-debt/getwtxt/getwtxt.svg)](https://codeclimate.com/github/getwtxt/getwtxt/trends/technical_debt)
-# getwtxt &nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) 
+# getwtxt &nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
 
 twtxt registry written in Go! 
 
