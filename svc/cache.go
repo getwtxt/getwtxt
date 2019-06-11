@@ -66,9 +66,6 @@ func cacheUpdate() {
 		errLog("Error refreshing local copy of remote registry data: ", twtxtCache.CrawlRemoteRegistry(v))
 	}
 	remoteRegistries.Mu.RUnlock()
-	confObj.Mu.Lock()
-	confObj.LastCache = time.Now()
-	confObj.Mu.Unlock()
 }
 
 // pingAssets checks if the local static assets

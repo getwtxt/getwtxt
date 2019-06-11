@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 	"sync"
-	"time"
 
 	"github.com/getwtxt/registry"
 	"github.com/spf13/viper"
@@ -79,9 +78,6 @@ func testConfig() {
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
-
-	confObj.LastCache = time.Now()
-	confObj.LastPush = time.Now()
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")

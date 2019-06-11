@@ -43,10 +43,6 @@ func initSqlite() *dbSqlite {
 }
 
 func (lite *dbSqlite) push() error {
-	confObj.Mu.Lock()
-	confObj.LastPush = time.Now()
-	confObj.Mu.Unlock()
-
 	if err := lite.db.Ping(); err != nil {
 		lite = initSqlite()
 	}

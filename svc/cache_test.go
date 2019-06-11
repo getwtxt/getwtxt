@@ -4,26 +4,9 @@ import (
 	"testing"
 )
 
-func Test_cacheUpdate(t *testing.T) {
-	initTestConf()
-	confObj.Mu.RLock()
-	prevtime := confObj.LastCache
-	confObj.Mu.RUnlock()
-
-	t.Run("Cache Time Check", func(t *testing.T) {
-		cacheUpdate()
-		confObj.Mu.RLock()
-		newtime := confObj.LastCache
-		confObj.Mu.RUnlock()
-
-		if !newtime.After(prevtime) || newtime == prevtime {
-			t.Errorf("Cache time did not update, check cacheUpdate() logic\n")
-		}
-	})
-}
-
 func Benchmark_cacheUpdate(b *testing.B) {
 	initTestConf()
+	mockRegistry()
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {
@@ -37,5 +20,14 @@ func Benchmark_pingAssets(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		pingAssets()
+
+		// We'll only have to reload the cache occasionally,
+		// so only start with an empty staticCache 25% of
+		// the time.
+		if float64(i) > (float64(b.N) * .75) {
+			b.StopTimer()
+			staticCache = &staticAssets{}
+			b.StartTimer()
+		}
 	}
 }

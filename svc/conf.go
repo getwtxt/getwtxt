@@ -24,8 +24,6 @@ type Configuration struct {
 	StdoutLogging bool          `yaml:"StdoutLogging"`
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
 	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
-	LastCache     time.Time     `yaml:"-"`
-	LastPush      time.Time     `yaml:"-"`
 	Instance      `yaml:"Instance"`
 }
 
@@ -248,9 +246,6 @@ func bindConfig() {
 
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
-
-	confObj.LastCache = time.Now()
-	confObj.LastPush = time.Now()
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")

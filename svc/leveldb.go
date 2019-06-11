@@ -38,10 +38,6 @@ func (lvl *dbLevel) push() error {
 	}
 	remoteRegistries.Mu.RUnlock()
 
-	confObj.Mu.Lock()
-	confObj.LastPush = time.Now()
-	confObj.Mu.Unlock()
-
 	return lvl.db.Write(dbBasket, nil)
 }
 
