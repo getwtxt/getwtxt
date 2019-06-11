@@ -12,7 +12,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Configuration object definition
+// Configuration values are held in an instance of
+// this struct.
 type Configuration struct {
 	Mu            sync.RWMutex
 	Port          int           `yaml:"ListenPort"`
@@ -28,7 +29,8 @@ type Configuration struct {
 	Instance      `yaml:"Instance"`
 }
 
-// Instance refers to this specific instance of getwtxt
+// Instance refers to meta data about
+// this specific instance of getwtxt
 type Instance struct {
 	Vers  string `yaml:"-"`
 	Name  string `yaml:"Instance.SiteName"`
@@ -38,29 +40,104 @@ type Instance struct {
 	Desc  string `yaml:"Instance.Description"`
 }
 
+// This is a wrapper for a *time.Ticker
+// that adds another channel. It's used
+// to signal to the ticker goroutines
+// that they should stop the tickers
+// and exit.
+type tick struct {
+	isDB bool
+	t    *time.Ticker
+	exit chan bool
+}
+
+// Creates a new instance of a tick
+func initTicker(db bool, interval time.Duration) *tick {
+	return &tick{
+		isDB: db,
+		t:    time.NewTicker(interval),
+		exit: make(chan bool, 1),
+	}
+}
+
+// Sends the signal to stop the tickers
+// and for their respective goroutines
+// to exit.
+func killTickers() {
+	ct := <-cTickC
+	dt := <-dbTickC
+	ct.exit <- true
+	dt.exit <- true
+}
+
+// Waits for a signal from the database
+// *tick. Either stops the ticker and
+// kills the goroutine or it will
+// update cache / push the DB to disk
+func dataTimer(tkr *tick) {
+	for {
+		select {
+		case signal := <-tkr.t.C:
+			if tkr.isDB {
+				errLog("", pushDB())
+				log.Printf("Database push took: %v\n", time.Since(signal))
+				continue
+			}
+			cacheUpdate()
+			log.Printf("Cache update took: %v\n", time.Since(signal))
+		case <-tkr.exit:
+			tkr.t.Stop()
+			return
+		}
+	}
+}
+
+// Called on start-up. Initializes everything
+// related to configuration values.
 func initConfig() {
+	log.Printf("Loading configuration ...\n")
 
 	parseConfigFlag()
-
 	setConfigDefaults()
 
-	log.Printf("Loading configuration ...\n")
 	if err := viper.ReadInConfig(); err != nil {
 		log.Printf("%v\n", err.Error())
 		log.Printf("Using defaults ...\n")
 		bindConfig()
 		return
 	}
-
 	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		log.Printf("Config file change detected. Reloading...\n")
-		bindConfig()
-		initLogging()
-	})
+	viper.OnConfigChange(reInit)
+
 	bindConfig()
 }
 
+// Called when a change is detected in the
+// configuration file. Closes log file,
+// closes database connection, stops all
+// tickers, then binds new configuration
+// values, opens new log file, connects to
+// new database, and starts new cache and
+// database tickers.
+func reInit(e fsnotify.Event) {
+	log.Printf("%v. Reloading...\n", e.String())
+
+	if !confObj.StdoutLogging {
+		closeLog <- true
+	}
+
+	killTickers()
+	killDB()
+
+	bindConfig()
+
+	initLogging()
+	initDatabase()
+	initPersistence()
+}
+
+// Registers either stdout or a specified file
+// to the default logger.
 func initLogging() {
 
 	confObj.Mu.RLock()
@@ -92,6 +169,8 @@ func initLogging() {
 	confObj.Mu.RUnlock()
 }
 
+// Default values should a config file
+// not be available.
 func setConfigDefaults() {
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
@@ -109,6 +188,8 @@ func setConfigDefaults() {
 	viper.SetDefault("Instance.Description", "A fast, resilient twtxt registry server written in Go!")
 }
 
+// Reads data from the configuration
+// flag and acts accordingly.
 func parseConfigFlag() {
 	if *flagConfFile == "" {
 		viper.SetConfigName("getwtxt")
@@ -130,6 +211,9 @@ func parseConfigFlag() {
 	}
 }
 
+// Simply goes down the list of fields
+// in the confObj instance of &Configuration{},
+// assigning values from the config file.
 func bindConfig() {
 	confObj.Mu.Lock()
 

@@ -9,6 +9,13 @@ import (
 	"time"
 )
 
+// These functions and types pertain to the
+// in-memory data being used by the registry
+// service, such as:
+//  - static assets (index.html, style.css)
+//  - the registry itself (users, etc)
+//  - list of other registries submitted
+
 // RemoteRegistries holds a list of remote registries to
 // periodically scrape for new users. The remote registries
 // must have been added via POST like a user.
@@ -17,6 +24,10 @@ type RemoteRegistries struct {
 	List []string
 }
 
+// staticAssets holda the rendered landing page
+// as a byte slice, its on-disk mod time, the
+// assets/style.css file as a byte slice, and
+// its on-disk mod time.
 type staticAssets struct {
 	mu       sync.RWMutex
 	index    []byte
@@ -25,6 +36,9 @@ type staticAssets struct {
 	cssMod   time.Time
 }
 
+// Renders the landing page template using
+// the info supplied in the configuration
+// file's "Instance" section.
 func initTemplates() *template.Template {
 	confObj.Mu.RLock()
 	assetsDir := confObj.AssetsDir
@@ -33,30 +47,7 @@ func initTemplates() *template.Template {
 	return template.Must(template.ParseFiles(assetsDir + "/tmpl/index.html"))
 }
 
-func cacheTimer() bool {
-	confObj.Mu.RLock()
-	answer := time.Since(confObj.LastCache) > confObj.CacheInterval
-	confObj.Mu.RUnlock()
-
-	return answer
-}
-
-// Launched by init as a coroutine to watch
-// for the update intervals to pass.
-func cacheAndPush() {
-	for {
-		if cacheTimer() {
-			refreshCache()
-		}
-		if dbTimer() {
-			errLog("Error pushing cache to database: ", pushDB())
-		}
-		time.Sleep(1000 * time.Millisecond)
-	}
-}
-
-func refreshCache() {
-
+func cacheUpdate() {
 	// This clusterfuck of mutex read locks is
 	// necessary to avoid deadlock. This mess
 	// also avoids a panic that would occur
@@ -84,7 +75,6 @@ func refreshCache() {
 // need to be re-cached. If they do, they are
 // pulled back into memory from disk.
 func pingAssets() {
-
 	confObj.Mu.RLock()
 	assetsDir := confObj.AssetsDir
 	confObj.Mu.RUnlock()

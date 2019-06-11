@@ -24,24 +24,32 @@ var (
 	flagDBType   *string = pflag.StringP("dbtype", "t", "", "Type of database being used")
 )
 
+// Holds the global configuration
 var confObj = &Configuration{}
 
-// signals to close the log file
+// Signals to close the log file
 var closeLog = make(chan bool, 1)
 
-// used to transmit database pointer after
-// initialization
+// Used to transmit database pointer, database ticker,
+// and cache ticker after initialization
 var dbChan = make(chan dbase, 1)
+var dbTickC = make(chan *tick, 1)
+var cTickC = make(chan *tick, 1)
 
+// Used to manage the landing page template
 var tmpls *template.Template
 
+// Holds the registry data in-memory
 var twtxtCache = registry.NewIndex()
 
+// List of other registries submitted to this registry
 var remoteRegistries = &RemoteRegistries{
 	Mu:   sync.RWMutex{},
 	List: make([]string, 0),
 }
 
+// In-memory cache of static assets, specifically
+// the parsed landing page and the stylesheet.
 var staticCache = &staticAssets{}
 
 func errFatal(context string, err error) {
@@ -62,13 +70,15 @@ func errLog(context string, err error) {
 func initSvc() {
 	checkFlags()
 	titleScreen()
+
 	initConfig()
 	initLogging()
 	initDatabase()
-	go cacheAndPush()
 	tmpls = initTemplates()
-	watchForInterrupt()
+	initPersistence()
+
 	pingAssets()
+	watchForInterrupt()
 }
 
 func checkFlags() {
@@ -90,6 +100,22 @@ func checkFlags() {
 	}
 }
 
+// Starts the tickers that periodically:
+//  - pull new user statuses into cache
+//  - push cached data to disk
+func initPersistence() {
+	confObj.Mu.RLock()
+	cacheTkr := initTicker(false, confObj.CacheInterval)
+	dbTkr := initTicker(true, confObj.DBInterval)
+	confObj.Mu.RUnlock()
+
+	go dataTimer(cacheTkr)
+	go dataTimer(dbTkr)
+
+	dbTickC <- dbTkr
+	cTickC <- cacheTkr
+}
+
 // Watch for SIGINT aka ^C
 // Close the log file then exit
 func watchForInterrupt() {
@@ -103,14 +129,8 @@ func watchForInterrupt() {
 			confObj.Mu.RLock()
 			log.Printf("Closing database connection to %v...\n", confObj.DBPath)
 
-			db := <-dbChan
-
-			switch dbType := db.(type) {
-			case *dbLevel:
-				errLog("", dbType.db.Close())
-			case *dbSqlite:
-				errLog("", dbType.db.Close())
-			}
+			killTickers()
+			killDB()
 
 			if !confObj.StdoutLogging {
 				closeLog <- true

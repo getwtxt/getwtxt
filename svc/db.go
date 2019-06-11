@@ -1,18 +1,26 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
-	"time"
-
 	"github.com/syndtr/goleveldb/leveldb"
 	"golang.org/x/sys/unix"
 )
 
+// Everything in this file is database-agnostic.
+// Functions and types related to specific kinds
+// of databases will be in their own respective
+// files, such as:
+//  - leveldb.go
+//  - sqlite.go
+
+// Abstraction to allow several different
+// databases to be used interchangeably.
 type dbase interface {
 	push() error
 	pull()
 }
 
-// Pull DB data into cache, if available.
+// Opens a new connection to the specified
+// database, then reads it into memory.
 func initDatabase() {
 	var db dbase
 	confObj.Mu.RLock()
@@ -35,16 +43,19 @@ func initDatabase() {
 	pullDB()
 }
 
-func dbTimer() bool {
-	confObj.Mu.RLock()
-	answer := time.Since(confObj.LastPush) > confObj.DBInterval
-	confObj.Mu.RUnlock()
-
-	return answer
+// Close the database connection.
+func killDB() {
+	db := <-dbChan
+	switch dbType := db.(type) {
+	case *dbLevel:
+		errLog("", dbType.db.Close())
+	case *dbSqlite:
+		errLog("", dbType.db.Close())
+	}
 }
 
-// Pushes the registry's cache data to a local
-// database for safe keeping.
+// Pushes the registry's cache data
+// to a local database for safe keeping.
 func pushDB() error {
 	db := <-dbChan
 	err := db.push()
@@ -55,6 +66,7 @@ func pushDB() error {
 	return err
 }
 
+// Reads the database from disk into memory.
 func pullDB() {
 	db := <-dbChan
 	db.pull()
