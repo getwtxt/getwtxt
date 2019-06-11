@@ -2,6 +2,8 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
 	"testing"
+
+	"github.com/getwtxt/registry"
 )
 
 func Benchmark_cacheUpdate(b *testing.B) {
@@ -11,6 +13,22 @@ func Benchmark_cacheUpdate(b *testing.B) {
 
 	for i := 0; i < b.N; i++ {
 		cacheUpdate()
+
+		// make sure it's pulling new statuses
+		// half the time so we get a good idea
+		// of its performance in both cases.
+		if i > 2 && i%2 == 0 {
+			b.StopTimer()
+			twtxtCache.Mu.Lock()
+			user := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]
+			user.Mu.Lock()
+			user.Status = registry.NewTimeMap()
+			user.RLen = "0"
+			twtxtCache.Users["https://gbmor.dev/twtxt.txt"] = user
+			user.Mu.Unlock()
+			twtxtCache.Mu.Unlock()
+			b.StartTimer()
+		}
 	}
 }
 
