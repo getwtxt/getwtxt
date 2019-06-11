@@ -22,7 +22,6 @@ var (
 	flagAssets   *string = pflag.StringP("assets", "a", "", "The location of the getwtxt assets directory.")
 	flagDBPath   *string = pflag.StringP("db", "d", "", "Path to the getwtxt database.")
 	flagDBType   *string = pflag.StringP("dbtype", "t", "", "Type of database being used.")
-	flagProxied  *bool   = pflag.BoolP("proxied", "p", false, "Use if getwtxt is behind a reverse proxy.")
 )
 
 // Holds the global configuration

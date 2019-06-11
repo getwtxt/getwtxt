@@ -25,6 +25,7 @@ type Configuration struct {
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
 	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
 	Instance      `yaml:"Instance"`
+	TLS
 }
 
 // Instance refers to meta data about
@@ -36,6 +37,14 @@ type Instance struct {
 	Owner string `yaml:"Instance.OwnerName"`
 	Mail  string `yaml:"Instance.Email"`
 	Desc  string `yaml:"Instance.Description"`
+}
+
+// TLS holds the tls config from the
+// config file
+type TLS struct {
+	Use  bool   `yaml:"UseTLS"`
+	Cert string `yaml:"TLSCert"`
+	Key  string `yaml:"TLSKey"`
 }
 
 // Called on start-up. Initializes everything
@@ -88,6 +97,10 @@ func initLogging() {
 // Default values should a config file
 // not be available.
 func setConfigDefaults() {
+	viper.SetDefault("BehindProxy", true)
+	viper.SetDefault("UseTLS", false)
+	viper.SetDefault("TLSCert", "cert.pem")
+	viper.SetDefault("TLSKey", "key.pem")
 	viper.SetDefault("ListenPort", 9001)
 	viper.SetDefault("LogFile", "getwtxt.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
@@ -150,6 +163,12 @@ func bindConfig() {
 	confObj.Instance.Mail = viper.GetString("Instance.Email")
 	confObj.Instance.Desc = viper.GetString("Instance.Description")
 
+	confObj.TLS.Use = viper.GetBool("UseTLS")
+	if confObj.TLS.Use {
+		confObj.TLS.Cert = viper.GetString("TLSCert")
+		confObj.TLS.Key = viper.GetString("TLSKey")
+	}
+
 	if *flagDBType != "" {
 		confObj.DBType = *flagDBType
 	}
@@ -159,14 +178,23 @@ func bindConfig() {
 	if *flagAssets != "" {
 		confObj.AssetsDir = *flagAssets
 	}
-	if *flagProxied {
-		confObj.IsProxied = true
-	}
+	confObj.Mu.Unlock()
 
+	announceConfig()
+
+}
+
+func announceConfig() {
+	confObj.Mu.RLock()
 	if confObj.IsProxied {
 		log.Printf("Behind reverse proxy, not using host matching\n")
 	} else {
 		log.Printf("Matching host: %v\n", confObj.Instance.URL)
+	}
+	if confObj.TLS.Use {
+		log.Printf("Using TLS\n")
+		log.Printf("Cert: %v\n", confObj.TLS.Cert)
+		log.Printf("Key: %v\n", confObj.TLS.Key)
 	}
 	if confObj.StdoutLogging {
 		log.Printf("Logging to: stdout\n")
@@ -176,6 +204,5 @@ func bindConfig() {
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
-
-	confObj.Mu.Unlock()
+	confObj.Mu.RUnlock()
 }

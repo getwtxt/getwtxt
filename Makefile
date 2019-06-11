@@ -27,18 +27,6 @@ install:
 	install -m644 assets/tmpl/index.html $(BINDIR)/assets/tmpl
 	install -m644 README.md $(BINDIR)/docs
 	install -m644 LICENSE $(BINDIR)/docs
-	install -m644 etc/getwtxt-proxied.service /etc/systemd/system
-	chown -R getwtxt:getwtxt $(BINDIR)
-
-install-unproxied:
-	adduser -home $(BINDIR) --system --group getwtxt
-	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs
-	install -m755 getwtxt $(BINDIR)
-	install -m644 getwtxt.yml $(BINDIR)
-	install -m644 assets/style.css $(BINDIR)/assets
-	install -m644 assets/tmpl/index.html $(BINDIR)/assets/tmpl
-	install -m644 README.md $(BINDIR)/docs
-	install -m644 LICENSE $(BINDIR)/docs
 	install -m644 etc/getwtxt.service /etc/systemd/system
 	chown -R getwtxt:getwtxt $(BINDIR)
 

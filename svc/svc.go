@@ -25,6 +25,9 @@ func Start() {
 	if !confObj.IsProxied {
 		index.Host(confObj.Instance.URL)
 	}
+	TLS := confObj.TLS.Use
+	TLSCert := confObj.TLS.Cert
+	TLSKey := confObj.TLS.Key
 	confObj.Mu.RUnlock()
 
 	setIndexRouting(index)
@@ -34,7 +37,11 @@ func Start() {
 	server := newServer(portnum, index)
 	log.Printf("*** Listening on %v\n", portnum)
 	log.Printf("*** getwtxt %v Startup finished at %v, took %v\n\n", Vers, time.Now().Format(time.RFC3339), time.Since(before))
-	errLog("", server.ListenAndServe())
+	if TLS {
+		errLog("", server.ListenAndServeTLS(TLSCert, TLSKey))
+	} else {
+		errLog("", server.ListenAndServe())
+	}
 
 	closeLog <- true
 	killTickers()
