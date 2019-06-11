@@ -27,6 +27,8 @@ for tags and key words.
   * `sqlite3`
 * More database support is in development
 * Run directly facing the internet or behind `Caddy` / `nginx`
+* Optional `TLS` support
+* Optional hostname matching (serve requests for eg. `twtxt.example.com` without a reverse proxy)
 
 A public instance is currently available:
 * [twtxt.tilde.institute](https://twtxt.tilde.institute)
