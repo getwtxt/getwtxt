@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/getwtxt/registry"
@@ -17,16 +18,19 @@ func getEtag(modtime time.Time) string {
 	return fmt.Sprintf("%x", sha256.Sum256(shabytes))
 }
 
-func sendStaticEtag(w http.ResponseWriter, isCSS bool) {
+func servStatic(w http.ResponseWriter, isCSS bool) error {
 	if isCSS {
 		etag := getEtag(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
 		w.Header().Set("Content-Type", cssutf8)
-		return
+		_, err := w.Write(staticCache.css)
+		return err
 	}
 	etag := getEtag(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
+	_, err := w.Write(staticCache.index)
+	return err
 }
 
 // handles "/" and "/css"
@@ -37,23 +41,12 @@ func staticHandler(w http.ResponseWriter, r *http.Request) {
 	// to send as an ETag. If an error occurred when grabbing the file info,
 	// the ETag will be empty.
 	staticCache.mu.RLock()
-	switch r.URL.Path {
-	case "/css":
-		sendStaticEtag(w, true)
-		_, err := w.Write(staticCache.css)
-		if err != nil {
-			staticCache.mu.RUnlock()
-			errHTTP(w, r, err, http.StatusInternalServerError)
-			return
-		}
-	default:
-		sendStaticEtag(w, false)
-		_, err := w.Write(staticCache.index)
-		if err != nil {
-			staticCache.mu.RUnlock()
-			errHTTP(w, r, err, http.StatusInternalServerError)
-			return
-		}
+	isCSS := strings.Contains(r.URL.Path, "css")
+	err := servStatic(w, isCSS)
+	if err != nil {
+		staticCache.mu.RUnlock()
+		errHTTP(w, r, err, http.StatusInternalServerError)
+		return
 	}
 	staticCache.mu.RUnlock()
 
