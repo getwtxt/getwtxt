@@ -44,7 +44,7 @@ func Test_cacheUpdate(t *testing.T) {
 		manual, _ := registry.ParseUserTwtxt(raw, "gbmor", urls)
 
 		if !reflect.DeepEqual(newStatus, manual) {
-			t.Errorf("Updated statuses don't match a manual fetch.\n")
+			t.Errorf("Updated statuses don't match a manual fetch\n%#v\n%#v\n", newStatus, manual)
 		}
 	})
 }
