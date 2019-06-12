@@ -75,3 +75,23 @@ func Test_apiPostUser(t *testing.T) {
 		})
 	}
 }
+func Benchmark_apiPostUser(b *testing.B) {
+	initTestConf()
+	portnum := fmt.Sprintf(":%v", confObj.Port)
+	twtxtCache = registry.NewIndex()
+
+	params := url.Values{}
+	params.Set("url", "https://gbmor.dev/twtxt.txt")
+	params.Set("nickname", "gbmor")
+	req, _ := http.NewRequest("POST", "https://localhost"+portnum+"/api/plain/users", strings.NewReader(params.Encode()))
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	rr := httptest.NewRecorder()
+
+	for i := 0; i < b.N; i++ {
+		apiEndpointPOSTHandler(rr, req)
+
+		b.StopTimer()
+		twtxtCache = registry.NewIndex()
+		b.StartTimer()
+	}
+}
