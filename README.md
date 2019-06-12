@@ -43,11 +43,9 @@ personally tested getwtxt on Linux, specifically:
 Build dependencies are minimal, and only include:
 * `gnu make`
 * `go >= 1.11`
+* `git`
 
-`git` is not required if you download the sources via the 
-[`Releases`](https://github.com/getwtxt/getwtxt/releases) tab
-
-Now, on with the directions. First, fetch the sources using `git`
+First, fetch the sources using `git`
 and jump into the directory. Then, check out the latest tag.
 
 ```
