@@ -19,36 +19,34 @@ func getEtag(modtime time.Time) string {
 }
 
 func servStatic(w http.ResponseWriter, isCSS bool) error {
+	pingAssets()
+
+	staticCache.mu.RLock()
 	if isCSS {
 		etag := getEtag(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
 		w.Header().Set("Content-Type", cssutf8)
 		_, err := w.Write(staticCache.css)
+		staticCache.mu.RUnlock()
 		return err
 	}
+
 	etag := getEtag(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
 	_, err := w.Write(staticCache.index)
+	staticCache.mu.RUnlock()
 	return err
 }
 
 // handles "/" and "/css"
 func staticHandler(w http.ResponseWriter, r *http.Request) {
-	pingAssets()
-
-	// Take the hex-encoded sha256 sum of the index template's mod time
-	// to send as an ETag. If an error occurred when grabbing the file info,
-	// the ETag will be empty.
-	staticCache.mu.RLock()
 	isCSS := strings.Contains(r.URL.Path, "css")
-	err := servStatic(w, isCSS)
-	if err != nil {
-		staticCache.mu.RUnlock()
+
+	if err := servStatic(w, isCSS); err != nil {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
-	staticCache.mu.RUnlock()
 
 	log200(r)
 }
