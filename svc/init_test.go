@@ -1,12 +1,14 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"net"
 	"os"
 	"strings"
 	"sync"
+	"testing"
 
 	"github.com/getwtxt/registry"
 	"github.com/spf13/viper"
@@ -114,4 +116,17 @@ func killStatuses() {
 
 	user.Mu.Unlock()
 	twtxtCache.Mu.Unlock()
+}
+
+func Test_errLog(t *testing.T) {
+	t.Run("Log to Buffer", func(t *testing.T) {
+		b := []byte{}
+		buf := bytes.NewBuffer(b)
+		log.SetOutput(buf)
+		err := fmt.Errorf("test error")
+		errLog("", err)
+		if !strings.Contains(buf.String(), "test error") {
+			t.Errorf("Output Incorrect: %#v\n", buf.String())
+		}
+	})
 }
