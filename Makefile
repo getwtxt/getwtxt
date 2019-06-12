@@ -6,20 +6,41 @@ GOFLAGS?=-tags netgo \
 				 -ldflags '-X github.com/getwtxt/getwtxt/svc.Vers=${VERSION} -extldflags "-static"'
 
 getwtxt: getwtxt.go go.mod go.sum
+	@echo
+	@echo Building getwtxt. This may take a minute or two.
 	go build $(GOFLAGS) \
 		-o $@
+	@echo
+	@echo ...Done!
 
-RM?=rm -f
-
+.PHONY: clean
 clean:
-	$(RM) getwtxt
+	@echo
+	@echo Cleaning build and module caches...
+	go clean -cache -modcache
+	@echo
+	@echo ...Done!
 
+.PHONY: update
 update:
+	@echo
+	@echo Updating from upstream repository...
+	@echo
 	git pull --rebase
 
+.PHONY: install
 install:
+	@echo
+	@echo Installing getwtxt...
+	@echo
+	@echo Creating user/group...
 	adduser -home $(BINDIR) --system --group getwtxt
+	@echo
+	@echo
+	@echo Creating directories...
 	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs
+	@echo
+	@echo Copying files...
 	install -m755 getwtxt $(BINDIR)
 	install -m644 getwtxt.yml $(BINDIR)
 	install -m644 assets/style.css $(BINDIR)/assets
@@ -27,11 +48,31 @@ install:
 	install -m644 README.md $(BINDIR)/docs
 	install -m644 LICENSE $(BINDIR)/docs
 	install -m644 etc/getwtxt.service /etc/systemd/system
+	@echo
+	@echo
+	@echo Setting ownership...
 	chown -R getwtxt:getwtxt $(BINDIR)
+	@echo
+	@echo ...Done!
 
+.PHONY: uninstall
 uninstall:
-	systemctl stop getwtxt >/dev/null 2>&1
-	systemctl disable getwtxt >/dev/null 2>&1
+	@echo
+	@echo Uninstalling getwtxt...
+	@echo
+	@echo Stopping service if running...
+	@echo systemctl stop getwtxt
+	@systemctl stop getwtxt >/dev/null 2>&1 || true
+	@echo
+	@echo Disabling service autostart...
+	@echo systemctl disable getwtxt
+	@systemctl disable getwtxt >/dev/null 2>&1 || true
+	@echo
+	@echo Removing files
 	rm -rf $(BINDIR)
 	rm -f /etc/systemd/system/getwtxt.service
-	userdel getwtxt
+	@echo
+	@echo Removing user
+	- userdel getwtxt
+	@echo
+	@echo ...Done!
