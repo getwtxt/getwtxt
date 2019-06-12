@@ -44,19 +44,34 @@ Build dependencies are minimal, and only include:
 * `go >= 1.11`
 * `git`
 
-First, fetch the sources using `git`
-and jump into the directory. Then, check out the latest tag.
+First, fetch the sources using `git` and jump into the directory.
 
 ```
 $ git clone git://github.com/getwtxt/getwtxt.git
 ...
 $ cd getwtxt
-...
+```
+
+Then, check out the latest release tag. 
+
+This will be the same tag listed on the badge under the [Features](#features) section heading.
+
+```
+$ git checkout v0.0.0
+```
+
+Or, if you want to be a `git` ninja, you can use this to just check out whatever
+the latest tag is:
+
+```
 $ git checkout $(git describe --tags --abbrev=0)
+
 ```
 
 Optionally, use the `go` tool to test and benchmark the files in `svc`.
-If you choose to run the tests, be sure to return to the main directory afterwards.
+
+If you choose to run the tests, be sure to return to the main directory 
+afterwards.
 
 ```
 $ cd svc && go test -v -bench . -benchmem
