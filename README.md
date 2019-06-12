@@ -35,8 +35,7 @@ A public instance is currently available:
 
 ## Installation 
 
-While I've included macOS builds in Travis CI, I have only
-personally tested getwtxt on Linux, specifically:
+I have only personally tested getwtxt on Linux, specifically:
 * `Debian 9, 10/Testing, Sid`
 * `Ubuntu Server 18.04LTS, 18.10, 19.04`
 
@@ -289,3 +288,17 @@ twtxt Client Repo: [`github.com/buckket/twtxt`](https://github.com/buckket/twtxt
 Registry Specification: [`twtxt.readthedocs.io/en/latest/user/registry.html`](https://twtxt.readthedocs.io/en/latest/user/registry.html)
 
 Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/water.css) for open-sourcing a pleasant, easy-to-use, importable stylesheet
+
+### Contributing
+
+All contributions are greatly appreciated! Please open an issue, submit
+a pull request, anything. 
+
+If you're interested in contributing, take a look at the
+github project page for getwtxt, linked below, where I've listed various items I'm 
+working on or plan to work on in the very near future. It'll give you some inspiration for 
+pull requests to submit. If you have an idea for a new feature or come across a bug,
+submitting a new issue will be greatly appreciated as well.
+
+* [getwtxt Development: the road to 1.0.0](https://github.com/getwtxt/getwtxt/projects/1)
+* [open an issue](https://github.com/getwtxt/getwtxt/issues)
