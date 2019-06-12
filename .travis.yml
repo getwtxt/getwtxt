@@ -6,7 +6,6 @@ go:
 
 os: 
   - linux
-  - osx
 
 dist: xenial
 
@@ -22,7 +21,12 @@ before_script:
   - ./cc-test-reporter before-build
 
 script: 
-  - go test -v --coverprofile=c.out
+  - go test -v -race --coverprofile=c.out
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   - cd ..
   - make
+
+after_script:
+  - make clean
+  - cd svc/
+  - go test -v -run=NONE -bench . -benchmem
