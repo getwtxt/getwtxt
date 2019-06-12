@@ -13,4 +13,18 @@ dist: xenial
 env:
   - GO111MODULE=on
 
-script: cd svc && go test -v
+before_script:
+  - sudo apt-get update
+  - sudo apt-get install -y libc6:i386 libstdc++6:i386
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+
+script: 
+  - cd svc
+  - go test -v --coverprofile=../c.out
+  - cd ..
+  - make
+
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
