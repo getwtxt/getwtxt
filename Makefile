@@ -3,8 +3,7 @@ _INSTDIR=$(PREFIX)
 BINDIR?=$(_INSTDIR)/getwtxt
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
 GOFLAGS?=-tags netgo \
-				 -ldflags '-X github.com/getwtxt/getwtxt/svc.Vers=${VERSION} -extldflags "-static"' \
-				 -buildmode pie
+				 -ldflags '-X github.com/getwtxt/getwtxt/svc.Vers=${VERSION} -extldflags "-static"'
 
 getwtxt: getwtxt.go go.mod go.sum
 	go build $(GOFLAGS) \
