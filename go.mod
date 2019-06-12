@@ -9,7 +9,7 @@ require (
 	github.com/coreos/etcd v3.3.13+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/dgryski/go-sip13 v0.0.0-20190329191031-25c5027a8c7b // indirect
-	github.com/getwtxt/getwtxt/svc v0.0.0-20190612000245-adee7fa63332
+	github.com/getwtxt/getwtxt/svc v0.0.0-20190612001058-69adb2159f0c
 	github.com/golang/mock v1.3.1 // indirect
 	github.com/google/pprof v0.0.0-20190515194954-54271f7e092f // indirect
 	github.com/kisielk/errcheck v1.2.0 // indirect
