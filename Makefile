@@ -8,6 +8,7 @@ GOFLAGS?=-tags netgo \
 getwtxt: getwtxt.go go.mod go.sum
 	@echo
 	@echo Building getwtxt. This may take a minute or two.
+	@mkdir logs
 	go build $(GOFLAGS) \
 		-o $@
 	@echo
@@ -40,7 +41,7 @@ install:
 	@echo
 	@echo
 	@echo Creating directories...
-	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs
+	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs $(BINDIR)/logs
 	@echo
 	@echo Copying files...
 	install -m755 getwtxt $(BINDIR)
