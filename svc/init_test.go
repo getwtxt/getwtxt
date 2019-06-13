@@ -53,6 +53,7 @@ func logToNull() {
 		log.Printf("%v\n", err)
 	}
 	log.SetOutput(hush)
+	reqLog = log.New(hush, "", log.LstdFlags)
 }
 
 func testConfig() {

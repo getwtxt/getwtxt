@@ -11,13 +11,16 @@ import (
 	"github.com/spf13/viper"
 )
 
+var reqLog *log.Logger
+
 // Configuration values are held in an instance of
 // this struct.
 type Configuration struct {
 	Mu            sync.RWMutex
 	IsProxied     bool          `yaml:"BehindProxy"`
 	Port          int           `yaml:"ListenPort"`
-	LogFile       string        `yaml:"LogFile"`
+	MsgLog        string        `yaml:"MessageLog"`
+	ReqLog        string        `yaml:"RequestLog"`
 	DBType        string        `yaml:"DatabaseType"`
 	DBPath        string        `yaml:"DatabasePath"`
 	AssetsDir     string        `yaml:"-"`
@@ -68,28 +71,34 @@ func initConfig() {
 }
 
 // Registers either stdout or a specified file
-// to the default logger.
+// to the default logger, and the same for the
+// request logger.
 func initLogging() {
 
 	confObj.Mu.RLock()
 	if confObj.StdoutLogging {
 		log.SetOutput(os.Stdout)
+		reqLog = log.New(os.Stdout, "", log.LstdFlags)
 
 	} else {
-		logfile, err := os.OpenFile(confObj.LogFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		msgLog, err := os.OpenFile(confObj.MsgLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
+		errLog("Could not open log file: ", err)
+		reqLogFile, err := os.OpenFile(confObj.ReqLog, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0600)
 		errLog("Could not open log file: ", err)
 
 		// Listen for the signal to close the log file
 		// in a separate thread. Passing it as an argument
 		// to prevent race conditions when the config is
 		// reloaded.
-		go func(logfile *os.File) {
+		go func(msg *os.File, req *os.File) {
 			<-closeLog
-			log.Printf("Closing log file ...\n\n")
-			errLog("Could not close log file: ", logfile.Close())
-		}(logfile)
+			log.Printf("Closing log files ...\n\n")
+			errLog("Could not close log file: ", msg.Close())
+			errLog("Could not close log file: ", req.Close())
+		}(msgLog, reqLogFile)
 
-		log.SetOutput(logfile)
+		log.SetOutput(msgLog)
+		reqLog = log.New(reqLogFile, "", log.LstdFlags)
 	}
 	confObj.Mu.RUnlock()
 }
@@ -102,7 +111,8 @@ func setConfigDefaults() {
 	viper.SetDefault("TLSCert", "cert.pem")
 	viper.SetDefault("TLSKey", "key.pem")
 	viper.SetDefault("ListenPort", 9001)
-	viper.SetDefault("LogFile", "getwtxt.log")
+	viper.SetDefault("MessageLog", "logs/message.log")
+	viper.SetDefault("RequestLog", "logs/request.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
 	viper.SetDefault("AssetsDirectory", "assets")
 	viper.SetDefault("DatabaseType", "leveldb")
@@ -148,7 +158,8 @@ func bindConfig() {
 
 	confObj.IsProxied = viper.GetBool("BehindProxy")
 	confObj.Port = viper.GetInt("ListenPort")
-	confObj.LogFile = viper.GetString("LogFile")
+	confObj.MsgLog = viper.GetString("MessageLog")
+	confObj.ReqLog = viper.GetString("RequestLog")
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
 	confObj.DBPath = viper.GetString("DatabasePath")
 	confObj.AssetsDir = viper.GetString("AssetsDirectory")
@@ -199,7 +210,8 @@ func announceConfig() {
 	if confObj.StdoutLogging {
 		log.Printf("Logging to: stdout\n")
 	} else {
-		log.Printf("Logging to: %v\n", confObj.LogFile)
+		log.Printf("Logging messages to: %v\n", confObj.MsgLog)
+		log.Printf("Logging requests to: %v\n", confObj.ReqLog)
 	}
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
