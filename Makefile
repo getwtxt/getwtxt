@@ -11,7 +11,7 @@ getwtxt: getwtxt.go go.mod go.sum
 	go build $(GOFLAGS) \
 		-o $@
 	@echo
-	@echo ...Done!
+	@echo ...Done\!
 
 .PHONY: clean
 clean:
@@ -19,7 +19,7 @@ clean:
 	@echo Cleaning build and module caches...
 	go clean -cache -modcache
 	@echo
-	@echo ...Done!
+	@echo ...Done\!
 
 .PHONY: update
 update:
@@ -27,6 +27,8 @@ update:
 	@echo Updating from upstream repository...
 	@echo
 	git pull --rebase
+	@echo
+	@echo ...Done\!
 
 .PHONY: install
 install:
@@ -53,7 +55,8 @@ install:
 	@echo Setting ownership...
 	chown -R getwtxt:getwtxt $(BINDIR)
 	@echo
-	@echo ...Done!
+	@echo ...Done\! Don\'t forget to run
+	@echo '         $$ systemctl enable getwtxt'
 
 .PHONY: uninstall
 uninstall:
@@ -75,4 +78,4 @@ uninstall:
 	@echo Removing user
 	- userdel getwtxt
 	@echo
-	@echo ...Done!
+	@echo ...Done\!
