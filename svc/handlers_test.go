@@ -16,7 +16,7 @@ import (
 //    /api/plain
 // later, then I'll change the tests.
 
-func basicHandlerTest(path string, name string, t *testing.T) {
+func basicHandlerTest(path, name string, t *testing.T) {
 	initTestConf()
 
 	t.Run(name, func(t *testing.T) {
