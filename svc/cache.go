@@ -41,10 +41,8 @@ type staticAssets struct {
 // file's "Instance" section.
 func initTemplates() *template.Template {
 	confObj.Mu.RLock()
-	assetsDir := confObj.AssetsDir
-	confObj.Mu.RUnlock()
-
-	return template.Must(template.ParseFiles(assetsDir + "/tmpl/index.html"))
+	defer confObj.Mu.RUnlock()
+	return template.Must(template.ParseFiles(confObj.AssetsDir + "/tmpl/index.html"))
 }
 
 func cacheUpdate() {
@@ -73,44 +71,31 @@ func cacheUpdate() {
 // pulled back into memory from disk.
 func pingAssets() {
 	confObj.Mu.RLock()
-	assetsDir := confObj.AssetsDir
-	confObj.Mu.RUnlock()
+	defer confObj.Mu.RUnlock()
+	staticCache.mu.Lock()
+	defer staticCache.mu.Unlock()
 
-	cssStat, err := os.Stat(assetsDir + "/style.css")
+	cssStat, err := os.Stat(confObj.AssetsDir + "/style.css")
+	errLog("", err)
+	indexStat, err := os.Stat(confObj.AssetsDir + "/tmpl/index.html")
 	errLog("", err)
 
-	indexStat, err := os.Stat(assetsDir + "/tmpl/index.html")
-	errLog("", err)
-
-	staticCache.mu.RLock()
-	indexMod := staticCache.indexMod
-	cssMod := staticCache.cssMod
-	staticCache.mu.RUnlock()
-
-	if !indexMod.Equal(indexStat.ModTime()) {
+	if !staticCache.indexMod.Equal(indexStat.ModTime()) {
 		tmpls = initTemplates()
 
 		var b []byte
 		buf := bytes.NewBuffer(b)
-
-		confObj.Mu.RLock()
 		errLog("", tmpls.ExecuteTemplate(buf, "index.html", confObj.Instance))
-		confObj.Mu.RUnlock()
 
-		staticCache.mu.Lock()
 		staticCache.index = buf.Bytes()
 		staticCache.indexMod = indexStat.ModTime()
-		staticCache.mu.Unlock()
 	}
 
-	if !cssMod.Equal(cssStat.ModTime()) {
-
-		css, err := ioutil.ReadFile(assetsDir + "/style.css")
+	if !staticCache.cssMod.Equal(cssStat.ModTime()) {
+		css, err := ioutil.ReadFile(confObj.AssetsDir + "/style.css")
 		errLog("", err)
 
-		staticCache.mu.Lock()
 		staticCache.css = css
 		staticCache.cssMod = cssStat.ModTime()
-		staticCache.mu.Unlock()
 	}
 }

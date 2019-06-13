@@ -18,7 +18,6 @@ var (
 	testport     string
 	initTestOnce sync.Once
 	initDBOnce   sync.Once
-	initPersOnce sync.Once
 )
 
 func initTestConf() {
@@ -41,18 +40,13 @@ func initTestDB() {
 	})
 }
 
-func initTestPers() {
-	initPersOnce.Do(func() {
-		initPersistence()
-	})
-}
-
 func logToNull() {
 	hush, err := os.Open("/dev/null")
 	if err != nil {
 		log.Printf("%v\n", err)
 	}
 	log.SetOutput(hush)
+	reqLog = log.New(hush, "", log.LstdFlags)
 }
 
 func testConfig() {

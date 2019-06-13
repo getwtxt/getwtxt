@@ -42,12 +42,10 @@ func servStatic(w http.ResponseWriter, isCSS bool) error {
 // handles "/" and "/css"
 func staticHandler(w http.ResponseWriter, r *http.Request) {
 	isCSS := strings.Contains(r.URL.Path, "css")
-
 	if err := servStatic(w, isCSS); err != nil {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
 	log200(r)
 }
 
@@ -69,17 +67,15 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := parseQueryOut(out)
-
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
-
 	_, err = w.Write(data)
 	if err != nil {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
 	log200(r)
 }
 
@@ -134,8 +130,8 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	errLog("", err)
 
 	data := parseQueryOut(out)
-
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
@@ -162,8 +158,8 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
-
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
@@ -172,7 +168,6 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
 	log200(r)
 }
 
@@ -184,8 +179,8 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	out := compositeStatusQuery("#"+tags, r)
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
-
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
 
@@ -194,6 +189,5 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
-
 	log200(r)
 }

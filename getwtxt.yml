@@ -64,9 +64,11 @@ AssetsDirectory: "assets"
 # logs.
 StdoutLogging: false
 
-# The file getwtxt will append log messages to. Can be a
-# relative or absolute path.
-LogFile: "getwtxt.log"
+# Log files getwtxt will use. Requests will be logged
+# to RequestLog, while everything else will go into
+# MessageLog. These can be relative or absolute paths.
+MessageLog: "logs/message.log"
+RequestLog: "logs/request.log"
 
 # This is the interval between data pushes from the 
 # in-memory cache to the on-disk database. 
