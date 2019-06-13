@@ -8,7 +8,7 @@ GOFLAGS?=-tags netgo \
 getwtxt: getwtxt.go go.mod go.sum
 	@echo
 	@echo Building getwtxt. This may take a minute or two.
-	@mkdir logs
+	@mkdir -p logs
 	go build $(GOFLAGS) \
 		-o $@
 	@echo
