@@ -1,5 +1,6 @@
 getwtxt
 *.log
+logs/
 local/
 *.db/
 *.db
