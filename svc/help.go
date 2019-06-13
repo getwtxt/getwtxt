@@ -93,8 +93,27 @@ func manualScreen() {
  customize your instance of getwtxt. None are required, they will 
  simply use their default value unless otherwise specified.
 
+    BehindProxy: Informs getwtxt whether it is behind a
+        reverse proxy, such as nginx or Caddy. If set to
+        false, getwtxt will use host matching for
+        incoming requests. The host matched is the URL
+        suboption of Instance in the config file.
+        Default: true
+
     ListenPort: Defines the port getwtxt should bind to.
         Default: 9001
+
+    UseTLS: Boolean value that lets getwtxt know if it
+        should use TLS for incoming connections.
+        Default: false
+
+    TLSCert: Absolute path to the certificate file used
+        for TLS connections.
+        Default: /etc/ssl/getwtxt.pem
+
+    TLSKey: Absolute path to the private TLS key file
+        used for TLS connections.
+        Default: /etc/ssl/private/getwtxt.pem
 
     DatabaseType: The type of back-end getwtxt should use
         to store registry data. The available types of
@@ -120,9 +139,14 @@ func manualScreen() {
         is running.
         Default: false
 
-    LogFile: The location of getwtxt's log file. This,
-        like DatabasePath, can be relative or absolute.
-        Default: getwtxt.log
+    MessageLog: The location of getwtxt's error and 
+        other messages log file. This, like DatabasePath, 
+        can be relative or absolute.
+        Default: logs/message.log
+
+    RequestLog: The location of getwtxt's request log
+        file. The path can be relative or absolute.
+        Default: logs/request.log
 
     DatabasePushInterval: The interval on which getwtxt
         will push registry data from the in-memory cache
@@ -209,7 +233,9 @@ func manualScreen() {
 
     {{.URL}} The publicly-accessible URL of your instance. In
         the default landing page, example API calls are shown
-        using this URL for the convenience of the user.
+        using this URL for the convenience of the user. This
+        is also used as the matched host when the "BehindProxy"
+        value in the configuration file is set to false.
 
 
               :: Interacting with the Registry ::
