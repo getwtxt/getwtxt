@@ -18,7 +18,6 @@ var (
 	testport     string
 	initTestOnce sync.Once
 	initDBOnce   sync.Once
-	initPersOnce sync.Once
 )
 
 func initTestConf() {
@@ -38,12 +37,6 @@ func initTestConf() {
 func initTestDB() {
 	initDBOnce.Do(func() {
 		initDatabase()
-	})
-}
-
-func initTestPers() {
-	initPersOnce.Do(func() {
-		initPersistence()
 	})
 }
 
