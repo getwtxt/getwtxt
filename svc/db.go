@@ -1,6 +1,9 @@
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
+	"log"
+	"time"
+
 	"github.com/syndtr/goleveldb/leveldb"
 	"golang.org/x/sys/unix"
 )
@@ -68,7 +71,9 @@ func pushDB() error {
 
 // Reads the database from disk into memory.
 func pullDB() {
+	start := time.Now()
 	db := <-dbChan
 	db.pull()
 	dbChan <- db
+	log.Printf("Database pull took: %v\n", time.Since(start))
 }

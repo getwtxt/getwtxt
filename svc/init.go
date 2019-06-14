@@ -109,8 +109,12 @@ func watchForInterrupt() {
 
 	go func() {
 		for sigint := range c {
-			log.Printf("Caught %v. Cleaning up ...\n", sigint)
+			log.Printf("Caught %v\n", sigint)
 
+			log.Printf("Pushing to database ...\n")
+			pushDB()
+
+			log.Printf("Cleaning up ...\n")
 			killTickers()
 			killDB()
 
