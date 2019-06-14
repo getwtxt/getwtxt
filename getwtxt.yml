@@ -64,11 +64,11 @@ AssetsDirectory: "assets"
 # logs.
 StdoutLogging: false
 
-# Log files getwtxt will use. Requests will be logged
-# to RequestLog, while everything else will go into
-# MessageLog. These can be relative or absolute paths.
-MessageLog: "logs/message.log"
-RequestLog: "logs/request.log"
+# Log files getwtxt will use. HTTP Requests will be
+# recorded in RequestLog, while everything else will go
+# into MessageLog, such as errors and notices.
+MessageLog: "./logs/message.log"
+RequestLog: "./logs/request.log"
 
 # This is the interval between data pushes from the 
 # in-memory cache to the on-disk database. 
@@ -86,7 +86,10 @@ Instance:
   # The name of your instance.
   SiteName: "getwtxt"
 
-  # Your instance's web address.
+  # Your instance's web address. If
+  # BehindProxy is set to false, this
+  # is also used to map incoming
+  # requests.
   URL: "https://twtxt.example.com"
 
   # Your name. 
