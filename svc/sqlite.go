@@ -16,7 +16,6 @@ type dbSqlite struct {
 }
 
 func initSqlite() *dbSqlite {
-
 	confObj.Mu.RLock()
 	dbpath := confObj.DBPath
 	confObj.Mu.RUnlock()
@@ -52,6 +51,8 @@ func (lite *dbSqlite) push() error {
 	txst := tx.Stmt(lite.pushStmt)
 
 	twtxtCache.Mu.RLock()
+	defer twtxtCache.Mu.RUnlock()
+
 	for i, e := range twtxtCache.Users {
 		e.Mu.RLock()
 
@@ -68,10 +69,8 @@ func (lite *dbSqlite) push() error {
 			_, err = txst.Exec(i, true, k.Format(time.RFC3339), v)
 			errLog("", err)
 		}
-
 		e.Mu.RUnlock()
 	}
-	twtxtCache.Mu.RUnlock()
 
 	for _, e := range remoteRegistries.List {
 		_, err = txst.Exec(e, false, "REMOTE REGISTRY", "NULL")
@@ -83,13 +82,11 @@ func (lite *dbSqlite) push() error {
 		errLog("", tx.Rollback())
 		return err
 	}
-
 	return nil
 }
 
 func (lite *dbSqlite) pull() {
 	errLog("Error pinging sqlite DB: ", lite.db.Ping())
-
 	rows, err := lite.pullStmt.Query()
 	errLog("", err)
 
@@ -98,6 +95,8 @@ func (lite *dbSqlite) pull() {
 	}(rows)
 
 	twtxtCache.Mu.Lock()
+	defer twtxtCache.Mu.Unlock()
+
 	for rows.Next() {
 		var uid int
 		var urls string
@@ -106,7 +105,6 @@ func (lite *dbSqlite) pull() {
 		var dBlob []byte
 
 		errLog("", rows.Scan(&uid, &urls, &isUser, &dataKey, &dBlob))
-
 		if !isUser {
 			remoteRegistries.List = append(remoteRegistries.List, urls)
 			continue
@@ -117,7 +115,6 @@ func (lite *dbSqlite) pull() {
 			user = twtxtCache.Users[urls]
 		}
 		user.Mu.Lock()
-
 		switch dataKey {
 		case "nickname":
 			user.Nick = string(dBlob)
@@ -132,11 +129,8 @@ func (lite *dbSqlite) pull() {
 			errLog("While pulling statuses from SQLite: ", err)
 			user.Status[thetime] = string(dBlob)
 		}
-
 		twtxtCache.Users[urls] = user
 		user.Mu.Unlock()
 	}
-	twtxtCache.Mu.Unlock()
-
 	remoteRegistries.List = dedupe(remoteRegistries.List)
 }

@@ -15,9 +15,10 @@ type dbLevel struct {
 
 func (lvl *dbLevel) push() error {
 	twtxtCache.Mu.RLock()
+	defer twtxtCache.Mu.RUnlock()
+
 	var dbBasket = &leveldb.Batch{}
 	for k, v := range twtxtCache.Users {
-
 		dbBasket.Put([]byte(k+"*Nick"), []byte(v.Nick))
 		dbBasket.Put([]byte(k+"*URL"), []byte(v.URL))
 		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP.String()))
@@ -29,7 +30,6 @@ func (lvl *dbLevel) push() error {
 			dbBasket.Put([]byte(k+"*Status*"+rfc), []byte(e))
 		}
 	}
-	twtxtCache.Mu.RUnlock()
 
 	for k, v := range remoteRegistries.List {
 		dbBasket.Put([]byte("remote*"+string(k)), []byte(v))
@@ -40,6 +40,8 @@ func (lvl *dbLevel) push() error {
 
 func (lvl *dbLevel) pull() {
 	iter := lvl.db.NewIterator(nil, nil)
+	twtxtCache.Mu.Lock()
+	defer twtxtCache.Mu.Unlock()
 
 	for iter.Next() {
 		key := string(iter.Key())
@@ -54,13 +56,9 @@ func (lvl *dbLevel) pull() {
 		}
 
 		data := registry.NewUser()
-		twtxtCache.Mu.RLock()
 		if _, ok := twtxtCache.Users[urls]; ok {
-			twtxtCache.Users[urls].Mu.RLock()
 			data = twtxtCache.Users[urls]
-			twtxtCache.Users[urls].Mu.RUnlock()
 		}
-		twtxtCache.Mu.RUnlock()
 
 		data.Mu.Lock()
 		switch field {
@@ -79,15 +77,11 @@ func (lvl *dbLevel) pull() {
 			errLog("", err)
 			data.Status[thetime] = val
 		}
-		data.Mu.Unlock()
-
-		twtxtCache.Mu.Lock()
 		twtxtCache.Users[urls] = data
-		twtxtCache.Mu.Unlock()
+		data.Mu.Unlock()
 	}
 
 	remoteRegistries.List = dedupe(remoteRegistries.List)
-
 	iter.Release()
 	errLog("Error while pulling DB into registry cache: ", iter.Error())
 }

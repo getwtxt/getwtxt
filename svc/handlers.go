@@ -20,14 +20,14 @@ func getEtag(modtime time.Time) string {
 
 func servStatic(w http.ResponseWriter, isCSS bool) error {
 	pingAssets()
-
 	staticCache.mu.RLock()
+	defer staticCache.mu.RUnlock()
+
 	if isCSS {
 		etag := getEtag(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
 		w.Header().Set("Content-Type", cssutf8)
 		_, err := w.Write(staticCache.css)
-		staticCache.mu.RUnlock()
 		return err
 	}
 
@@ -35,7 +35,6 @@ func servStatic(w http.ResponseWriter, isCSS bool) error {
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
 	_, err := w.Write(staticCache.index)
-	staticCache.mu.RUnlock()
 	return err
 }
 

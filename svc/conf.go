@@ -74,8 +74,9 @@ func initConfig() {
 // to the default logger, and the same for the
 // request logger.
 func initLogging() {
-
 	confObj.Mu.RLock()
+	defer confObj.Mu.RUnlock()
+
 	if confObj.StdoutLogging {
 		log.SetOutput(os.Stdout)
 		reqLog = log.New(os.Stdout, "", log.LstdFlags)
@@ -100,7 +101,6 @@ func initLogging() {
 		log.SetOutput(msgLog)
 		reqLog = log.New(reqLogFile, "", log.LstdFlags)
 	}
-	confObj.Mu.RUnlock()
 }
 
 // Default values should a config file
@@ -189,14 +189,15 @@ func bindConfig() {
 	if *flagAssets != "" {
 		confObj.AssetsDir = *flagAssets
 	}
+
 	confObj.Mu.Unlock()
-
 	announceConfig()
-
 }
 
 func announceConfig() {
 	confObj.Mu.RLock()
+	defer confObj.Mu.RUnlock()
+
 	if confObj.IsProxied {
 		log.Printf("Behind reverse proxy, not using host matching\n")
 	} else {
@@ -216,5 +217,4 @@ func announceConfig() {
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
-	confObj.Mu.RUnlock()
 }

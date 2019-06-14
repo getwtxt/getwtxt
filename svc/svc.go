@@ -19,6 +19,9 @@ func Start() {
 	// to serve the same content without duplicating
 	// handlers/paths
 	index := mux.NewRouter().StrictSlash(true)
+	setIndexRouting(index)
+	api := index.PathPrefix("/api").Subrouter()
+	setEndpointRouting(api)
 
 	confObj.Mu.RLock()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
@@ -30,13 +33,10 @@ func Start() {
 	TLSKey := confObj.TLS.Key
 	confObj.Mu.RUnlock()
 
-	setIndexRouting(index)
-	api := index.PathPrefix("/api").Subrouter()
-	setEndpointRouting(api)
-
 	server := newServer(portnum, index)
 	log.Printf("*** Listening on %v\n", portnum)
 	log.Printf("*** getwtxt %v Startup finished at %v, took %v\n\n", Vers, time.Now().Format(time.RFC3339), time.Since(before))
+
 	if TLS {
 		errLog("", server.ListenAndServeTLS(TLSCert, TLSKey))
 	} else {
@@ -52,6 +52,7 @@ func Start() {
 
 func newServer(port string, index *mux.Router) *http.Server {
 	// handlers.CompressHandler gzips all responses.
+	// ipMiddleware passes the request IP along.
 	// Write/Read timeouts are self explanatory.
 	return &http.Server{
 		Handler:      handlers.CompressHandler(ipMiddleware(index)),
@@ -65,11 +66,9 @@ func setIndexRouting(index *mux.Router) {
 	index.Path("/").
 		Methods("GET", "HEAD").
 		HandlerFunc(staticHandler)
-
 	index.Path("/css").
 		Methods("GET", "HEAD").
 		HandlerFunc(staticHandler)
-
 	index.Path("/api").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiBaseHandler)
@@ -93,7 +92,6 @@ func setEndpointRouting(api *mux.Router) {
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiEndpointHandler)
-
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
 		Queries("url", "{url}", "q", "{query}", "page", "{[0-9]+}").
 		Methods("GET", "HEAD").
@@ -105,14 +103,12 @@ func setEndpointRouting(api *mux.Router) {
 		Queries("url", "{url}", "nickname", "{nickname:[a-zA-Z0-9_-]+}").
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
-
 	// This is for submitting new users incorrectly
 	// and letting the requester know about their error.
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
 		Queries("url", "{url}").
 		Methods("POST").
 		HandlerFunc(apiEndpointPOSTHandler)
-
 	// This is also for submitting new users incorrectly
 	// and letting the requester know about their error.
 	api.Path("/{format:(?:plain)}/{endpoint:users}").
@@ -124,7 +120,6 @@ func setEndpointRouting(api *mux.Router) {
 	api.Path("/{format:(?:plain)}/tags").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiTagsBaseHandler)
-
 	// Show Nth page of all observed tags
 	api.Path("/{format:(?:plain)}/tags").
 		Queries("page", "{[0-9]+}").
@@ -135,7 +130,6 @@ func setEndpointRouting(api *mux.Router) {
 	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiTagsHandler)
-
 	// Requests Nth page of statuses with a specific tag
 	api.Path("/{format:(?:plain)}/tags/{tags:[a-zA-Z0-9_-]+}").
 		Queries("page", "{[0-9]+}").

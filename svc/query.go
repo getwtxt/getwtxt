@@ -43,7 +43,6 @@ func parseQueryOut(out []string) []byte {
 
 	for i, e := range out {
 		data = append(data, []byte(e)...)
-
 		if !strings.HasSuffix(e, "\n") && i != len(out)-1 {
 			data = append(data, byte('\n'))
 		}
@@ -86,7 +85,6 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 			out2, err = twtxtCache.QueryUser(urls)
 			apiErrCheck(err, r)
 		}
-
 		if query != "" && urls != "" {
 			out = joinQueryOuts(out2)
 		}
@@ -108,11 +106,10 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 
 	out = registry.ReduceToPage(page, out)
 	data := parseQueryOut(out)
-
 	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
-
 	_, err = w.Write(data)
 
 	return err
@@ -123,7 +120,6 @@ func joinQueryOuts(data ...[]string) []string {
 	for _, e := range data {
 		single = append(single, e...)
 	}
-
 	return dedupe(single)
 }
 
