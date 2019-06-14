@@ -37,6 +37,12 @@ UseTLS: false
 TLSCert: "/etc/ssl/getwtxt.pem"
 TLSKey: "/etc/ssl/private/getwtxt.pem"
 
+#############################################################
+##  The following options may be changed at any time.      ##
+##  getwtxt will automatically reload the config when      ##
+##  changes are detected.                                  ##
+#############################################################
+
 # The type of database you want to use. Currently,
 # the following are supported:
 #   leveldb (default)
@@ -51,12 +57,6 @@ DatabasePath: "getwtxt.db"
 #     style.css
 #     tmpl/index.html
 AssetsDirectory: "assets"
-
-#############################################################
-##  The following options may be changed at any time.      ##
-##  getwtxt will automatically reload the config when      ##
-##  changes are detected.                                  ##
-#############################################################
 
 # If true, getwtxt will send all log messages, including
 # requests, to stdout. It will ignore any set log file.
