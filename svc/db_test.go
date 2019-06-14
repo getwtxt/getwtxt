@@ -23,9 +23,7 @@ func Test_pushpullDatabase(t *testing.T) {
 
 	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "", net.ParseIP("127.0.0.1"), statusmap)
 
-	remoteRegistries.Mu.Lock()
 	remoteRegistries.List = append(remoteRegistries.List, "https://twtxt.tilde.institute/api/plain/users")
-	remoteRegistries.Mu.Unlock()
 
 	t.Run("Push to Database", func(t *testing.T) {
 		err := pushDB()

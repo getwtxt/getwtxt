@@ -31,11 +31,9 @@ func (lvl *dbLevel) push() error {
 	}
 	twtxtCache.Mu.RUnlock()
 
-	remoteRegistries.Mu.RLock()
 	for k, v := range remoteRegistries.List {
 		dbBasket.Put([]byte("remote*"+string(k)), []byte(v))
 	}
-	remoteRegistries.Mu.RUnlock()
 
 	return lvl.db.Write(dbBasket, nil)
 }
@@ -51,9 +49,7 @@ func (lvl *dbLevel) pull() {
 		field := split[1]
 
 		if urls == "remote" {
-			remoteRegistries.Mu.Lock()
 			remoteRegistries.List = append(remoteRegistries.List, val)
-			remoteRegistries.Mu.Unlock()
 			continue
 		}
 
@@ -90,9 +86,7 @@ func (lvl *dbLevel) pull() {
 		twtxtCache.Mu.Unlock()
 	}
 
-	remoteRegistries.Mu.Lock()
 	remoteRegistries.List = dedupe(remoteRegistries.List)
-	remoteRegistries.Mu.Unlock()
 
 	iter.Release()
 	errLog("Error while pulling DB into registry cache: ", iter.Error())

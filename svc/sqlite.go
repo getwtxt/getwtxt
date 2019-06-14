@@ -73,12 +73,10 @@ func (lite *dbSqlite) push() error {
 	}
 	twtxtCache.Mu.RUnlock()
 
-	remoteRegistries.Mu.RLock()
 	for _, e := range remoteRegistries.List {
 		_, err = txst.Exec(e, false, "REMOTE REGISTRY", "NULL")
 		errLog("", err)
 	}
-	remoteRegistries.Mu.RUnlock()
 
 	err = tx.Commit()
 	if err != nil {
@@ -110,9 +108,7 @@ func (lite *dbSqlite) pull() {
 		errLog("", rows.Scan(&uid, &urls, &isUser, &dataKey, &dBlob))
 
 		if !isUser {
-			remoteRegistries.Mu.Lock()
 			remoteRegistries.List = append(remoteRegistries.List, urls)
-			remoteRegistries.Mu.Unlock()
 			continue
 		}
 
@@ -142,7 +138,5 @@ func (lite *dbSqlite) pull() {
 	}
 	twtxtCache.Mu.Unlock()
 
-	remoteRegistries.Mu.Lock()
 	remoteRegistries.List = dedupe(remoteRegistries.List)
-	remoteRegistries.Mu.Unlock()
 }

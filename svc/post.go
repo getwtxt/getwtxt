@@ -35,9 +35,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	switch remoteRegistry {
 	case true:
-		remoteRegistries.Mu.Lock()
 		remoteRegistries.List = append(remoteRegistries.List, urls)
-		remoteRegistries.Mu.Unlock()
 
 		if err := twtxtCache.CrawlRemoteRegistry(urls); err != nil {
 			errHTTP(w, r, fmt.Errorf("error crawling remote registry: %v", err.Error()), http.StatusInternalServerError)

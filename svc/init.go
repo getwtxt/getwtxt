@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 
 	"github.com/getwtxt/registry"
@@ -47,7 +46,6 @@ var twtxtCache = registry.NewIndex()
 
 // List of other registries submitted to this registry
 var remoteRegistries = &RemoteRegistries{
-	Mu:   sync.RWMutex{},
 	List: make([]string, 0),
 }
 

@@ -20,7 +20,6 @@ import (
 // periodically scrape for new users. The remote registries
 // must have been added via POST like a user.
 type RemoteRegistries struct {
-	Mu   sync.RWMutex
 	List []string
 }
 
@@ -59,11 +58,9 @@ func cacheUpdate() {
 	}
 	twtxtCache.Mu.RUnlock()
 
-	remoteRegistries.Mu.RLock()
 	for _, v := range remoteRegistries.List {
 		errLog("Error refreshing local copy of remote registry data: ", twtxtCache.CrawlRemoteRegistry(v))
 	}
-	remoteRegistries.Mu.RUnlock()
 }
 
 // pingAssets checks if the local static assets
