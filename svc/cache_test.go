@@ -65,7 +65,7 @@ func Benchmark_cacheUpdate(b *testing.B) {
 		// make sure it's pulling new statuses
 		// half the time so we get a good idea
 		// of its performance in both cases.
-		if i > 2 && i%2 == 0 {
+		if i > (b.N/2) && i%2 == 0 {
 			b.StopTimer()
 			killStatuses()
 			b.StartTimer()
