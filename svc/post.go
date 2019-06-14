@@ -3,6 +3,7 @@ package svc // import "github.com/getwtxt/getwtxt/svc"
 import (
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/getwtxt/registry"
 )
@@ -35,6 +36,10 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	switch remoteRegistry {
 	case true:
+		if strings.Contains(urls, confObj.Instance.URL) {
+			errHTTP(w, r, fmt.Errorf("can't submit this registry to itself"), http.StatusBadRequest)
+			break
+		}
 		remoteRegistries.List = append(remoteRegistries.List, urls)
 
 		if err := twtxtCache.CrawlRemoteRegistry(urls); err != nil {
@@ -49,7 +54,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 		if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
 			errHTTP(w, r, fmt.Errorf("error adding user to cache: %v", err.Error()), http.StatusBadRequest)
-			return
+			break
 		}
 
 		_, err = w.Write([]byte(fmt.Sprintf("200 OK\n")))
