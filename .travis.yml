@@ -15,18 +15,15 @@ env:
 before_script:
   - sudo apt-get update
   - sudo apt-get install -y libc6:i386 libstdc++6:i386
-  - cd svc/
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 
 script: 
-  - go test -v -race --coverprofile=c.out
+  - go test -v -race --coverprofile=c.out ./...
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
-  - cd ..
   - make
 
 after_script:
   - make clean
-  - cd svc/
-  - go test -v -run=NONE -bench . -benchmem
+  - go test -v -run=NONE -bench . -benchmem ./...
