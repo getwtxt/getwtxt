@@ -45,7 +45,7 @@ func Test_parseQueryOut(t *testing.T) {
 	urls := "https://gbmor.dev/twtxt.txt"
 	nick := "gbmor"
 
-	out, _, err := registry.GetTwtxt(urls)
+	out, _, err := registry.GetTwtxt(urls, nil)
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
@@ -79,7 +79,7 @@ func Benchmark_parseQueryOut(b *testing.B) {
 	urls := "https://gbmor.dev/twtxt.txt"
 	nick := "gbmor"
 
-	out, _, err := registry.GetTwtxt(urls)
+	out, _, err := registry.GetTwtxt(urls, nil)
 	if err != nil {
 		b.Errorf("Couldn't set up test: %v\n", err)
 	}
@@ -184,7 +184,7 @@ func Test_compositeStatusQuery(t *testing.T) {
 
 func Benchmark_compositeStatusQuery(b *testing.B) {
 	initTestConf()
-	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
+	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
 	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
 	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
 	b.ResetTimer()

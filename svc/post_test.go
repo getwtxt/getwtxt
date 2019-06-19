@@ -46,7 +46,7 @@ var apiPostUserCases = []struct {
 func Test_apiPostUser(t *testing.T) {
 	initTestConf()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
-	twtxtCache = registry.NewIndex()
+	twtxtCache = registry.NewIndex(nil)
 
 	for _, tt := range apiPostUserCases {
 		t.Run(tt.name, func(t *testing.T) {
@@ -78,7 +78,7 @@ func Test_apiPostUser(t *testing.T) {
 func Benchmark_apiPostUser(b *testing.B) {
 	initTestConf()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
-	twtxtCache = registry.NewIndex()
+	twtxtCache = registry.NewIndex(nil)
 
 	params := url.Values{}
 	params.Set("url", "https://gbmor.dev/twtxt.txt")
@@ -91,7 +91,7 @@ func Benchmark_apiPostUser(b *testing.B) {
 		apiEndpointPOSTHandler(rr, req)
 
 		b.StopTimer()
-		twtxtCache = registry.NewIndex()
+		twtxtCache = registry.NewIndex(nil)
 		b.StartTimer()
 	}
 }

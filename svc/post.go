@@ -28,7 +28,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	uip := getIPFromCtx(r.Context())
 
-	out, remoteRegistry, err := registry.GetTwtxt(urls)
+	out, remoteRegistry, err := registry.GetTwtxt(urls, twtxtCache.Client)
 	if err != nil {
 		errHTTP(w, r, fmt.Errorf("error fetching twtxt Data: %v", err.Error()), http.StatusBadRequest)
 		return

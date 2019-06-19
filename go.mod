@@ -4,7 +4,7 @@ go 1.11
 
 require (
 	github.com/fsnotify/fsnotify v1.4.7
-	github.com/getwtxt/registry v0.2.4
+	github.com/getwtxt/registry v0.3.0
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.2
@@ -19,7 +19,7 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/testify v1.3.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0
-	golang.org/x/net v0.0.0-20190613194153-d28f0bde5980 // indirect
-	golang.org/x/sys v0.0.0-20190613124609-5ed2794edfdc
+	golang.org/x/net v0.0.0-20190619014844-b5b0513f8c1b // indirect
+	golang.org/x/sys v0.0.0-20190618155005-516e3c20635f
 	golang.org/x/text v0.3.2 // indirect
 )

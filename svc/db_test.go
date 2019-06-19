@@ -11,7 +11,7 @@ func Test_pushpullDatabase(t *testing.T) {
 	initTestConf()
 	initTestDB()
 
-	out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
+	out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
@@ -55,7 +55,7 @@ func Benchmark_pushDatabase(b *testing.B) {
 	initTestDB()
 
 	if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
-		out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt")
+		out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
 		if err != nil {
 			b.Errorf("Couldn't set up benchmark: %v\n", err)
 		}

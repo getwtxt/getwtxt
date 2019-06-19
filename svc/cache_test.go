@@ -45,7 +45,7 @@ func Test_cacheUpdate(t *testing.T) {
 		t.Logf("both are in the expected order. I need to do some more investigation before I can correct the test")
 		t.Logf("or correct the library functions.")
 		t.SkipNow()
-		raw, _, _ := registry.GetTwtxt(urls)
+		raw, _, _ := registry.GetTwtxt(urls, nil)
 		manual, _ := registry.ParseUserTwtxt(raw, "gbmor", urls)
 
 		if !reflect.DeepEqual(newStatus, manual) {
