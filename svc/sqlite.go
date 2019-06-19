@@ -58,7 +58,7 @@ func (lite *dbSqlite) push() error {
 
 		_, err = txst.Exec(i, true, "nickname", e.Nick)
 		errLog("", err)
-		_, err = txst.Exec(i, true, "rlen", e.RLen)
+		_, err = txst.Exec(i, true, "lastmodified", e.LastModified)
 		errLog("", err)
 		_, err = txst.Exec(i, true, "uip", e.IP)
 		errLog("", err)
@@ -122,8 +122,8 @@ func (lite *dbSqlite) pull() {
 			user.IP = net.ParseIP(string(dBlob))
 		case "date":
 			user.Date = string(dBlob)
-		case "rlen":
-			user.RLen = string(dBlob)
+		case "lastmodified":
+			user.LastModified = string(dBlob)
 		default:
 			thetime, err := time.Parse(time.RFC3339, dataKey)
 			errLog("While pulling statuses from SQLite: ", err)

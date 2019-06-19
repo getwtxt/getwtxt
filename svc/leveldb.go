@@ -23,7 +23,7 @@ func (lvl *dbLevel) push() error {
 		dbBasket.Put([]byte(k+"*URL"), []byte(v.URL))
 		dbBasket.Put([]byte(k+"*IP"), []byte(v.IP.String()))
 		dbBasket.Put([]byte(k+"*Date"), []byte(v.Date))
-		dbBasket.Put([]byte(k+"*RLen"), []byte(v.RLen))
+		dbBasket.Put([]byte(k+"*LastModified"), []byte(v.LastModified))
 
 		for i, e := range v.Status {
 			rfc := i.Format(time.RFC3339)
@@ -68,8 +68,8 @@ func (lvl *dbLevel) pull() {
 			data.Nick = val
 		case "URL":
 			data.URL = val
-		case "RLen":
-			data.RLen = val
+		case "LastModified":
+			data.LastModified = val
 		case "Date":
 			data.Date = val
 		case "Status":

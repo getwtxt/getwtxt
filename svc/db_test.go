@@ -21,7 +21,7 @@ func Test_pushpullDatabase(t *testing.T) {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
 
-	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "", net.ParseIP("127.0.0.1"), statusmap)
+	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
 
 	remoteRegistries.List = append(remoteRegistries.List, "https://twtxt.tilde.institute/api/plain/users")
 
@@ -65,7 +65,7 @@ func Benchmark_pushDatabase(b *testing.B) {
 			b.Errorf("Couldn't set up benchmark: %v\n", err)
 		}
 
-		twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "", net.ParseIP("127.0.0.1"), statusmap)
+		twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
 	}
 
 	b.ResetTimer()

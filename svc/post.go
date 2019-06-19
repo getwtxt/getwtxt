@@ -28,7 +28,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 
 	uip := getIPFromCtx(r.Context())
 
-	out, remoteRegistry, err := registry.GetTwtxt(urls, twtxtCache.Client)
+	out, remoteRegistry, err := registry.GetTwtxt(urls, twtxtCache.HTTPClient)
 	if err != nil {
 		errHTTP(w, r, fmt.Errorf("error fetching twtxt Data: %v", err.Error()), http.StatusBadRequest)
 		return
@@ -52,7 +52,7 @@ func apiPostUser(w http.ResponseWriter, r *http.Request) {
 		statuses, err := registry.ParseUserTwtxt(out, nick, urls)
 		errLog("Error Parsing User Data: ", err)
 
-		if err := twtxtCache.AddUser(nick, urls, "", uip, statuses); err != nil {
+		if err := twtxtCache.AddUser(nick, urls, uip, statuses); err != nil {
 			errHTTP(w, r, fmt.Errorf("error adding user to cache: %v", err.Error()), http.StatusBadRequest)
 			break
 		}

@@ -55,7 +55,7 @@ func Test_parseQueryOut(t *testing.T) {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
 
-	twtxtCache.AddUser(nick, urls, "", net.ParseIP("127.0.0.1"), statusmap)
+	twtxtCache.AddUser(nick, urls, net.ParseIP("127.0.0.1"), statusmap)
 
 	t.Run("Parsing Status Query", func(t *testing.T) {
 		data, err := twtxtCache.QueryAllStatuses()
@@ -89,7 +89,7 @@ func Benchmark_parseQueryOut(b *testing.B) {
 		b.Errorf("Couldn't set up test: %v\n", err)
 	}
 
-	twtxtCache.AddUser(nick, urls, "", net.ParseIP("127.0.0.1"), statusmap)
+	twtxtCache.AddUser(nick, urls, net.ParseIP("127.0.0.1"), statusmap)
 
 	data, err := twtxtCache.QueryAllStatuses()
 	if err != nil {
@@ -186,7 +186,7 @@ func Benchmark_compositeStatusQuery(b *testing.B) {
 	initTestConf()
 	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
 	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
-	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", "1", net.ParseIP("127.0.0.1"), parsed)
+	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

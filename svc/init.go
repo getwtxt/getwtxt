@@ -42,7 +42,7 @@ var cTickC = make(chan *tick, 1)
 var tmpls *template.Template
 
 // Holds the registry data in-memory
-var twtxtCache = registry.NewIndex(nil)
+var twtxtCache = registry.New(nil)
 
 // List of other registries submitted to this registry
 var remoteRegistries = &RemoteRegistries{
