@@ -70,16 +70,11 @@ $ git checkout $(git describe --tags --abbrev=0)
 
 Optionally, use the `go` tool to test and benchmark the files in `svc`.
 
-If you choose to run the tests, be sure to return to the main directory 
-afterwards.
-
 ```
-$ cd svc && go test -v -bench . -benchmem
+$ go test -v -bench . -benchmem ./...
 ...
 ...
 PASS
-
-$ cd ..
 ```
 
 Use `make` to initiate the build and install process. 
