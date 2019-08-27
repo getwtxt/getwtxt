@@ -293,6 +293,8 @@ $ sudo make uninstall
 
 twtxt Information: [`twtxt.readthedocs.io`](https://twtxt.readthedocs.io)
 
+Interested in twtxt but don't have your own server? [https://github.com/LuRsT/twtxt_on_heroku](https://github.com/LuRsT/twtxt_on_heroku)
+
 twtxt Client Repo: [`github.com/buckket/twtxt`](https://github.com/buckket/twtxt)
 
 Registry Specification: [`twtxt.readthedocs.io/en/latest/user/registry.html`](https://twtxt.readthedocs.io/en/latest/user/registry.html)
