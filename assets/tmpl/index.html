@@ -1,5 +1,6 @@
 <!DOCTYPE PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/1/DTD/1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/" lang="en" xml:lang="en">
+
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +8,7 @@
   <link rel="stylesheet" type="text/css" href="/css">
   <title>{{.Name}} - twtxt Registry</title>
 </head>
+
 <body>
   <div id="container">
     <div id="head">
@@ -26,57 +28,65 @@
         <p>{{.Desc}}</p>
       </div>
       <p>API base URL:</p>
-        <pre><code>/api</code></pre>
+      <pre><code>/api</code></pre>
       <p>Formats available:</p>
-        <pre><code>/api/plain</code></pre>
+      <pre><code>/api/plain</code></pre>
       <p>Endpoints:</p>
-        <pre><code>/api/plain/users
+      <pre><code>/api/plain/users
 /api/plain/mentions
 /api/plain/tweets
-/api/plain/tags</code></pre>
-        <p>Add new user by submitting a <code>POST</code> request to the <code>/api/plain/users</code> endpoint. 
-        If both <code>?url=X</code> and <code>?nickname=X</code> are not passed, or the user already exists in 
+/api/plain/tags
+/api/plain/version</code></pre>
+      <p>Retrieve the version of the instance by issuing a <code>GET</code> request to the
+        <code>/api/plain/version</code>
+        endpoint.</p>
+      <pre><code>$ curl '{{.URL}}/api/plain/version'
+getwtxt {{.Vers}}
+        </code></pre>
+      <p>Add new user by submitting a <code>POST</code> request to the <code>/api/plain/users</code> endpoint.
+        If both <code>?url=X</code> and <code>?nickname=X</code> are not passed, or the user already exists in
         this registry, you will receive <code>400 Bad Request</code> as a response. If you are unsure what went
         wrong, the error message should provide enough information for you to correct the request.</p>
-        <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://foo.ext/twtxt.txt&amp;nickname=foobar'
+      <pre><code>$ curl -X POST '{{.URL}}/api/plain/users?url=https://foo.ext/twtxt.txt&amp;nickname=foobar'
 200 OK</code></pre>
       <p>Query responses are in descending chronological order. This means the newest user or tweet will be in the
-      first row of the response, with older users or tweets in subsequent rows. Additionally, All queries accept <code>?page=N</code> 
-      as a parameter, returning groups of 20 results. This may be omitted for the first page of results.</p>
+        first row of the response, with older users or tweets in subsequent rows. Additionally, All queries accept
+        <code>?page=N</code>
+        as a parameter, returning groups of 20 results. This may be omitted for the first page of results.</p>
       <p>Get all users:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/users'
+      <pre><code>$ curl '{{.URL}}/api/plain/users'
 foo               https://example.com/twtxt.txt     2019-05-09T08:42:23.000Z
 foobar            https://example2.com/twtxt.txt    2019-04-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-03-01T15:59:39.000Z</code></pre>
       <p>Query for user by URL:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/users?url=https://example3.com/twtxt.txt'
+      <pre><code>$ curl '{{.URL}}/api/plain/users?url=https://example3.com/twtxt.txt'
 foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z</code></pre>
       <p>Query for user by keyword:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/users?q=bar'
+      <pre><code>$ curl '{{.URL}}/api/plain/users?q=bar'
 foobar            https://example2.com/twtxt.txt    2019-05-14T19:23:00.000Z
 foo_barrington    https://example3.com/twtxt.txt    2019-04-01T15:59:39.000Z</code></pre>
       <p>Get all tweets:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tweets'
+      <pre><code>$ curl '{{.URL}}/api/plain/tweets'
 foobar    https://example2.com/twtxt.txt    2019-05-13T12:46:20.000Z    It's been a busy day at work!
 ...</code></pre>
       <p>Query tweets by keyword:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
+      <pre><code>$ curl '{{.URL}}/api/plain/tweets?q=getwtxt'
 foo_barrington    https://example3.com/twtxt.txt    2019-04-30T06:00:09.000Z    I just installed getwtxt</code></pre>
       <p>Get all tweets with tags:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tags'
+      <pre><code>$ curl '{{.URL}}/api/plain/tags'
 foo    https://example.com/twtxt.txt    2019-03-01T09:33:12.000Z    No, seriously, I need #help
 foo    https://example.com/twtxt.txt    2019-03-01T09:32:05.000Z    Seriously, I love #programming!
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
       <p>Query tweets by tag:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
+      <pre><code>$ curl '{{.URL}}/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!</code></pre>
       <p>Get all tweets with mentions:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/mentions'
+      <pre><code>$ curl '{{.URL}}/api/plain/mentions'
 foo               https://example.com/twtxt.txt     2019-02-28T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?
 bar               https://mxmmplm.com/twtxt.txt     2019-02-27T11:06:44.000Z    @&lt;foobar https://example2.com/twtxt.txt&gt; How's your day going, bud?
 foo_barrington    https://example3.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo https://example.com/twtxt.txt&gt; Did you eat my lunch?</code></pre>
       <p>Query tweets by mention URL:</p>
-        <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
+      <pre><code>$ curl '{{.URL}}/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
 foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_barrington https://example3.com/twtxt.txt&gt; Hey!! Are you still working on that project?</code></pre>
     </div>
     <div id="foot">
@@ -84,4 +94,5 @@ foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @&lt;foo_bar
     </div>
   </div>
 </body>
+
 </html>

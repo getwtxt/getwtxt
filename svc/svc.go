@@ -123,7 +123,7 @@ func setEndpointRouting(api *mux.Router) {
 
 	// Specifying the endpoint with and without query information.
 	// Will return 404 on empty queries otherwise.
-	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").
+	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets|version)}").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiEndpointHandler)
 	api.Path("/{format:(?:plain)}/{endpoint:(?:mentions|users|tweets)}").

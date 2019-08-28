@@ -141,6 +141,18 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		out, err = twtxtCache.QueryAllStatuses()
 		out = registry.ReduceToPage(page, out)
 
+	case "/api/plain/version":
+		etag := fmt.Sprintf("%x", sha256.Sum256([]byte(Vers)))
+		w.Header().Set("ETag", "\""+etag+"\"")
+		w.Header().Set("Content-Type", txtutf8)
+		_, err := w.Write([]byte(strings.TrimSpace("getwtxt " + Vers)))
+		if err != nil {
+			errHTTP(w, r, err, http.StatusInternalServerError)
+			return
+		}
+		log200(r)
+		return
+
 	default:
 		errHTTP(w, r, fmt.Errorf("endpoint not found"), http.StatusNotFound)
 		return
