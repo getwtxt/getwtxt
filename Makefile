@@ -25,7 +25,7 @@ update:
 	@echo
 	@echo Updating from upstream repository...
 	@echo
-	git pull --rebase
+	git pull --rebase origin master
 	@echo
 	@echo ...Done\!
 

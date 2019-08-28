@@ -23,7 +23,7 @@ import "fmt"
 
 func titleScreen() {
 	fmt.Printf(`
-    
+
                        _            _        _
              __ _  ___| |___      _| |___  _| |_
             / _  |/ _ \ __\ \ /\ / / __\ \/ / __|
@@ -32,7 +32,7 @@ func titleScreen() {
             |___/
                        version ` + Vers + `
                  github.com/getwtxt/getwtxt
-                          GPL  v3  
+                          GPL  v3
 
 `)
 }
@@ -68,7 +68,7 @@ func manualScreen() {
 
     >> Configuration File
         Covers syntax and location of default configuration,
-        passing a specific configuration file to getwtxt, 
+        passing a specific configuration file to getwtxt,
         and acceptable formats for configuration files.
 
     >> Customizing the Landing Page
@@ -96,7 +96,7 @@ func manualScreen() {
     The paths are searched in that order. The first configuration
  file found is used by getwtxt, while the locations further down
  are ignored.
-    
+
     Multiple configuration files may be used, however, with the
  '-c' command line flag. The path passed to getwtxt via '-c' may
  be relative or absolute. For example, both of the following are
@@ -109,7 +109,7 @@ func manualScreen() {
     YAML, TOML, JSON, HCL
 
     The configuration file contains several options used to
- customize your instance of getwtxt. None are required, they will 
+ customize your instance of getwtxt. None are required, they will
  simply use their default value unless otherwise specified.
 
     BehindProxy: Informs getwtxt whether it is behind a
@@ -154,12 +154,12 @@ func manualScreen() {
     StdoutLogging: Boolean used to determine whether
         getwtxt should send logging output to stdout.
         This is useful for debugging, but you should
-        probably save your logs once your instance 
+        probably save your logs once your instance
         is running.
         Default: false
 
-    MessageLog: The location of getwtxt's error and 
-        other messages log file. This, like DatabasePath, 
+    MessageLog: The location of getwtxt's error and
+        other messages log file. This, like DatabasePath,
         can be relative or absolute.
         Default: logs/message.log
 
@@ -192,12 +192,12 @@ func manualScreen() {
     SiteName: The name of your getwtxt instance.
         Default: getwtxt
 
-    URL: The publicly-accessible URL of your 
+    URL: The publicly-accessible URL of your
         getwtxt instance.
         Default: https://twtxt.example.com
 
     OwnerName: Your name.
-        Default: Anonymous Microblogger 
+        Default: Anonymous Microblogger
 
     Email: Your email address.
         Default: nobody@knows
@@ -205,8 +205,8 @@ func manualScreen() {
     Description: A short description of your getwtxt
         instance or your site. As this likely includes
         whitespace, it should be in double-quotes.
-        This can include XHTML or HTML line breaks if 
-        desired: 
+        This can include XHTML or HTML line breaks if
+        desired:
             <br />
             <br>
         Default: "A fast, resilient twtxt registry
@@ -216,23 +216,23 @@ func manualScreen() {
              :: Customizing the Landing Page ::
 
     If you like, feel free to customize the landing page
- template provided at 
+ template provided at
 
         assets/tmpl/index.html
 
-    It must be standard HTML or XHTML. There are a few special 
- tags available to use that will be replaced with specific values 
+    It must be standard HTML or XHTML. There are a few special
+ tags available to use that will be replaced with specific values
  when the template is parsed by getwtxt.
 
-    Values are derived from the "Instance" section of the 
- configuration file, except for the version of getwtxt used. The 
+    Values are derived from the "Instance" section of the
+ configuration file, except for the version of getwtxt used. The
  following will be in the form of:
-    
+
     {{.TemplateTag}} What it will be replaced with when
         the template is processed and the landing page is
         served to a visitor.
 
-    The surrounding double braces and prefixed period are required 
+    The surrounding double braces and prefixed period are required
  if you choose to use these tags in your modified landing page. The
  tags themselves are not required; access to them is provided simply
  for convenience.
@@ -261,25 +261,25 @@ func manualScreen() {
 
     The registry API is rather simple, and can be interacted with
  via the command line using cURL. Example output of the calls will
- not be provided. 
+ not be provided.
 
-    Pseudo line-breaks will be represented with a backslash. 
+    Pseudo line-breaks will be represented with a backslash.
  Examples with line-breaks are not syntactically correct and will
- be rejected by cURL. Please concatenate the example calls without 
- the backslash. This is only present to maintain consistent 
+ be rejected by cURL. Please concatenate the example calls without
+ the backslash. This is only present to maintain consistent
  formatting for this manual text.
 
-    Ex: 
+    Ex:
         /api/plain/users\
         ?q=FOO
-    Should be: 
+    Should be:
         /api/plain/users?q=FOO
 
     All queries (every call except adding users) accept the
- ?page=N parameter, where N > 0. The output is provided in groups 
- of 20 results. For example, indexed at 1, ?page=2 (or &page=2 if 
- it is not the first parameter) appended to any query will return 
- results 21 through 40. If the page requested will exceed the 
+ ?page=N parameter, where N > 0. The output is provided in groups
+ of 20 results. For example, indexed at 1, ?page=2 (or &page=2 if
+ it is not the first parameter) appended to any query will return
+ results 21 through 40. If the page requested will exceed the
  bounds of the query output, the last 20 query results are returned.
 
  Adding a user:

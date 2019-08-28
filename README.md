@@ -1,30 +1,30 @@
 # getwtxt &nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
 
-twtxt registry written in Go! 
+twtxt registry written in Go!
 
-[twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform 
-"for hackers" based on text files. The user is "followed" and "mentioned" by referencing 
+[twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform
+"for hackers" based on text files. The user is "followed" and "mentioned" by referencing
 the URL to their `twtxt.txt` file and a nickname.
 Registries are designed to aggregate several users' statuses into a single location,
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
 &nbsp;
-\[ [Installation](#installation) \] 
+\[ [Installation](#installation) \]
 &nbsp; \[ [Upgrading](#upgrading) \]
-&nbsp; \[ [Configuration](#configuration) \] 
-&nbsp; \[ [Using the Registry](#using-the-registry) \] 
-&nbsp; \[ [Benchmarks](#benchmarks) \] 
-&nbsp; \[ [Other Documentation](#other-documentation) \] 
+&nbsp; \[ [Configuration](#configuration) \]
+&nbsp; \[ [Using the Registry](#using-the-registry) \]
+&nbsp; \[ [Benchmarks](#benchmarks) \]
+&nbsp; \[ [Other Documentation](#other-documentation) \]
 &nbsp; \[ [Notes](#notes) \]
 
-## Features 
+## Features
 &nbsp;[![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)](https://github.com/getwtxt/getwtxt/releases/latest)
 
-* Easy to set up and maintain 
+* Easy to set up and maintain
 * Uses an in-memory cache to serve requests
 * Pushes to a database at a configurable interval for persistent storage
-  * `leveldb (default)` 
+  * `leveldb (default)`
   * `sqlite3`
 * More database support is in development
 * Run directly facing the internet or behind `Caddy` / `nginx`
@@ -38,7 +38,7 @@ for tags and key words.
 
 Would you like your instance listed? Submit a PR or shoot me an email :)
 
-## Installation 
+## Installation
 
 I have only personally tested getwtxt on Linux, specifically:
 * `Debian 9, 10/Testing, Sid`
@@ -57,7 +57,7 @@ $ git clone git://github.com/getwtxt/getwtxt.git
 $ cd getwtxt
 ```
 
-Then, check out the latest release tag. 
+Then, check out the latest release tag.
 
 This will be the same tag listed on the badge under the [Features](#features) section heading.
 
@@ -82,7 +82,7 @@ $ go test -v -bench . -benchmem ./...
 PASS
 ```
 
-Use `make` to initiate the build and install process. 
+Use `make` to initiate the build and install process.
 ```
 $ make
 ...
@@ -91,7 +91,7 @@ $ sudo make install
 
 ## Upgrading
 
-Upgrading is a fairly simple process. First, we need to commit your local changes 
+Upgrading is a fairly simple process. First, we need to commit your local changes
 to the configuration file.
 
 ```
@@ -100,7 +100,7 @@ $ git add getwtxt.yml
 $ git commit -m 'my local config'
 ```
 
-Now, we need to either run `make update` or `git pull --rebase`
+Now, we need to either run `make update` or `git pull --rebase origin master`
 
 ```
 $ make update
@@ -108,7 +108,7 @@ $ make update
 ```
 
 Afterwards, follow the normal instructions for building and installing.
-If no configuration changes have been made since your last upgrade, 
+If no configuration changes have been made since your last upgrade,
 you will not need to commit them again. While `getwtxt` is pre-`1.0`, any
 patch-level updates (`v0.4.x`) will not change configuration values.
 
@@ -119,32 +119,32 @@ back into `/usr/local/getwtxt/` after installing the new version.
 
 \[ [Proxying](#proxying) \] &nbsp; \[ [Starting getwtxt](#starting-getwtxt) \]
 
-To configure getwtxt, you'll first need to open `/usr/local/getwtxt/getwtxt.yml` 
-in your favorite editor and modify any values necessary. There are comments in the 
+To configure getwtxt, you'll first need to open `/usr/local/getwtxt/getwtxt.yml`
+in your favorite editor and modify any values necessary. There are comments in the
 file explaining each option.
 
-If you desire, you may additionally modify the template in 
-`/usr/local/getwtxt/assets/tmpl/index.html` to customize the page users will see 
-when they pull up your registry instance in a web browser. The values in the 
-configuration file under `Instance:` are used to replace text `{{.Like This}}` in 
+If you desire, you may additionally modify the template in
+`/usr/local/getwtxt/assets/tmpl/index.html` to customize the page users will see
+when they pull up your registry instance in a web browser. The values in the
+configuration file under `Instance:` are used to replace text `{{.Like This}}` in
 the template.
 
 ### Proxying
 
 Though getwtxt will run perfectly fine facing the internet directly, it does not
 understand virtual hosts, nor does it use TLS (yet). You'll probably want to proxy it behind
-`Caddy` or `nginx` for this reason. 
+`Caddy` or `nginx` for this reason.
 
 `Caddy` is ludicrously easy to set up, and automatically handles `TLS` certificates. Here's the config:
 
 ```caddyfile
-twtxt.example.com 
+twtxt.example.com
 proxy / example.com:9001
 ```
 
-If you're using `nginx`, here's a skeleton config to get you started. Don't forget to change 
-the 5 instances of `twtxt.example.com` to the (sub)domain you'll be using to access the registry, 
-generate SSL/TLS certificates using `letsencrypt`, and change the port in `proxy_pass` to whichever 
+If you're using `nginx`, here's a skeleton config to get you started. Don't forget to change
+the 5 instances of `twtxt.example.com` to the (sub)domain you'll be using to access the registry,
+generate SSL/TLS certificates using `letsencrypt`, and change the port in `proxy_pass` to whichever
 port you specified when modifying the configuration file. Currently, it's set to the default port `9001`
 
 ```nginx
@@ -297,7 +297,7 @@ Statistics        Avg      Stdev        Max
   HTTP codes:
     1xx - 0, 2xx - 200000, 3xx - 0, 4xx - 0, 5xx - 0
     others - 0
-  Throughput:    39.27MB/s	
+  Throughput:    39.27MB/s
 ```
 
 ## Other Documentation
@@ -335,11 +335,11 @@ Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/wa
 ### Contributing
 
 All contributions are greatly appreciated! Please open an issue, submit
-a pull request, anything. 
+a pull request, anything.
 
 If you're interested in contributing, take a look at the
-github project page for getwtxt, linked below, where I've listed various items I'm 
-working on or plan to work on in the very near future. It'll give you some inspiration for 
+github project page for getwtxt, linked below, where I've listed various items I'm
+working on or plan to work on in the very near future. It'll give you some inspiration for
 pull requests to submit. If you have an idea for a new feature or come across a bug,
 submitting a new issue will be greatly appreciated as well.
 
