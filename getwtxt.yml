@@ -70,8 +70,8 @@ StdoutLogging: false
 MessageLog: "./logs/message.log"
 RequestLog: "./logs/request.log"
 
-# This is the interval between data pushes from the 
-# in-memory cache to the on-disk database. 
+# This is the interval between data pushes from the
+# in-memory cache to the on-disk database.
 DatabasePushInterval: "5m"
 
 # The time getwtxt will wait between attempts to scrape
@@ -92,9 +92,9 @@ Instance:
   # requests.
   URL: "https://twtxt.example.com"
 
-  # Your name. 
+  # Your name.
   OwnerName: "Anonymous Microblogger"
-  
+
   # Your email address.
   Email: "nobody@knows"
 
