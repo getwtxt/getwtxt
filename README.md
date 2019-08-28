@@ -9,13 +9,14 @@ Registries are designed to aggregate several users' statuses into a single locat
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;
 \[ [Installation](#installation) \] 
-&nbsp; &nbsp; \[ [Configuration](#configuration) \] 
-&nbsp; &nbsp; \[ [Using the Registry](#using-the-registry) \] 
-&nbsp; &nbsp; \[ [Benchmarks](#benchmarks) \] 
-&nbsp; &nbsp; \[ [Other Documentation](#other-documentation) \] 
-&nbsp; &nbsp; \[ [Notes](#notes) \]
+&nbsp; \[ [Upgrading](#upgrading) \]
+&nbsp; \[ [Configuration](#configuration) \] 
+&nbsp; \[ [Using the Registry](#using-the-registry) \] 
+&nbsp; \[ [Benchmarks](#benchmarks) \] 
+&nbsp; \[ [Other Documentation](#other-documentation) \] 
+&nbsp; \[ [Notes](#notes) \]
 
 ## Features 
 &nbsp;[![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)](https://github.com/getwtxt/getwtxt/releases/latest)
@@ -87,6 +88,32 @@ $ make
 ...
 $ sudo make install
 ```
+
+## Upgrading
+
+Upgrading is a fairly simple process. First, we need to commit your local changes 
+to the configuration file.
+
+```
+$ cp /usr/local/getwtxt/getwtxt.yml .
+$ git add getwtxt.yml
+$ git commit -m 'my local config'
+```
+
+Now, we need to either run `make update` or `git pull --rebase`
+
+```
+$ make update
+...
+```
+
+Afterwards, follow the normal instructions for building and installing.
+If no configuration changes have been made since your last upgrade, 
+you will not need to commit them again. While `getwtxt` is pre-`1.0`, any
+patch-level updates (`v0.4.x`) will not change configuration values.
+
+Of course, you can also just back up your configuration file, then copy it
+back into `/usr/local/getwtxt/` after installing the new version.
 
 ## Configuration
 
