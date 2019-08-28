@@ -30,8 +30,12 @@ for tags and key words.
 * Optional `TLS` support
 * Optional hostname matching (serve requests for eg. `twtxt.example.com` without a reverse proxy)
 
-A public instance is currently available:
+## Public Instances
+
 * [twtxt.tilde.institute](https://twtxt.tilde.institute)
+* [twtxt.envs.net](https://twtxt.envs.net/)
+
+Would you like your instance listed? Submit a PR or shoot me an email :)
 
 ## Installation 
 
