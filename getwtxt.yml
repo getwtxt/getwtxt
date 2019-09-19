@@ -67,8 +67,8 @@ StdoutLogging: false
 # Log files getwtxt will use. HTTP Requests will be
 # recorded in RequestLog, while everything else will go
 # into MessageLog, such as errors and notices.
-MessageLog: "./logs/message.log"
-RequestLog: "./logs/request.log"
+MessageLog: "/usr/local/getwtxt/logs/message.log"
+RequestLog: "/usr/local/getwtxt/logs/request.log"
 
 # This is the interval between data pushes from the
 # in-memory cache to the on-disk database.
