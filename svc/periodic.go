@@ -37,7 +37,7 @@ import (
 type tick struct {
 	isDB bool
 	t    *time.Ticker
-	exit chan bool
+	exit chan struct{}
 }
 
 // Creates a new instance of a tick
@@ -45,7 +45,7 @@ func initTicker(db bool, interval time.Duration) *tick {
 	return &tick{
 		isDB: db,
 		t:    time.NewTicker(interval),
-		exit: make(chan bool, 1),
+		exit: make(chan struct{}, 1),
 	}
 }
 
@@ -55,8 +55,8 @@ func initTicker(db bool, interval time.Duration) *tick {
 func killTickers() {
 	ct := <-cTickC
 	dt := <-dbTickC
-	ct.exit <- true
-	dt.exit <- true
+	ct.exit <- struct{}{}
+	dt.exit <- struct{}{}
 }
 
 // Waits for a signal from the database
