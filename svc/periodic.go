@@ -92,7 +92,7 @@ func reInit(e fsnotify.Event) {
 	log.Printf("%v. Reloading...\n", e.String())
 
 	if !confObj.StdoutLogging {
-		closeLog <- true
+		closeLog <- struct{}{}
 	}
 
 	killTickers()

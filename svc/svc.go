@@ -72,7 +72,7 @@ func Start() {
 		errLog("", server.ListenAndServe())
 	}
 
-	closeLog <- true
+	closeLog <- struct{}{}
 	killTickers()
 	killDB()
 	close(dbChan)

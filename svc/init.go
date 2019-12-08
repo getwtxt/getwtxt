@@ -46,7 +46,7 @@ var (
 var confObj = &Configuration{}
 
 // Signals to close the log file
-var closeLog = make(chan bool, 1)
+var closeLog = make(chan struct{}, 1)
 
 // Used to transmit database pointer
 var dbChan = make(chan dbase, 1)
@@ -140,7 +140,7 @@ func watchForInterrupt() {
 			confObj.Mu.RLock()
 			log.Printf("Closed database connection to %v\n", confObj.DBPath)
 			if !confObj.StdoutLogging {
-				closeLog <- true
+				closeLog <- struct{}{}
 			}
 			confObj.Mu.RUnlock()
 
