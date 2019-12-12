@@ -20,8 +20,8 @@ along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
-	"crypto/sha256"
 	"fmt"
+	"hash/fnv"
 	"net/http"
 	"strconv"
 	"strings"
@@ -31,10 +31,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func getEtag(modtime time.Time) string {
+func getEtagFromTime(modtime time.Time) string {
 	shabytes, err := modtime.MarshalText()
 	errLog("", err)
-	return fmt.Sprintf("%x", sha256.Sum256(shabytes))
+	return fmt.Sprintf("%x", fnv.New128().Sum(shabytes))
+}
+
+func getEtag(data []byte) string {
+	return fmt.Sprintf("%x", fnv.New128().Sum(data))
 }
 
 func servStatic(w http.ResponseWriter, isCSS bool) error {
@@ -43,14 +47,14 @@ func servStatic(w http.ResponseWriter, isCSS bool) error {
 	defer staticCache.mu.RUnlock()
 
 	if isCSS {
-		etag := getEtag(staticCache.cssMod)
+		etag := getEtagFromTime(staticCache.cssMod)
 		w.Header().Set("ETag", "\""+etag+"\"")
 		w.Header().Set("Content-Type", cssutf8)
 		_, err := w.Write(staticCache.css)
 		return err
 	}
 
-	etag := getEtag(staticCache.indexMod)
+	etag := getEtagFromTime(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
 	w.Header().Set("Content-Type", htmlutf8)
 	_, err := w.Write(staticCache.index)
@@ -85,7 +89,7 @@ func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := parseQueryOut(out)
-	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	etag := getEtag(data)
 
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
@@ -142,7 +146,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		out = registry.ReduceToPage(page, out)
 
 	case "/api/plain/version":
-		etag := fmt.Sprintf("%x", sha256.Sum256([]byte(Vers)))
+		etag := getEtag([]byte(Vers))
 		w.Header().Set("ETag", "\""+etag+"\"")
 		w.Header().Set("Content-Type", txtutf8)
 		_, err := w.Write([]byte(strings.TrimSpace("getwtxt " + Vers)))
@@ -160,7 +164,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	errLog("", err)
 
 	data := parseQueryOut(out)
-	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	etag := getEtag(data)
 
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
@@ -188,7 +192,7 @@ func apiTagsBaseHandler(w http.ResponseWriter, r *http.Request) {
 
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
-	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	etag := getEtag(data)
 
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
@@ -209,7 +213,7 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 	out := compositeStatusQuery("#"+tags, r)
 	out = registry.ReduceToPage(1, out)
 	data := parseQueryOut(out)
-	etag := fmt.Sprintf("%x", sha256.Sum256(data))
+	etag := getEtag(data)
 
 	w.Header().Set("ETag", etag)
 	w.Header().Set("Content-Type", txtutf8)
