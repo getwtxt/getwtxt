@@ -46,18 +46,23 @@ func servStatic(w http.ResponseWriter, isCSS bool) error {
 	staticCache.mu.RLock()
 	defer staticCache.mu.RUnlock()
 
+	var etag string
+	var body []byte
+	var contentType string
+
 	if isCSS {
-		etag := getEtagFromTime(staticCache.cssMod)
-		w.Header().Set("ETag", "\""+etag+"\"")
-		w.Header().Set("Content-Type", cssutf8)
-		_, err := w.Write(staticCache.css)
-		return err
+		etag = getEtagFromTime(staticCache.cssMod)
+		contentType = cssutf8
+		body = staticCache.css
+	} else {
+		etag = getEtagFromTime(staticCache.indexMod)
+		contentType = htmlutf8
+		body = staticCache.index
 	}
 
-	etag := getEtagFromTime(staticCache.indexMod)
 	w.Header().Set("ETag", "\""+etag+"\"")
-	w.Header().Set("Content-Type", htmlutf8)
-	_, err := w.Write(staticCache.index)
+	w.Header().Set("Content-Type", contentType)
+	_, err := w.Write(body)
 	return err
 }
 
