@@ -61,8 +61,8 @@ func Benchmark_dedupe(b *testing.B) {
 func Test_parseQueryOut(t *testing.T) {
 	initTestConf()
 
-	urls := "https://gbmor.dev/twtxt.txt"
-	nick := "gbmor"
+	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
+	nick := "getwtxttest"
 
 	out, _, err := registry.GetTwtxt(urls, nil)
 	if err != nil {
@@ -95,8 +95,8 @@ func Test_parseQueryOut(t *testing.T) {
 func Benchmark_parseQueryOut(b *testing.B) {
 	initTestConf()
 
-	urls := "https://gbmor.dev/twtxt.txt"
-	nick := "gbmor"
+	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
+	nick := "getwtxttest"
 
 	out, _, err := registry.GetTwtxt(urls, nil)
 	if err != nil {
@@ -203,9 +203,9 @@ func Test_compositeStatusQuery(t *testing.T) {
 
 func Benchmark_compositeStatusQuery(b *testing.B) {
 	initTestConf()
-	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
-	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
-	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
+	statuses, _, _ := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
+	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
+	_ = twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

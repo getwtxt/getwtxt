@@ -38,8 +38,8 @@ var apiPostUserCases = []struct {
 }{
 	{
 		name:    "Known Good User",
-		nick:    "gbmor",
-		uri:     "https://gbmor.dev/twtxt.txt",
+		nick:    "getwtxttest",
+		uri:     "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt",
 		wantErr: false,
 	},
 	{
@@ -100,7 +100,7 @@ func Benchmark_apiPostUser(b *testing.B) {
 	twtxtCache = registry.New(nil)
 
 	params := url.Values{}
-	params.Set("url", "https://gbmor.dev/twtxt.txt")
+	params.Set("url", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
 	params.Set("nickname", "gbmor")
 	req, _ := http.NewRequest("POST", "https://localhost"+portnum+"/api/plain/users", strings.NewReader(params.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")

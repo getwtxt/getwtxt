@@ -111,21 +111,21 @@ func testConfig() {
 // user and their statuses, for testing.
 func mockRegistry() {
 	twtxtCache = registry.New(nil)
-	statuses, _, _ := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
-	parsed, _ := registry.ParseUserTwtxt(statuses, "gbmor", "https://gbmor.dev/twtxt.txt")
-	_ = twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
+	statuses, _, _ := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
+	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
+	_ = twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
 }
 
 // Empties the mock registry's user of statuses
 // for functions that test status modifications
 func killStatuses() {
 	twtxtCache.Mu.Lock()
-	user := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]
+	user := twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"]
 	user.Mu.Lock()
 
 	user.Status = registry.NewTimeMap()
 	user.LastModified = "0"
-	twtxtCache.Users["https://gbmor.dev/twtxt.txt"] = user
+	twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"] = user
 
 	user.Mu.Unlock()
 	twtxtCache.Mu.Unlock()

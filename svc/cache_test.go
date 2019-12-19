@@ -49,7 +49,7 @@ func Test_cacheUpdate(t *testing.T) {
 	killStatuses()
 
 	cacheUpdate()
-	urls := "https://gbmor.dev/twtxt.txt"
+	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
 	newStatus := twtxtCache.Users[urls].Status
 
 	t.Run("Checking for any data", func(t *testing.T) {

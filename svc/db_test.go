@@ -30,17 +30,17 @@ func Test_pushpullDatabase(t *testing.T) {
 	initTestConf()
 	initTestDB()
 
-	out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
+	out, _, err := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
 
-	statusmap, err := registry.ParseUserTwtxt(out, "gbmor", "https://gbmor.dev/twtxt.txt")
+	statusmap, err := registry.ParseUserTwtxt(out, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
 	if err != nil {
 		t.Errorf("Couldn't set up test: %v\n", err)
 	}
 
-	twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
+	twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
 
 	remoteRegistries.List = append(remoteRegistries.List, "https://twtxt.tilde.institute/api/plain/users")
 
@@ -52,7 +52,7 @@ func Test_pushpullDatabase(t *testing.T) {
 	})
 
 	t.Run("Clearing Registry", func(t *testing.T) {
-		err := twtxtCache.DelUser("https://gbmor.dev/twtxt.txt")
+		err := twtxtCache.DelUser("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
 		if err != nil {
 			t.Errorf("%v", err)
 		}
@@ -62,7 +62,7 @@ func Test_pushpullDatabase(t *testing.T) {
 		pullDB()
 
 		twtxtCache.Mu.RLock()
-		if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
+		if _, ok := twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"]; !ok {
 			t.Errorf("Missing user previously pushed to database\n")
 		}
 		twtxtCache.Mu.RUnlock()
@@ -73,18 +73,18 @@ func Benchmark_pushDatabase(b *testing.B) {
 	initTestConf()
 	initTestDB()
 
-	if _, ok := twtxtCache.Users["https://gbmor.dev/twtxt.txt"]; !ok {
-		out, _, err := registry.GetTwtxt("https://gbmor.dev/twtxt.txt", nil)
+	if _, ok := twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"]; !ok {
+		out, _, err := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
 		if err != nil {
 			b.Errorf("Couldn't set up benchmark: %v\n", err)
 		}
 
-		statusmap, err := registry.ParseUserTwtxt(out, "gbmor", "https://gbmor.dev/twtxt.txt")
+		statusmap, err := registry.ParseUserTwtxt(out, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
 		if err != nil {
 			b.Errorf("Couldn't set up benchmark: %v\n", err)
 		}
 
-		twtxtCache.AddUser("gbmor", "https://gbmor.dev/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
+		twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), statusmap)
 	}
 
 	b.ResetTimer()
