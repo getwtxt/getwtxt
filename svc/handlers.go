@@ -34,11 +34,11 @@ import (
 func getEtagFromTime(modtime time.Time) string {
 	shabytes, err := modtime.MarshalText()
 	errLog("", err)
-	return fmt.Sprintf("%x", fnv.New128().Sum(shabytes))
+	return fmt.Sprintf("%x", fnv.New32().Sum(shabytes))
 }
 
 func getEtag(data []byte) string {
-	return fmt.Sprintf("%x", fnv.New128().Sum(data))
+	return fmt.Sprintf("%x", fnv.New32().Sum(data))
 }
 
 func servStatic(w http.ResponseWriter, isCSS bool) error {
