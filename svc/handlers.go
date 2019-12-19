@@ -114,9 +114,9 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		err := apiEndpointQuery(w, r)
 		if err != nil {
 			errHTTP(w, r, err, http.StatusInternalServerError)
-			return
+		} else {
+			log200(r)
 		}
-		log200(r)
 		return
 	}
 
@@ -124,10 +124,7 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 	page := 1
 	pageVal := r.FormValue("page")
 
-	switch pageVal {
-	case "":
-		break
-	default:
+	if pageVal != "" {
 		page, err = strconv.Atoi(pageVal)
 		if err != nil || page < 1 {
 			page = 1
@@ -157,9 +154,9 @@ func apiEndpointHandler(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte(strings.TrimSpace("getwtxt " + Vers)))
 		if err != nil {
 			errHTTP(w, r, err, http.StatusInternalServerError)
-			return
+		} else {
+			log200(r)
 		}
-		log200(r)
 		return
 
 	default:
