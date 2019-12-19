@@ -1,0 +1,27 @@
+# __            __         __
+#|  |_.--.--.--|  |_.--.--|  |_
+#|   _|  |  |  |   _|_   _|   _|
+#|____|________|____|__.__|____|
+#
+# twtxt is an open, distributed
+# microblogging platform that
+# uses human-readable text files,
+# common transport protocols, and
+# free software.
+#
+# Learn more about twtxt at https://github.com/buckket/twtxt
+#
+# == Bio ==
+#
+# getwtxt test data
+#
+# == Metadata ==
+#
+# nick = getwtxttest
+# url = https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt
+#
+# == Content ==
+#
+2019-09-05T15:19:28-04:00	Look, it's some test data!
+2019-09-08T14:48:55-04:00	This is written in #golang
+2019-09-10T00:56:01-04:00	Written by @<gbmor https://gbmor.dev/twtxt.txt> and released under the #GPLv3
