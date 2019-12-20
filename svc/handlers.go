@@ -31,6 +31,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Takes the modtime of one of the static files, derives
+// an FNV hash from it, then truncates it.
 func getEtagFromTime(modtime time.Time) string {
 	shabytes, err := modtime.MarshalText()
 	errLog("", err)
@@ -38,11 +40,15 @@ func getEtagFromTime(modtime time.Time) string {
 	return fmt.Sprintf("%x", bytes[:16])
 }
 
+// Takes the body of a response to a request, derives an
+// FNV hash from it, then truncates it. Used for non-static
+// responses.
 func getEtag(data []byte) string {
 	bytes := fnv.New32().Sum(data)
 	return fmt.Sprintf("%x", bytes[:16])
 }
 
+// Serves index.html and the stylesheet to go with it.
 func servStatic(w http.ResponseWriter, isCSS bool) error {
 	pingAssets()
 	staticCache.mu.RLock()
@@ -89,6 +95,7 @@ func apiFormatHandler(w http.ResponseWriter, r *http.Request) {
 	staticHandler(w, r)
 }
 
+// Serves all tweets without pagination.
 func apiAllTweetsHandler(w http.ResponseWriter, r *http.Request) {
 	out, err := twtxtCache.QueryAllStatuses()
 	if err != nil {

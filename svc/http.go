@@ -78,12 +78,15 @@ func ipMiddleware(hop http.Handler) http.Handler {
 	})
 }
 
+// Appends a 200 OK to the request log
 func log200(r *http.Request) {
 	useragent := r.Header["User-Agent"]
 	uip := getIPFromCtx(r.Context())
 	reqLog.Printf("*** %v :: 200 :: %v %v :: %v\n", uip, r.Method, r.URL, useragent)
 }
 
+// Appends a request of a given status code to the request
+// log. Intended for errors.
 func errHTTP(w http.ResponseWriter, r *http.Request, err error, code int) {
 	useragent := r.Header["User-Agent"]
 	uip := getIPFromCtx(r.Context())

@@ -28,10 +28,13 @@ import (
 	"github.com/syndtr/goleveldb/leveldb"
 )
 
+// Wrapper type for the LevelDB connection
 type dbLevel struct {
 	db *leveldb.DB
 }
 
+// Called intermittently to commit registry data to
+// a LevelDB database.
 func (lvl *dbLevel) push() error {
 	twtxtCache.Mu.RLock()
 	defer twtxtCache.Mu.RUnlock()
@@ -57,6 +60,9 @@ func (lvl *dbLevel) push() error {
 	return lvl.db.Write(dbBasket, nil)
 }
 
+// Called on startup to retrieve previously-committed data
+// from a LevelDB database. Stores the retrieved data in
+// memory.
 func (lvl *dbLevel) pull() {
 	iter := lvl.db.NewIterator(nil, nil)
 	twtxtCache.Mu.Lock()

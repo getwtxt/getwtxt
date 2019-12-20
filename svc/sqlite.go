@@ -28,12 +28,16 @@ import (
 	_ "github.com/mattn/go-sqlite3" // for the sqlite3 driver
 )
 
+// Wrapper containing a SQLite database connection,
+// along with two prepared statements for pushing
+// and pulling via said connection.
 type dbSqlite struct {
 	db       *sql.DB
 	pullStmt *sql.Stmt
 	pushStmt *sql.Stmt
 }
 
+// Initializes a SQLite database.
 func initSqlite() *dbSqlite {
 	confObj.Mu.RLock()
 	dbpath := confObj.DBPath
@@ -60,6 +64,7 @@ func initSqlite() *dbSqlite {
 	}
 }
 
+// Commits data from memory to a SQLite database intermittently.
 func (lite *dbSqlite) push() error {
 	if err := lite.db.Ping(); err != nil {
 		lite = initSqlite()
@@ -104,6 +109,7 @@ func (lite *dbSqlite) push() error {
 	return nil
 }
 
+// Retrieves stored data from a SQLite database on startup.
 func (lite *dbSqlite) pull() {
 	errLog("Error pinging sqlite DB: ", lite.db.Ping())
 	rows, err := lite.pullStmt.Query()

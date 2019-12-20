@@ -213,6 +213,8 @@ func bindConfig() {
 	announceConfig()
 }
 
+// Echoes chosen configuration options on startup and after
+// a change in getwtxt.yml is detected.
 func announceConfig() {
 	confObj.Mu.RLock()
 	defer confObj.Mu.RUnlock()

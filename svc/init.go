@@ -72,12 +72,15 @@ var remoteRegistries = &RemoteRegistries{
 // the parsed landing page and the stylesheet.
 var staticCache = &staticAssets{}
 
+// Logs an error that should cause a catastrophic
+// failure of getwtxt
 func errFatal(context string, err error) {
 	if err != nil {
 		log.Fatalf(context+"%v\n", err.Error())
 	}
 }
 
+// Logs non-fatal errors.
 func errLog(context string, err error) {
 	if err != nil {
 		log.Printf(context+"%v\n", err.Error())
@@ -101,6 +104,7 @@ func initSvc() {
 	watchForInterrupt()
 }
 
+// Responds to some command-line flags
 func checkFlags() {
 	pflag.Parse()
 	if *flagVersion {

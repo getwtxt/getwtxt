@@ -32,6 +32,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// Wrapper to check if an error is non-nil, then
+// log the error if applicable.
 func apiErrCheck(err error, r *http.Request) {
 	if err != nil {
 		uip := getIPFromCtx(r.Context())
@@ -39,6 +41,7 @@ func apiErrCheck(err error, r *http.Request) {
 	}
 }
 
+// Deduplicates a slice of strings
 func dedupe(list []string) []string {
 	out := []string{}
 	seen := make(map[string]bool)
@@ -134,6 +137,8 @@ func apiEndpointQuery(w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
+// For composite queries, join the various slices of strings
+// into a single slice of strings, then deduplicates them.
 func joinQueryOuts(data ...[]string) []string {
 	single := []string{}
 	for _, e := range data {
@@ -142,6 +147,7 @@ func joinQueryOuts(data ...[]string) []string {
 	return dedupe(single)
 }
 
+// Performs a composite query against the statuses.
 func compositeStatusQuery(query string, r *http.Request) []string {
 	var wg sync.WaitGroup
 	var out, out2, out3 []string
