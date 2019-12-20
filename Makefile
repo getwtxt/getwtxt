@@ -71,7 +71,10 @@ uninstall:
 	@systemctl disable getwtxt >/dev/null 2>&1 || true
 	@echo
 	@echo Removing files
-	rm -rf $(BINDIR)
+	rm -rf $(BINDIR)/assets
+	rm -rf $(BINDIR)/logs
+	rm -f $(BINDIR)/getwtxt
+	rm -f $(BINDIR)/getwtxt.yml
 	rm -f /etc/systemd/system/getwtxt.service
 	@echo
 	@echo Removing user
