@@ -4,7 +4,7 @@ go 1.11
 
 require (
 	github.com/fsnotify/fsnotify v1.4.7
-	github.com/getwtxt/registry v0.4.0
+	github.com/getwtxt/registry v0.4.1
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gorilla/handlers v1.4.0
 	github.com/gorilla/mux v1.7.2
