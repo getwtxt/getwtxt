@@ -16,26 +16,13 @@
 #############################################################
 
 #############################################################
-##  Changing the following options requires a restart.     ##
+##  Changing the following option requires a restart.      ##
 #############################################################
-
-# Set to true if getwtxt will be behind a reverse
-# proxy server, such as Caddy or nginx
-BehindProxy: true
 
 # This is the port that getwtxt will bind to.
 # If BehindProxy is false, you should probably
 # set this to 80 or 443
 ListenPort: 9001
-
-# Determines whether we're using SSL/TLS. If so,
-# you should set the Cert and Key files.
-# Don't use TLS if you're setting up getwtxt
-# behind a reverse proxy - just let the proxy
-# handle the connection.
-UseTLS: false
-TLSCert: "/etc/ssl/getwtxt.pem"
-TLSKey: "/etc/ssl/private/getwtxt.pem"
 
 #############################################################
 ##  The following options may be changed at any time.      ##
@@ -102,5 +89,3 @@ Instance:
   # This is shown at the top of the default web page
   # below your instance's name.
   Description: "A fast, resilient twtxt registry server written in Go!"
-
-

@@ -3,7 +3,7 @@
 twtxt registry written in Go!
 
 [twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform
-"for hackers" based on text files. The user is "followed" and "mentioned" by referencing
+for hackers based on text files. The user is "followed" and "mentioned" by referencing
 the URL to their `twtxt.txt` file and a nickname.
 Registries are designed to aggregate several users' statuses into a single location,
 facilitating the discovery of new users to follow and allowing the search of statuses
@@ -21,15 +21,13 @@ for tags and key words.
 ## Features
 &nbsp;[![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)](https://github.com/getwtxt/getwtxt/releases/latest)
 
-* Easy to set up and maintain
+* Easy to set up
 * Uses an in-memory cache to serve requests
 * Pushes to a database at a configurable interval for persistent storage
   * `leveldb (default)`
   * `sqlite3`
 * More database support is in development
-* Run directly facing the internet or behind `Caddy` / `nginx`
-* Optional `TLS` support
-* Optional hostname matching (serve requests for eg. `twtxt.example.com` without a reverse proxy)
+* Easily run behind `nginx`, `Caddy` or another HTTP server.
 
 ## Public Instances
 
@@ -132,7 +130,7 @@ the template.
 ### Proxying
 
 Though getwtxt will run perfectly fine facing the internet directly, it does not
-understand virtual hosts, nor does it use TLS (yet). You'll probably want to proxy it behind
+understand virtual hosts, nor does it use TLS. You'll probably want to proxy it behind
 `Caddy` or `nginx` for this reason.
 
 `Caddy` is ludicrously easy to set up, and automatically handles `TLS` certificates. Here's the config:
@@ -144,7 +142,7 @@ proxy / example.com:9001
 
 If you're using `nginx`, here's a skeleton config to get you started. Don't forget to change
 the 5 instances of `twtxt.example.com` to the (sub)domain you'll be using to access the registry,
-generate SSL/TLS certificates using `letsencrypt`, and change the port in `proxy_pass` to whichever
+generate SSL/TLS certificates using LetsEncrypt, and change the port in `proxy_pass` to whichever
 port you specified when modifying the configuration file. Currently, it's set to the default port `9001`
 
 ```nginx

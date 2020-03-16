@@ -20,7 +20,6 @@ along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 package svc // import "github.com/getwtxt/getwtxt/svc"
 
 import (
-	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
@@ -45,43 +44,19 @@ func Start() {
 
 	confObj.Mu.RLock()
 	portnum := fmt.Sprintf(":%v", confObj.Port)
-	if !confObj.IsProxied {
-		index.Host(confObj.Instance.URL)
-	}
-	TLS := confObj.TLS.Use
-	TLSCert := confObj.TLS.Cert
-	TLSKey := confObj.TLS.Key
 	confObj.Mu.RUnlock()
 
 	server := newServer(portnum, index)
 
-	if TLS {
-		cert, err := tls.LoadX509KeyPair(TLSCert, TLSKey)
-		errFatal("", err)
-
-		cfg := &tls.Config{Certificates: []tls.Certificate{cert}}
-		lstnr, err := tls.Listen("tcp", portnum, cfg)
-		errFatal("", err)
-
-		server.TLSConfig = cfg
-		startAnnounce(portnum, before)
-		errLog("", server.ServeTLS(lstnr, "", ""))
-
-	} else {
-		startAnnounce(portnum, before)
-		errLog("", server.ListenAndServe())
-	}
+	log.Printf("*** Listening on %v\n", portnum)
+	log.Printf("*** getwtxt %v Startup finished at %v, took %v\n\n", Vers, time.Now().Format(time.RFC3339), time.Since(before))
+	errLog("", server.ListenAndServe())
 
 	closeLog <- struct{}{}
 	killTickers()
 	killDB()
 	close(dbChan)
 	close(closeLog)
-}
-
-func startAnnounce(portnum string, before time.Time) {
-	log.Printf("*** Listening on %v\n", portnum)
-	log.Printf("*** getwtxt %v Startup finished at %v, took %v\n\n", Vers, time.Now().Format(time.RFC3339), time.Since(before))
 }
 
 func newServer(port string, index *mux.Router) *http.Server {
