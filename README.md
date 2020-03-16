@@ -26,7 +26,6 @@ for tags and key words.
 * Pushes to a database at a configurable interval for persistent storage
   * `leveldb (default)`
   * `sqlite3`
-* More database support is in development
 * Easily run behind `nginx`, `Caddy` or another HTTP server.
 
 ## Public Instances
