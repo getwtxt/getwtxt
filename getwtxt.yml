@@ -16,19 +16,13 @@
 #############################################################
 
 #############################################################
-##  Changing the following option requires a restart.      ##
+##  Changing the following options requires a restart.     ##
 #############################################################
 
 # This is the port that getwtxt will bind to.
 # If BehindProxy is false, you should probably
 # set this to 80 or 443
 ListenPort: 9001
-
-#############################################################
-##  The following options may be changed at any time.      ##
-##  getwtxt will automatically reload the config when      ##
-##  changes are detected.                                  ##
-#############################################################
 
 # The type of database you want to use. Currently,
 # the following are supported:
@@ -39,6 +33,12 @@ DatabaseType: "leveldb"
 # The location of the database structure. Can be
 # a relative or absolute path.
 DatabasePath: "getwtxt.db"
+
+#############################################################
+##  The following options may be changed at any time.      ##
+##  getwtxt will automatically reload the config when      ##
+##  changes are detected.                                  ##
+#############################################################
 
 # The path to the assets directory, which contains:
 #     style.css
@@ -89,3 +89,4 @@ Instance:
   # This is shown at the top of the default web page
   # below your instance's name.
   Description: "A fast, resilient twtxt registry server written in Go!"
+
