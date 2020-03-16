@@ -80,4 +80,6 @@ uninstall:
 	@echo Removing user
 	- userdel getwtxt
 	@echo
+	@echo The database is still intact in /usr/local/getwtxt/
+	@echo
 	@echo ...Done\!
