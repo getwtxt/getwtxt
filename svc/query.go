@@ -61,7 +61,7 @@ func dedupe(list []string) []string {
 // appending each entry to a byte slice, and adding
 // newlines where appropriate.
 func parseQueryOut(out []string) []byte {
-	var data []byte
+	data := make([]byte, 0)
 
 	for i, e := range out {
 		data = append(data, []byte(e)...)

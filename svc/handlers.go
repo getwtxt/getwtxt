@@ -45,6 +45,12 @@ func getEtagFromTime(modtime time.Time) string {
 // responses.
 func getEtag(data []byte) string {
 	bytes := fnv.New32().Sum(data)
+	if bytes == nil {
+		return ""
+	}
+	if len(bytes) < 16 {
+		return fmt.Sprintf("%x", bytes)
+	}
 	return fmt.Sprintf("%x", bytes[:16])
 }
 
