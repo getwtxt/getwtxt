@@ -96,12 +96,8 @@ func reInit(e fsnotify.Event) {
 	}
 
 	killTickers()
-	killDB()
-
 	bindConfig()
-
 	initLogging()
-	initDatabase()
 	initPersistence()
 }
 
