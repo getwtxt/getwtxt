@@ -39,6 +39,13 @@ func Start() {
 	// handlers/paths
 	index := mux.NewRouter().StrictSlash(true)
 	setIndexRouting(index)
+
+	// Serve the raw contents of this directory so users can
+	// place miscellaneous files in it to use with the template.
+	index.PathPrefix("/static").
+		Methods("GET", "HEAD").
+		Handler(http.StripPrefix("/static", http.FileServer(http.Dir(confObj.StaticDir))))
+
 	api := index.PathPrefix("/api").Subrouter()
 	setEndpointRouting(api)
 
@@ -84,8 +91,8 @@ func setIndexRouting(index *mux.Router) {
 }
 
 func setEndpointRouting(api *mux.Router) {
-	// twtxt will add support for other formats later.
-	// Maybe json? Making this future-proof.
+	// May add support for other formats later.
+	// Making this future-proof.
 	api.Path("/{format:(?:plain)}").
 		Methods("GET", "HEAD").
 		HandlerFunc(apiFormatHandler)

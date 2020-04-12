@@ -45,6 +45,10 @@ DatabasePath: "getwtxt.db"
 #     tmpl/index.html
 AssetsDirectory: "assets"
 
+# The path to the static files directory.
+# Will be served as /static
+StaticFilesDirectory: "/usr/local/getwtxt/static"
+
 # If true, getwtxt will send all log messages, including
 # requests, to stdout. It will ignore any set log file.
 # Useful for debugging, but you probably want to keep

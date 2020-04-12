@@ -41,7 +41,8 @@ type Configuration struct {
 	ReqLog        string        `yaml:"RequestLog"`
 	DBType        string        `yaml:"DatabaseType"`
 	DBPath        string        `yaml:"DatabasePath"`
-	AssetsDir     string        `yaml:"-"`
+	AssetsDir     string        `yaml:"AssetsDirectory"`
+	StaticDir     string        `yaml:"StaticFilesDirectory"`
 	StdoutLogging bool          `yaml:"StdoutLogging"`
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
 	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
@@ -120,6 +121,7 @@ func setConfigDefaults() {
 	viper.SetDefault("RequestLog", "logs/request.log")
 	viper.SetDefault("DatabasePath", "getwtxt.db")
 	viper.SetDefault("AssetsDirectory", "assets")
+	viper.SetDefault("StaticFilesDirectory", "static")
 	viper.SetDefault("DatabaseType", "leveldb")
 	viper.SetDefault("StdoutLogging", false)
 	viper.SetDefault("ReCacheInterval", "1h")
@@ -167,6 +169,7 @@ func bindConfig() {
 	confObj.DBType = strings.ToLower(viper.GetString("DatabaseType"))
 	confObj.DBPath = viper.GetString("DatabasePath")
 	confObj.AssetsDir = viper.GetString("AssetsDirectory")
+	confObj.StaticDir = viper.GetString("StaticFilesDirectory")
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
@@ -207,4 +210,5 @@ func announceConfig() {
 	log.Printf("Using %v database: %v\n", confObj.DBType, confObj.DBPath)
 	log.Printf("Database push interval: %v\n", confObj.DBInterval)
 	log.Printf("User status fetch interval: %v\n", confObj.CacheInterval)
+	log.Printf("Static files directory: %v", confObj.StaticDir)
 }
