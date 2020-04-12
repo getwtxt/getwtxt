@@ -16,6 +16,7 @@ getwtxt: getwtxt.go go.mod go.sum
 clean:
 	@echo
 	@echo Cleaning build and module caches...
+	go clean
 	go clean -cache -modcache
 	@echo
 	@echo ...Done\!
