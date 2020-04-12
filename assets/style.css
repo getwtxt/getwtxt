@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/kognise/water.css@latest/dist/dark.min.css");
+@import 'static/kognise.water.css.dark.min.css';
 
 #container {
   max-width: 50rem;
@@ -15,7 +15,7 @@
 
 #subhead {
   text-align: right;
-  font-size: 2.0em;
+  font-size: 2em;
   font-family: monospace;
   margin-top: -2rem;
   padding-right: 0rem;
@@ -23,14 +23,14 @@
 }
 
 #body {
-  font-size: 1.0em;
+  font-size: 1em;
   margin-top: -1.5rem;
 }
 
 #info {
   font-family: monospace;
   font-size: 1.5em;
-  margin-top: -2.0rem;
+  margin-top: -2rem;
   padding-bottom: 2rem;
 }
 
@@ -48,6 +48,6 @@
 
 p {
   text-indent: 1.5em;
-  padding-top: 1.0rem;
+  padding-top: 1rem;
   margin-bottom: -0.3rem;
 }

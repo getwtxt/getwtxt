@@ -47,6 +47,7 @@ install:
 	install -m644 getwtxt.yml $(BINDIR)
 	install -m644 assets/style.css $(BINDIR)/assets
 	install -m644 assets/tmpl/index.html $(BINDIR)/assets/tmpl
+	install -m644 static/kognise.water.css.dark.min.css $(BINDIR)/static
 	install -m644 README.md $(BINDIR)/docs
 	install -m644 LICENSE $(BINDIR)/docs
 	install -m644 etc/getwtxt.service /etc/systemd/system
