@@ -39,7 +39,7 @@ install:
 	@echo
 	@echo
 	@echo Creating directories...
-	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs $(BINDIR)/logs
+	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs $(BINDIR)/logs $(BINDIR)/static
 	@echo
 	@echo Copying files...
 	install -m755 getwtxt $(BINDIR)
