@@ -1,4 +1,4 @@
-# getwtxt &nbsp;[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
+# getwtxt &nbsp;[![builds.sr.ht status](https://builds.sr.ht/~gbmor/getwtxt.svg)](https://builds.sr.ht/~gbmor/getwtxt?) [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
 
 twtxt registry written in Go!
 
@@ -9,17 +9,19 @@ Registries are designed to aggregate several users' statuses into a single locat
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
-&nbsp;
-\[ [Installation](#installation) \]
-&nbsp; \[ [Upgrading](#upgrading) \]
-&nbsp; \[ [Configuration](#configuration) \]
-&nbsp; \[ [Using the Registry](#using-the-registry) \]
-&nbsp; \[ [Benchmarks](#benchmarks) \]
-&nbsp; \[ [Other Documentation](#other-documentation) \]
-&nbsp; \[ [Notes](#notes) \]
+<table style="width: 100%; text-align: center; margin: 0 auto;">
+  <tr>
+    <td>[<a href="#installation">Installation</a>]</td>
+    <td>[<a href="#upgrading">Upgrading</a>]</td>
+    <td>[<a href="#configuration">Configuration</a>]</td>
+    <td>[<a href="#using-the-registry">Using the Registry</a>]</td>
+    <td>[<a href="#benchmarks">Benchmarks</a>]</td>
+    <td>[<a href="#other-documentation">Other Documentation</a>]</td>
+    <td>[<a href="#notes">Notes</a>]</td>
+  </tr>
+</table>
 
 ## Features
-&nbsp;[![GitHub release](https://img.shields.io/github/release/getwtxt/getwtxt.svg)](https://github.com/getwtxt/getwtxt/releases/latest)
 
 * Easy to set up
 * Uses an in-memory cache to serve requests
@@ -33,50 +35,32 @@ for tags and key words.
 * [twtxt.tilde.institute](https://twtxt.tilde.institute)
 * [twtxt.envs.net](https://twtxt.envs.net/)
 
-Would you like your instance listed? Submit a PR or shoot me an email :)
+Would you like your instance listed? Send a message to the [mailing list](https://lists.sr.ht/~gbmor/getwtxt)!
 
 ## Installation
 
-I have only personally tested getwtxt on Linux, specifically:
-* `Debian 9, 10/Testing, Sid`
+I have tested getwtxt on the following:
+* `Debian 9, 10`
 * `Ubuntu Server 18.04LTS, 18.10, 19.04`
+* `OpenBSD 6.6`
 
 Build dependencies are minimal, and only include:
-* `gnu make`
+* `make`
 * `go >= 1.11`
 * `git`
 
 First, fetch the sources using `git` and jump into the directory.
 
 ```
-$ git clone git://github.com/getwtxt/getwtxt.git
+$ git clone https://git.sr.ht/~gbmor/getwtxt
 ...
 $ cd getwtxt
 ```
 
 Then, check out the latest release tag.
 
-This will be the same tag listed on the badge under the [Features](#features) section heading.
-
-```
-$ git checkout v0.0.0
-```
-
-Or, if you want to be a `git` ninja, you can use this to just check out whatever
-the latest tag is:
-
 ```
 $ git checkout $(git describe --tags --abbrev=0)
-
-```
-
-Optionally, use the `go` tool to test and benchmark the files in `svc`.
-
-```
-$ go test -v -bench . -benchmem ./...
-...
-...
-PASS
 ```
 
 Use `make` to initiate the build and install process.
@@ -189,10 +173,10 @@ queries support the `?page=N` parameter, where `N` is a positive integer, that w
 
 The example API calls can also be found on the landing page of any getwtxt instance, assuming
 the admin has not customized the landing page.
-* [twtxt.tilde.institute](https://twtxt.tilde.institute)
 
 ### Adding a User
 Both nickname and URL are required
+
 ```
 $ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext/twtxt.txt&nickname=FooJr'
 
@@ -200,6 +184,7 @@ $ curl -X POST 'https://twtxt.example.com/api/plain/users?url=https://mysite.ext
 ```
 
 ### Get All Tweets
+
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets'
 
@@ -209,6 +194,7 @@ foo_barrington  https://foo.bar.ext/twtxt.txt  2019-03-01T09:31:02.000Z Hey! It'
 ```
 
 ### Query Tweets by Keyword
+
 ```
 $ curl 'https://twtxt.example.com/api/plain/tweets?q=getwtxt'
 
@@ -245,6 +231,7 @@ foo_barrington    https://example3.com/twtxt.txt    2019-05-01T15:59:39.000Z
 
 ### Get all tweets with mentions
 Mentions are placed within a status using the format `@<nickname http://url/twtxt.txt>`
+
 ```
 $ curl 'https://twtxt.tilde.institute/api/plain/mentions'
 
@@ -254,6 +241,7 @@ foo_barrington    https://example3.com/twtxt.txt    2019-02-26T11:06:44.000Z    
 ```
 
 ### Query tweets by mention URL
+
 ```
 $ curl 'https://twtxt.tilde.institute/api/plain/mentions?url=https://foobarrington.co.uk/twtxt.txt'
 
@@ -261,6 +249,7 @@ foo    https://example.com/twtxt.txt    2019-02-26T11:06:44.000Z    @<foo_barrin
 ```
 
 ### Get all Tags
+
 ```
 $ curl 'https://twtxt.example.com/api/plain/tags'
 
@@ -270,6 +259,7 @@ foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #prog
 ```
 
 ### Query by Tag
+
 ```
 $ curl 'https://twtxt.example.com/api/plain/tags/programming'
 
@@ -331,14 +321,9 @@ Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/wa
 
 ### Contributing
 
-All contributions are greatly appreciated! Please open an issue, submit
-a pull request, anything.
+All contributions are greatly appreciated!
 
-If you're interested in contributing, take a look at the
-github project page for getwtxt, linked below, where I've listed various items I'm
-working on or plan to work on in the very near future. It'll give you some inspiration for
-pull requests to submit. If you have an idea for a new feature or come across a bug,
-submitting a new issue will be greatly appreciated as well.
-
-* [getwtxt Development: the road to 1.0.0](https://github.com/getwtxt/getwtxt/projects/1)
-* [open an issue](https://github.com/getwtxt/getwtxt/issues)
+* Mailing list:
+  * [lists.sr.ht/~gbmor/getwtxt](https://lists.sr.ht/~gbmor/getwtxt)
+* Ticket tracker:
+  * [todo.sr.ht/~gbmor/getwtxt](https://todo.sr.ht/~gbmor/getwtxt)
