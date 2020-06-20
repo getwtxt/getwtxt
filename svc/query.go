@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"crypto/sha256"
@@ -28,7 +28,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 	"github.com/gorilla/mux"
 )
 

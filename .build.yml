@@ -1,0 +1,10 @@
+image: alpine/edge
+packages:
+  - go
+sources:
+  - https://git.sr.ht/~gbmor/getwtxt
+tasks:
+  - build: |
+      cd getwtxt
+      go test -v
+      go test -v --bench . --benchmem

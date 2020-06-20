@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import "fmt"
 
@@ -31,7 +31,7 @@ func titleScreen() {
             \__, |\___|\__| \_/\_/  \__/_/\_\\__|
             |___/
                        version ` + Vers + `
-                 github.com/getwtxt/getwtxt
+                   git.sr.ht/~gbmor/getwtxt
                           GPL  v3
 
 `)
@@ -284,7 +284,7 @@ func manualScreen() {
 
  Adding a user:
     curl -X POST 'http://localhost:9001/api/plain/users\
-        ?url=https://gbmor.dev/twtxt.txt&nickname=gbmor'
+        ?url=https://example.org/twtxt.txt&nickname=somebody'
 
  Retrieve user list:
     curl 'http://localhost:9001/api/plain/users'

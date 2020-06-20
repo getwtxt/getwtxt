@@ -2,7 +2,7 @@ PREFIX?=/usr/local
 _INSTDIR=$(PREFIX)
 BINDIR?=$(_INSTDIR)/getwtxt
 VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
-GOFLAGS?=-ldflags '-X github.com/getwtxt/getwtxt/svc.Vers=${VERSION}'
+GOFLAGS?=-ldflags '-X git.sr.ht/~gbmor/getwtxt/svc.Vers=${VERSION}'
 
 getwtxt: getwtxt.go go.mod go.sum
 	@echo

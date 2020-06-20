@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"net"
@@ -25,7 +25,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 )
 
 func Test_dedupe(t *testing.T) {
@@ -61,7 +61,7 @@ func Benchmark_dedupe(b *testing.B) {
 func Test_parseQueryOut(t *testing.T) {
 	initTestConf()
 
-	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
+	urls := testTwtxtURL
 	nick := "getwtxttest"
 
 	out, _, err := registry.GetTwtxt(urls, nil)
@@ -95,7 +95,7 @@ func Test_parseQueryOut(t *testing.T) {
 func Benchmark_parseQueryOut(b *testing.B) {
 	initTestConf()
 
-	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
+	urls := testTwtxtURL
 	nick := "getwtxttest"
 
 	out, _, err := registry.GetTwtxt(urls, nil)
@@ -203,9 +203,9 @@ func Test_compositeStatusQuery(t *testing.T) {
 
 func Benchmark_compositeStatusQuery(b *testing.B) {
 	initTestConf()
-	statuses, _, _ := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
-	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
-	_ = twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
+	statuses, _, _ := registry.GetTwtxt(testTwtxtURL, nil)
+	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", testTwtxtURL)
+	_ = twtxtCache.AddUser("getwtxttest", testTwtxtURL, net.ParseIP("127.0.0.1"), parsed)
 	b.ResetTimer()
 
 	for i := 0; i < b.N; i++ {

@@ -17,14 +17,14 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"database/sql"
 	"net"
 	"time"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 	_ "github.com/mattn/go-sqlite3" // for the sqlite3 driver
 )
 

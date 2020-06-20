@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"fmt"
@@ -27,7 +27,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 )
 
 var apiPostUserCases = []struct {
@@ -39,7 +39,7 @@ var apiPostUserCases = []struct {
 	{
 		name:    "Known Good User",
 		nick:    "getwtxttest",
-		uri:     "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt",
+		uri:     testTwtxtURL,
 		wantErr: false,
 	},
 	{
@@ -100,7 +100,7 @@ func Benchmark_apiPostUser(b *testing.B) {
 	twtxtCache = registry.New(nil)
 
 	params := url.Values{}
-	params.Set("url", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
+	params.Set("url", testTwtxtURL)
 	params.Set("nickname", "gbmor")
 	req, _ := http.NewRequest("POST", "https://localhost"+portnum+"/api/plain/users", strings.NewReader(params.Encode()))
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")

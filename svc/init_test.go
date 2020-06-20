@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"bytes"
@@ -29,9 +29,11 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 	"github.com/spf13/viper"
 )
+
+const testTwtxtURL = "https://git.sr.ht/~gbmor/getwtxt/blob/master/testdata/twtxt.txt"
 
 var (
 	testport     string
@@ -111,21 +113,21 @@ func testConfig() {
 // user and their statuses, for testing.
 func mockRegistry() {
 	twtxtCache = registry.New(nil)
-	statuses, _, _ := registry.GetTwtxt("https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", nil)
-	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt")
-	_ = twtxtCache.AddUser("getwtxttest", "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt", net.ParseIP("127.0.0.1"), parsed)
+	statuses, _, _ := registry.GetTwtxt(testTwtxtURL, nil)
+	parsed, _ := registry.ParseUserTwtxt(statuses, "getwtxttest", testTwtxtURL)
+	_ = twtxtCache.AddUser("getwtxttest", testTwtxtURL, net.ParseIP("127.0.0.1"), parsed)
 }
 
 // Empties the mock registry's user of statuses
 // for functions that test status modifications
 func killStatuses() {
 	twtxtCache.Mu.Lock()
-	user := twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"]
+	user := twtxtCache.Users[testTwtxtURL]
 	user.Mu.Lock()
 
 	user.Status = registry.NewTimeMap()
 	user.LastModified = "0"
-	twtxtCache.Users["https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"] = user
+	twtxtCache.Users[testTwtxtURL] = user
 
 	user.Mu.Unlock()
 	twtxtCache.Mu.Unlock()

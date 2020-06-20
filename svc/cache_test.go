@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-package svc // import "github.com/getwtxt/getwtxt/svc"
+package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
 	"bytes"
@@ -27,7 +27,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/getwtxt/registry"
+	"git.sr.ht/~gbmor/getwtxt/registry"
 )
 
 func Test_initTemplates(t *testing.T) {
@@ -49,7 +49,7 @@ func Test_cacheUpdate(t *testing.T) {
 	killStatuses()
 
 	cacheUpdate()
-	urls := "https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt"
+	urls := testTwtxtURL
 	newStatus := twtxtCache.Users[urls].Status
 
 	t.Run("Checking for any data", func(t *testing.T) {

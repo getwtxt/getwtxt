@@ -18,7 +18,7 @@
 # == Metadata ==
 #
 # nick = getwtxttest
-# url = https://github.com/getwtxt/getwtxt/raw/master/testdata/twtxt.txt
+# url = https://git.sr.ht/~gbmor/getwtxt/blob/master/testdata/twtxt.txt
 #
 # == Content ==
 #

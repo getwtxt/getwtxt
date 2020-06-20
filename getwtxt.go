@@ -19,7 +19,7 @@ along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 
 package main
 
-import "github.com/getwtxt/getwtxt/svc"
+import "git.sr.ht/~gbmor/getwtxt/svc"
 
 func main() {
 	svc.Start()
