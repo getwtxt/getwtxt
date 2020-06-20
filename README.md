@@ -9,7 +9,7 @@ Registries are designed to aggregate several users' statuses into a single locat
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
 
-<table style="width: 100%; text-align: center; margin: 0 auto;">
+<table style="width: 100%; text-align: center; margin: 0 auto; border: 0px;">
   <tr>
     <td>[<a href="#installation">Installation</a>]</td>
     <td>[<a href="#upgrading">Upgrading</a>]</td>
