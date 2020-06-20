@@ -24,7 +24,3 @@ script:
   - go test -v -race --coverprofile=c.out ./...
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   - make
-
-after_script:
-  - make clean
-  - go test -v -run=NONE -bench . -benchmem ./...
