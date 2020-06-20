@@ -323,7 +323,7 @@ Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/wa
 
 All contributions are greatly appreciated!
 
-* Mailing list:
+* Mailing list for patches, discussion, etc:
   * [lists.sr.ht/~gbmor/getwtxt](https://lists.sr.ht/~gbmor/getwtxt)
 * Ticket tracker:
   * [todo.sr.ht/~gbmor/getwtxt](https://todo.sr.ht/~gbmor/getwtxt)
