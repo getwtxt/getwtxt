@@ -1,48 +1,38 @@
 PREFIX?=/usr/local
 _INSTDIR=$(PREFIX)
 BINDIR?=$(_INSTDIR)/getwtxt
-VERSION?=$(shell git tag | grep ^v | sort -V | tail -n 1)
+VERSION?=$(shell git describe --tags --abbrev=0)
 GOFLAGS?=-ldflags '-X git.sr.ht/~gbmor/getwtxt/svc.Vers=${VERSION}'
 
 getwtxt: getwtxt.go go.mod go.sum
-	@echo
-	@echo Building getwtxt. This may take a minute or two.
+	@printf "\n%s\n" "Building getwtxt. This may take a minute or two."
 	@mkdir -p logs
 	go build $(GOFLAGS) -o $@
-	@echo
-	@echo ...Done\!
+	@printf "\n%s\n" "...Done!"
 
 .PHONY: clean
 clean:
-	@echo
-	@echo Cleaning build and module caches...
+	@printf "\n%s\n" "Cleaning build ..."
 	go clean
-	go clean -cache -modcache
-	@echo
-	@echo ...Done\!
+	@printf "\n%s\n" "...Done!"
 
 .PHONY: update
 update:
-	@echo
-	@echo Updating from upstream repository...
-	@echo
+	@printf "\n%s\n\n" "Updating from upstream repository..."
 	git pull --rebase origin master
-	@echo
-	@echo ...Done\!
+	@printf "\n%s\n" "...Done!"
 
 .PHONY: install
 install:
-	@echo
-	@echo Installing getwtxt...
-	@echo
-	@echo Creating user/group...
+	@printf "\n%s\n" "Installing getwtxt..."
+
+	@printf "\n%s\n" "Creating user/group..."
 	adduser -home $(BINDIR) --system --group getwtxt
-	@echo
-	@echo
-	@echo Creating directories...
+
+	@printf "\n%s\n" "Creating directories..."
 	mkdir -p $(BINDIR)/assets/tmpl $(BINDIR)/docs $(BINDIR)/logs $(BINDIR)/static
-	@echo
-	@echo Copying files...
+
+	@printf "\n%s\n" "Copying files..."
 	install -m755 getwtxt $(BINDIR)
 	install -m644 getwtxt.yml $(BINDIR)
 	install -m644 assets/style.css $(BINDIR)/assets
@@ -51,37 +41,31 @@ install:
 	install -m644 README.md $(BINDIR)/docs
 	install -m644 LICENSE $(BINDIR)/docs
 	install -m644 etc/getwtxt.service /etc/systemd/system
-	@echo
-	@echo
-	@echo Setting ownership...
+
+	@printf "\n%s\n" "Setting ownership..."
 	chown -R getwtxt:getwtxt $(BINDIR)
-	@echo
-	@echo ...Done\! Don\'t forget to run
-	@echo '         $$ systemctl enable getwtxt'
+
+	@printf "\n%s\n\t%s\n" "...Done! Don't forget to run:" "systemctl enable getwtxt"
 
 .PHONY: uninstall
 uninstall:
-	@echo
-	@echo Uninstalling getwtxt...
-	@echo
-	@echo Stopping service if running...
-	@echo systemctl stop getwtxt
+	@printf "\n%s\n" "Uninstalling getwtxt..."
+
+	@printf "\n%s\n%s\n" "Stopping service if running..." "systemctl stop getwtxt"
 	@systemctl stop getwtxt >/dev/null 2>&1 || true
-	@echo
-	@echo Disabling service autostart...
-	@echo systemctl disable getwtxt
+
+	@printf "\n%s\n%s\n" "Disabling service autostart..." "systemctl disable getwtxt"
 	@systemctl disable getwtxt >/dev/null 2>&1 || true
-	@echo
-	@echo Removing files
+
+	@printf "\n%s\n" "Removing files"
 	rm -rf $(BINDIR)/assets
 	rm -rf $(BINDIR)/logs
 	rm -f $(BINDIR)/getwtxt
 	rm -f $(BINDIR)/getwtxt.yml
 	rm -f /etc/systemd/system/getwtxt.service
-	@echo
-	@echo Removing user
-	- userdel getwtxt
-	@echo
-	@echo The database is still intact in /usr/local/getwtxt/
-	@echo
-	@echo ...Done\!
+
+	@printf "\n%s\n" "Removing user"
+	userdel getwtxt
+
+	@printf "\n%s\n" "The database is still intact in /usr/local/getwtxt/"
+	@printf "\n%s\n" "...Done!"
