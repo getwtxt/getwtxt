@@ -273,14 +273,3 @@ var timestampCases = []struct {
 		expected: "2020-01-14T00:19:45.092344Z",
 	},
 }
-
-func Test_fixTimestamp(t *testing.T) {
-	for _, tt := range timestampCases {
-		t.Run(tt.name, func(t *testing.T) {
-			tsout := fixTimestamp(tt.orig)
-			if tsout != tt.expected {
-				t.Errorf("Failed :: %s :: got %s expected %s", tt.name, tsout, tt.expected)
-			}
-		})
-	}
-}

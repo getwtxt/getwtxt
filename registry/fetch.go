@@ -25,7 +25,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"regexp"
 	"strings"
 	"sync"
 	"time"
@@ -185,8 +184,13 @@ func ParseUserTwtxt(twtxt []byte, nickname, urlKey string) (TimeMap, error) {
 			return nil, fmt.Errorf("improperly formatted data in twtxt file")
 		}
 
-		normalizedDatestamp := fixTimestamp(columns[0])
-		thetime, err := time.Parse(time.RFC3339, normalizedDatestamp)
+		var thetime time.Time
+		var err error
+		if strings.Contains(columns[0], ".") {
+			thetime, err = time.Parse(time.RFC3339Nano, columns[0])
+		} else {
+			thetime, err = time.Parse(time.RFC3339, columns[0])
+		}
 		if err != nil {
 			erz = append(erz, []byte(fmt.Sprintf("unable to retrieve date: %v\n", err))...)
 		}
@@ -198,11 +202,6 @@ func ParseUserTwtxt(twtxt []byte, nickname, urlKey string) (TimeMap, error) {
 		return timemap, nil
 	}
 	return timemap, fmt.Errorf("%v", string(erz))
-}
-
-func fixTimestamp(ts string) string {
-	normalizeTimestamp := regexp.MustCompile(`[\+][\d][\d][:][\d][\d]`)
-	return strings.TrimSpace(normalizeTimestamp.ReplaceAllString(ts, "Z"))
 }
 
 // ParseRegistryTwtxt takes output from a remote registry and outputs
