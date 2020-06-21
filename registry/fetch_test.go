@@ -100,7 +100,7 @@ var getTwtxtCases = []struct {
 	},
 	{
 		name:      "Remote Registry",
-		url:       "https://twtxt.tilde.institute/api/plain/tweets/",
+		url:       "https://twtxt.tilde.institute/api/plain/tweets/all",
 		wantErr:   false,
 		localOnly: false,
 	},
