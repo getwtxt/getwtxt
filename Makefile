@@ -34,9 +34,9 @@ install:
 
 	@printf "\n%s\n" "Copying files..."
 	install -m755 getwtxt $(BINDIR)
-	install -m644 getwtxt.yml $(BINDIR)
-	install -m644 assets/style.css $(BINDIR)/assets
-	install -m644 assets/tmpl/index.html $(BINDIR)/assets/tmpl
+	@if [ -f "$(BINDIR)/getwtxt.yml" ]; then printf "%s\n" "getwtxt.yml exists. Skipping ..."; else printf "%s\n" "getwtxt.yml ..." && install -m644 getwtxt.yml "$(BINDIR)"; fi
+	@if [ -f "$(BINDIR)/assets/style.css" ]; then printf "%s\n" "style.css exists. Skipping ..."; else printf "%s\n" "style.css ..." && install -m644 assets/style.css "$(BINDIR)/assets/style.css"; fi
+	@if [ -f "$(BINDIR)/assets/tmpl/index.html" ]; then printf "%s\n" "tmpl/index.html exists. Skipping ..."; else printf "%s\n" "tmpl/index.html ..." && install -m644 assets/tmpl/index.html "$(BINDIR)/assets/tmpl/index.html"; fi
 	install -m644 static/kognise.water.css.dark.min.css $(BINDIR)/static
 	install -m644 README.md $(BINDIR)/docs
 	install -m644 LICENSE $(BINDIR)/docs
@@ -45,7 +45,9 @@ install:
 	@printf "\n%s\n" "Setting ownership..."
 	chown -R getwtxt:getwtxt $(BINDIR)
 
-	@printf "\n%s\n\t%s\n" "...Done! Don't forget to run:" "systemctl enable getwtxt"
+	@printf "\n%s\n" "If any files were skipped and there were changes upstream, you may need to merge them manually."
+
+	@printf "\n%s\n\t%s\n\n" "...Done! Don't forget to run:" "systemctl enable getwtxt"
 
 .PHONY: uninstall
 uninstall:
