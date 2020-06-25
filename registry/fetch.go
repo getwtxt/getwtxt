@@ -186,11 +186,23 @@ func ParseUserTwtxt(twtxt []byte, nickname, urlKey string) (TimeMap, error) {
 			return nil, fmt.Errorf("improperly formatted data in twtxt file")
 		}
 
+		noSeconds := false
+		count := strings.Count(columns[0], ":")
+
+		if strings.Contains(columns[0], "Z") {
+			split := strings.Split(columns[0], "Z")
+			if len(split[1]) > 0 && count == 2 {
+				noSeconds = true
+			}
+		} else if count == 2 {
+			noSeconds = true
+		}
+
 		var thetime time.Time
 		var err error
 		if strings.Contains(columns[0], ".") {
 			thetime, err = time.Parse(time.RFC3339Nano, columns[0])
-		} else if strings.Count(columns[0], ":") == 2 {
+		} else if noSeconds {
 			// this means they're probably not including seconds into the datetime
 			thetime, err = time.Parse(rfc3339WithoutSeconds, columns[0])
 		} else {
