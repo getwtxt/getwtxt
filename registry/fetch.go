@@ -30,6 +30,8 @@ import (
 	"time"
 )
 
+const rfc3339WithoutSeconds = "2006-01-02T15:04Z07:00"
+
 // GetTwtxt fetches the raw twtxt file data from the user's
 // provided URL, after validating the URL. If the returned
 // boolean value is false, the fetched URL is a single user's
@@ -188,6 +190,9 @@ func ParseUserTwtxt(twtxt []byte, nickname, urlKey string) (TimeMap, error) {
 		var err error
 		if strings.Contains(columns[0], ".") {
 			thetime, err = time.Parse(time.RFC3339Nano, columns[0])
+		} else if strings.Count(columns[0], ":") == 2 {
+			// this means they're probably not including seconds into the datetime
+			thetime, err = time.Parse(rfc3339WithoutSeconds, columns[0])
 		} else {
 			thetime, err = time.Parse(time.RFC3339, columns[0])
 		}
