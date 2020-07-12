@@ -16,12 +16,6 @@ clean:
 	go clean
 	@printf "\n%s\n" "...Done!"
 
-.PHONY: update
-update:
-	@printf "\n%s\n\n" "Updating from upstream repository..."
-	git pull --rebase origin master
-	@printf "\n%s\n" "...Done!"
-
 .PHONY: install
 install:
 	@printf "\n%s\n" "Installing getwtxt..."
