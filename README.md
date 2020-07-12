@@ -1,10 +1,15 @@
-# getwtxt &nbsp;[![builds.sr.ht status](https://builds.sr.ht/~gbmor/getwtxt.svg)](https://builds.sr.ht/~gbmor/getwtxt?) [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt) [![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt) [![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
+# getwtxt
+[![builds.sr.ht status](https://builds.sr.ht/~gbmor/getwtxt.svg)](https://builds.sr.ht/~gbmor/getwtxt?)
+[![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt)
+[![Go Report Card](https://goreportcard.com/badge/github.com/getwtxt/getwtxt)](https://goreportcard.com/report/github.com/getwtxt/getwtxt)
+[![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/0e48bd9002de0f84b24e/maintainability)](https://codeclimate.com/github/getwtxt/getwtxt/maintainability)
 
 twtxt registry written in Go!
 
 [twtxt](https://github.com/buckket/twtxt) is a decentralized microblogging platform
 for hackers based on text files. The user is "followed" and "mentioned" by referencing
 the URL to their `twtxt.txt` file and a nickname.
+
 Registries are designed to aggregate several users' statuses into a single location,
 facilitating the discovery of new users to follow and allowing the search of statuses
 for tags and key words.
@@ -72,29 +77,16 @@ $ sudo make install
 
 ## Upgrading
 
-Upgrading is a fairly simple process. First, we need to commit your local changes
-to the configuration file.
+Upgrading is nearly a identical process. Pull the changes, check out the
+latest tag, and rebuild.
 
-```
-$ cp /usr/local/getwtxt/getwtxt.yml .
-$ git add getwtxt.yml
-$ git commit -m 'my local config'
-```
+systemd might yell at you about running `systemctl daemon-reload` when you
+go to restart getwtxt.
 
-Now, we need to either run `make update` or `git pull --rebase origin master`
-
-```
-$ make update
-...
-```
-
-Afterwards, follow the normal instructions for building and installing.
-If no configuration changes have been made since your last upgrade,
-you will not need to commit them again. While `getwtxt` is pre-`1.0`, any
-patch-level updates (`v0.4.x`) will not change configuration values.
-
-Of course, you can also just back up your configuration file, then copy it
-back into `/usr/local/getwtxt/` after installing the new version.
+While getwtxt is pre-`1.0`, any patch-level updates (`v0.4.x`) will not
+change configuration values. If a minor version increase has happened, for
+example `v0.4.x -> v0.5.x`, then check if you need to update the config
+file before restarting getwtxt.
 
 ## Configuration
 
@@ -113,20 +105,24 @@ the template.
 ### Proxying
 
 Though getwtxt will run perfectly fine facing the internet directly, it does not
-understand virtual hosts, nor does it use TLS. You'll probably want to proxy it behind
+understand virtual hosts, nor does it use TLS. You'll probably want to proxy it
+behind
 `Caddy` or `nginx` for this reason.
 
-`Caddy` is ludicrously easy to set up, and automatically handles `TLS` certificates. Here's the config:
+`Caddy` is ludicrously easy to set up, and automatically handles `TLS`
+certificates. Here's the config:
 
 ```caddyfile
 twtxt.example.com
 proxy / example.com:9001
 ```
 
-If you're using `nginx`, here's a skeleton config to get you started. Don't forget to change
-the 5 instances of `twtxt.example.com` to the (sub)domain you'll be using to access the registry,
-generate SSL/TLS certificates using LetsEncrypt, and change the port in `proxy_pass` to whichever
-port you specified when modifying the configuration file. Currently, it's set to the default port `9001`
+If you're using `nginx`, here's a skeleton config to get you started. Don't
+forget to change the 5 instances of `twtxt.example.com` to the (sub)domain
+you'll be using to access the registry, generate SSL/TLS certificates using
+LetsEncrypt, and change the port in `proxy_pass` to whichever port you
+specified when modifying the configuration file. Currently, it's set to the
+default port `9001`
 
 ```nginx
 server {
@@ -166,13 +162,14 @@ $ sudo systemctl start getwtxt
 
 ## Using the Registry
 
-The following examples will all apply to using `curl` from a `Linux`, `BSD`, or `macOS` terminal.
-All timestamps are in `RFC3339` format, per the twtxt registry specification. Additionally, all
-queries support the `?page=N` parameter, where `N` is a positive integer, that will retrieve page
-`N` of results in groups of twenty.
+The following examples will all apply to using `curl` from a `Linux`, `BSD`, or
+`macOS` terminal. All timestamps are in `RFC3339` format, per the twtxt registry
+specification. Additionally, all queries support the `?page=N` parameter, where
+`N` is a positive integer, that will retrieve page `N` of results in groups of
+twenty.
 
-The example API calls can also be found on the landing page of any getwtxt instance, assuming
-the admin has not customized the landing page.
+The example API calls can also be found on the landing page of any getwtxt
+instance, assuming the admin has not customized the landing page.
 
 ### Adding a User
 Both nickname and URL are required
@@ -289,9 +286,10 @@ Statistics        Avg      Stdev        Max
 
 ## Other Documentation
 
-In addition to what is provided here, additional information, particularly regarding the configuration
-file, may be found by running getwtxt with the `-m` or `--manual` flags. You will likely want to pipe the output
-to `less` as it is quite long.
+In addition to what is provided here, additional information, particularly
+regarding the configuration file, may be found by running getwtxt with the `-m`
+or `--manual` flags. You will likely want to pipe the output to `less` as it is
+quite long.
 
 ```
 $ ./getwtxt -m | less
@@ -319,7 +317,7 @@ Registry Specification: [`twtxt.readthedocs.io/en/latest/user/registry.html`](ht
 
 Special thanks to [`github.com/kognise/water.css`](https://github.com/kognise/water.css) for open-sourcing a pleasant, easy-to-use, importable stylesheet
 
-### Contributing
+## Contributing
 
 All contributions are greatly appreciated!
 
