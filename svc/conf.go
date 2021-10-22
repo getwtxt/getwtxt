@@ -177,7 +177,7 @@ func bindConfig() {
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
 	txtPass := viper.GetString("AdminPassword")
-	if txtPass == "please_change_me" {
+	if txtPass == "please_change_me" || strings.TrimSpace(txtPass) == "" {
 		fmt.Println("Please set AdminPassword in getwtxt.yml")
 		os.Exit(1)
 	}
