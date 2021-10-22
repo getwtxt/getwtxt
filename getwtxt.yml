@@ -40,6 +40,9 @@ DatabasePath: "getwtxt.db"
 ##  changes are detected.                                  ##
 #############################################################
 
+# Administrator password for certain destructive actions
+AdminPassword: "please_change_me"
+
 # The path to the assets directory, which contains:
 #     style.css
 #     tmpl/index.html

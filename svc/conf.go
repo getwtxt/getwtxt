@@ -20,6 +20,7 @@ along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path/filepath"
@@ -43,6 +44,7 @@ type Configuration struct {
 	DBPath        string        `yaml:"DatabasePath"`
 	AssetsDir     string        `yaml:"AssetsDirectory"`
 	StaticDir     string        `yaml:"StaticFilesDirectory"`
+	AdminPassHash string        `yaml:"-"`
 	StdoutLogging bool          `yaml:"StdoutLogging"`
 	CacheInterval time.Duration `yaml:"StatusFetchInterval"`
 	DBInterval    time.Duration `yaml:"DatabasePushInterval"`
@@ -126,6 +128,7 @@ func setConfigDefaults() {
 	viper.SetDefault("StdoutLogging", false)
 	viper.SetDefault("ReCacheInterval", "1h")
 	viper.SetDefault("DatabasePushInterval", "5m")
+	viper.SetDefault("AdminPassword", "please_change_me")
 
 	viper.SetDefault("Instance.SiteName", "getwtxt")
 	viper.SetDefault("Instance.OwnerName", "Anonymous Microblogger")
@@ -173,6 +176,16 @@ func bindConfig() {
 	confObj.StdoutLogging = viper.GetBool("StdoutLogging")
 	confObj.CacheInterval = viper.GetDuration("StatusFetchInterval")
 	confObj.DBInterval = viper.GetDuration("DatabasePushInterval")
+	txtPass := viper.GetString("AdminPassword")
+	if txtPass == "please_change_me" {
+		fmt.Println("Please set AdminPassword in getwtxt.yml")
+		os.Exit(1)
+	}
+	passHash, err := HashPass(txtPass)
+	if err != nil {
+		errFatal("Failed to hash administrator password: ", err)
+	}
+	confObj.AdminPassHash = passHash
 
 	confObj.Instance.Vers = Vers
 	confObj.Instance.Name = viper.GetString("Instance.SiteName")

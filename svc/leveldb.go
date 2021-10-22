@@ -33,6 +33,27 @@ type dbLevel struct {
 	db *leveldb.DB
 }
 
+func (lvl *dbLevel) delUser(userURL string) error {
+	twtxtCache.Mu.RLock()
+	defer twtxtCache.Mu.RUnlock()
+
+	userStatuses := twtxtCache.Users[userURL].Status
+	var dbBasket = &leveldb.Batch{}
+
+	dbBasket.Delete([]byte(userURL + "*Nick"))
+	dbBasket.Delete([]byte(userURL + "*URL"))
+	dbBasket.Delete([]byte(userURL + "*IP"))
+	dbBasket.Delete([]byte(userURL + "*Date"))
+	dbBasket.Delete([]byte(userURL + "*LastModified"))
+
+	for i := range userStatuses {
+		rfc := i.Format(time.RFC3339)
+		dbBasket.Delete([]byte(userURL + "*Status*" + rfc))
+	}
+
+	return lvl.db.Write(dbBasket, nil)
+}
+
 // Called intermittently to commit registry data to
 // a LevelDB database.
 func (lvl *dbLevel) push() error {

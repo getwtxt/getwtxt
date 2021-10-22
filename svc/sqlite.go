@@ -64,6 +64,10 @@ func initSqlite() *dbSqlite {
 	}
 }
 
+func (lite *dbSqlite) delUser(userURL string) error {
+	return nil
+}
+
 // Commits data from memory to a SQLite database intermittently.
 func (lite *dbSqlite) push() error {
 	if err := lite.db.Ping(); err != nil {
