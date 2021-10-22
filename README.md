@@ -263,6 +263,14 @@ $ curl 'https://twtxt.example.com/api/plain/tags/programming'
 foo    https://example.com/twtxt.txt    2019-03-01T09:31:02.000Z    I love #programming!
 ```
 
+### Delete a User
+
+```
+$ curl -X DELETE -H 'X-Auth: password_in_getwtxt.yml' 'https://twtxt.example.com/api/admin/users?url=https://example.com/twtxt.txt'
+
+200 OK
+```
+
 ## Benchmarks
 
 * [bombardier](https://github.com/codesenberg/bombardier)

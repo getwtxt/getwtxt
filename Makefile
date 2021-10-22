@@ -28,7 +28,8 @@ install:
 
 	@printf "\n%s\n" "Copying files..."
 	install -m755 getwtxt $(BINDIR)
-	@if [ -f "$(BINDIR)/getwtxt.yml" ]; then printf "%s\n" "getwtxt.yml exists. Skipping ..."; else printf "%s\n" "getwtxt.yml ..." && install -m644 getwtxt.yml "$(BINDIR)"; fi
+	@if [ -f "$(BINDIR)/getwtxt.yml" ]; then printf "%s\n" "getwtxt.yml exists. Skipping ..."; else printf "%s\n" "getwtxt.yml ..." && install -m600 getwtxt.yml "$(BINDIR)"; fi
+	chmod 600 $(BINDIR)/getwtxt.yml
 	@if [ -f "$(BINDIR)/assets/style.css" ]; then printf "%s\n" "style.css exists. Skipping ..."; else printf "%s\n" "style.css ..." && install -m644 assets/style.css "$(BINDIR)/assets/style.css"; fi
 	@if [ -f "$(BINDIR)/assets/tmpl/index.html" ]; then printf "%s\n" "tmpl/index.html exists. Skipping ..."; else printf "%s\n" "tmpl/index.html ..." && install -m644 assets/tmpl/index.html "$(BINDIR)/assets/tmpl/index.html"; fi
 	install -m644 static/kognise.water.css.dark.min.css $(BINDIR)/static

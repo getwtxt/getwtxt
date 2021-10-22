@@ -43,6 +43,10 @@
       <pre><code>$ curl '{{.URL}}/api/plain/version'
 getwtxt {{.Vers}}
         </code></pre>
+     <p>Delete a user by issuing a <code>DELETE</code> request to the <code>/api/admin/users</code> endpoint. This
+     must include the <code>X-Auth</code> header with the password specified during configuration.</p>
+     <pre><code>$ curl -X DELETE -H 'X-Auth: mypassword' '{{.URL}}/api/admin/users?url=https://foo.ext/twtxt.txt'
+200 OK</code></pre>
       <p>Add new user by submitting a <code>POST</code> request to the <code>/api/plain/users</code> endpoint.
         If both <code>?url=X</code> and <code>?nickname=X</code> are not passed, or the user already exists in
         this registry, you will receive <code>400 Bad Request</code> as a response. If you are unsure what went

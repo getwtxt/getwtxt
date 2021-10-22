@@ -39,6 +39,7 @@ import (
 type dbase interface {
 	push() error
 	pull()
+	delUser(string) error
 }
 
 // Opens a new connection to the specified
@@ -95,4 +96,14 @@ func pullDB() {
 	db.pull()
 	dbChan <- db
 	log.Printf("Database pull took: %v\n", time.Since(start))
+}
+
+func delUser(userURL string) error {
+	db := <-dbChan
+	err := db.delUser(userURL)
+	dbChan <- db
+	if err != nil {
+		return err
+	}
+	return twtxtCache.DelUser(userURL)
 }

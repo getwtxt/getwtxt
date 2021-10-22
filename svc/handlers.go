@@ -20,15 +20,18 @@ along with Getwtxt.  If not, see <https://www.gnu.org/licenses/>.
 package svc // import "git.sr.ht/~gbmor/getwtxt/svc"
 
 import (
+	"errors"
 	"fmt"
 	"hash/fnv"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
 
 	"git.sr.ht/~gbmor/getwtxt/registry"
 	"github.com/gorilla/mux"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Takes the modtime of one of the static files, derives
@@ -240,5 +243,40 @@ func apiTagsHandler(w http.ResponseWriter, r *http.Request) {
 		errHTTP(w, r, err, http.StatusInternalServerError)
 		return
 	}
+	log200(r)
+}
+
+func handleUserDelete(w http.ResponseWriter, r *http.Request) {
+	pass := r.Header.Get("X-Auth")
+	if pass == "" {
+		errHTTP(w, r, errors.New("unauthorized"), http.StatusUnauthorized)
+		return
+	}
+	confObj.Mu.RLock()
+	adminHash := []byte(confObj.AdminPassHash)
+	confObj.Mu.RUnlock()
+
+	if err := bcrypt.CompareHashAndPassword(adminHash, []byte(pass)); err != nil {
+		errHTTP(w, r, errors.New("unauthorized"), http.StatusUnauthorized)
+		return
+	}
+
+	r.ParseForm()
+	userURL := strings.TrimSpace(r.Form.Get("url"))
+	if userURL == "" {
+		errHTTP(w, r, errors.New("bad request"), http.StatusBadRequest)
+		return
+	}
+	if _, err := url.Parse(userURL); err != nil {
+		errHTTP(w, r, errors.New("bad request"), http.StatusBadRequest)
+		return
+	}
+
+	if err := delUser(userURL); err != nil {
+		return
+	}
+
+	w.WriteHeader(200)
+	w.Write([]byte("200 OK\n"))
 	log200(r)
 }

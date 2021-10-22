@@ -91,6 +91,10 @@ func setIndexRouting(index *mux.Router) {
 }
 
 func setEndpointRouting(api *mux.Router) {
+	api.Path("/admin/users").
+		Methods("DELETE").
+		HandlerFunc(handleUserDelete)
+
 	// May add support for other formats later.
 	// Making this future-proof.
 	api.Path("/{format:(?:plain)}").
