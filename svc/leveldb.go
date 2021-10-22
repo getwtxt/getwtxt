@@ -74,9 +74,9 @@ func (lvl *dbLevel) push() error {
 		}
 	}
 
-	for k, v := range remoteRegistries.List {
-		dbBasket.Put([]byte("remote*"+string(k)), []byte(v))
-	}
+	//for k, v := range remoteRegistries.List {
+	//dbBasket.Put([]byte("remote*"+string(rune(k))), []byte(v))
+	//}
 
 	return lvl.db.Write(dbBasket, nil)
 }
