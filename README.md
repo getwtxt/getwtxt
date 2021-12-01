@@ -1,3 +1,7 @@
+## Archived
+I'm well into a ground-up rewrite, so don't use this.
+When it goes public, it will be at: [gbmor/getwtxt-ng](https://github.com/gbmor/getwtxt-ng)
+
 # getwtxt
 [![builds.sr.ht status](https://builds.sr.ht/~gbmor/getwtxt.svg)](https://builds.sr.ht/~gbmor/getwtxt?)
 [![Build Status](https://travis-ci.com/getwtxt/getwtxt.svg?branch=master)](https://travis-ci.com/getwtxt/getwtxt)
